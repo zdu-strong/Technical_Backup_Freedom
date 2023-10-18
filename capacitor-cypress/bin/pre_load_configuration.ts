@@ -21,18 +21,9 @@ async function installDependencies() {
       env: {
         ...process.env,
         "npm_config_package_lock": "false",
-        "CYPRESS_INSTALL_BINARY": `${getCypressBinaryUrl()}`,
       } as any,
     }
   );
-}
-
-function getCypressBinaryUrl() {
-  const packageJSON = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "package.json")).toString());
-  const cypressVersion = packageJSON.devDependencies["cypress"];
-  const cypressMirror = "https://npmmirror.com/mirrors/cypress/" + cypressVersion;
-  const cypressInstallUrl = cypressMirror + "/" + process.platform + "-" + process.arch + "/cypress.zip";
-  return cypressInstallUrl;
 }
 
 async function deletePackageLockFile() {

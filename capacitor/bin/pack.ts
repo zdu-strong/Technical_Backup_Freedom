@@ -32,8 +32,6 @@ async function runAndroidOrIOS(isRunAndroid: boolean, androidSdkRootPath: string
       }) as any,
     }
   );
-  await updateDownloadAddressOfGradleZipFile(isRunAndroid);
-  await updateDownloadAddressOfGrableDependencies(isRunAndroid);
   await addAndroidPermissions(isRunAndroid);
   await execa.command(
     [
@@ -186,35 +184,6 @@ async function getDeviceList(isRunAndroid: boolean) {
     throw new Error("More than one available Device!")
   }
   return deviceList;
-}
-
-async function updateDownloadAddressOfGradleZipFile(isRunAndroid: boolean) {
-  if (!isRunAndroid) {
-    return;
-  }
-  const filePathOfGradlePropertiesFile = path.join(__dirname, "..", "android", "gradle", "wrapper", "gradle-wrapper.properties");
-  const text = await fs.promises.readFile(filePathOfGradlePropertiesFile, "utf8");
-  const replaceText = text.replace("https\\://services.gradle.org/distributions/", "https\\://mirrors.cloud.tencent.com/gradle/");
-  await fs.promises.writeFile(filePathOfGradlePropertiesFile, replaceText);
-}
-
-async function updateDownloadAddressOfGrableDependencies(isRunAndroid: boolean) {
-  if (!isRunAndroid) {
-    return;
-  }
-  {
-    const filePathOfGradlePropertiesFile = path.join(__dirname, "..", "android", "build.gradle");
-    const text = await fs.promises.readFile(filePathOfGradlePropertiesFile, "utf8");
-    const replaceText = text.replace(new RegExp("google\\(\\)\\s+mavenCentral\\(\\)", "ig"), `maven{ url 'https://maven.aliyun.com/repository/google' }\n        maven{ url 'https://maven.aliyun.com/repository/central' }`);
-    await fs.promises.writeFile(filePathOfGradlePropertiesFile, replaceText);
-  }
-  {
-    const filePathOfGradlePropertiesFile = path.join(__dirname, "..", "android", "capacitor-cordova-android-plugins", "build.gradle");
-    const text = await fs.promises.readFile(filePathOfGradlePropertiesFile, "utf8");
-    let replaceText = text.replace(new RegExp("google\\(\\)\\n        mavenCentral\\(\\)", "ig"), `maven{ url 'https://maven.aliyun.com/repository/google' }\n        maven{ url 'https://maven.aliyun.com/repository/central' }`);
-    replaceText = replaceText.replace(new RegExp("google\\(\\)\\n    mavenCentral\\(\\)", "ig"), `maven{ url 'https://maven.aliyun.com/repository/google' }\n    maven{ url 'https://maven.aliyun.com/repository/central' }`);
-    await fs.promises.writeFile(filePathOfGradlePropertiesFile, replaceText);
-  }
 }
 
 async function addAndroidPermissions(isRunAndroid: boolean) {

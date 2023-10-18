@@ -3,8 +3,6 @@
 This project is to do some knowledge backup.<br/>
 If you have any questions, please contact zdu.strong@gmail.com.<br/>
 
-The download addresses of all project's dependencies have been configured with mirrors. If not in China, please contact me to remove the mirror configuration.<br/>
-
 ### `Environmental description`
 
 This repository uses git as its version management tool.
@@ -15,11 +13,7 @@ This repository uses git as its version management tool.
         git config --global user.name "your username"
         git config --global user.email "your email"
 
-3. Set proxy configuration for git. The pre-step is to have vpn, if not, skip it.<br/>
-
-        git config --global http.proxy 127.0.0.1:7890
-
-4. Use git gui to clone the source code.
+3. Use git gui to clone the source code.
 
 ### `springboot`
 

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "npm config set registry https://registry.npmmirror.com && npx -y -p typescript -p ts-node ts-node --skipProject bin/pre_load_configuration.ts && npx -y -p typescript -p ts-node ts-node --skipProject src/docker_build.ts"
+    "start": "npx -y -p typescript -p ts-node ts-node --skipProject bin/pre_load_configuration.ts && npx -y -p typescript -p ts-node ts-node --skipProject src/docker_build.ts"
   },
   "eslintConfig": {
     "extends": [

@@ -2,9 +2,9 @@
   "name": "my-app",
   "version": "0.1.0",
   "scripts": {
-    "start": "npm config set registry https://registry.npmmirror.com && npx -y -p typescript -p ts-node ts-node --skipProject bin/pre_load_configuration.ts && ts-node --skipProject bin/start.ts",
-    "pack": "npm config set registry https://registry.npmmirror.com && npx -y -p typescript -p ts-node ts-node --skipProject bin/pre_load_configuration.ts && ts-node --skipProject bin/pack.ts",
-    "make": "npm config set registry https://registry.npmmirror.com && npx -y -p typescript -p ts-node ts-node --skipProject bin/pre_load_configuration.ts && ts-node --skipProject bin/make.ts"
+    "start": "npx -y -p typescript -p ts-node ts-node --skipProject bin/pre_load_configuration.ts && ts-node --skipProject bin/start.ts",
+    "pack": "npx -y -p typescript -p ts-node ts-node --skipProject bin/pre_load_configuration.ts && ts-node --skipProject bin/pack.ts",
+    "make": "npx -y -p typescript -p ts-node ts-node --skipProject bin/pre_load_configuration.ts && ts-node --skipProject bin/make.ts"
   },
   "main": "./dist/index.js",
   "private": true,

@@ -17,10 +17,6 @@ async function buildElectron() {
       stdio: "inherit",
       cwd: path.join(__dirname, ".."),
       extendEnv: true,
-      env: {
-        "ELECTRON_MIRROR": "https://npmmirror.com/mirrors/electron/",
-        "ELECTRON_BUILDER_BINARIES_MIRROR": "https://npmmirror.com/mirrors/electron-builder-binaries/",
-      }
     }
   );
 }

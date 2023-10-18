@@ -6,8 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "start": "npm config set registry https://registry.npmmirror.com && npx -y -p typescript -p ts-node ts-node --skipProject bin/pre_load_configuration.ts && ts-node --skipProject bin/start.ts",
-    "test": "npm config set registry https://registry.npmmirror.com && npx -y -p typescript -p ts-node ts-node --skipProject bin/pre_load_configuration.ts && ts-node --skipProject bin/test.ts"
+    "start": "npx -y -p typescript -p ts-node ts-node --skipProject bin/pre_load_configuration.ts && ts-node --skipProject bin/start.ts",
+    "test": "npx -y -p typescript -p ts-node ts-node --skipProject bin/pre_load_configuration.ts && ts-node --skipProject bin/test.ts"
   },
   "devDependencies": {
     "@nestjs/cli": "10.2.0",

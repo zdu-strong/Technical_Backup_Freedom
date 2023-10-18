@@ -2,13 +2,6 @@ FROM rockylinux:9.2.20230513 as first_docker
 
 LABEL maintainer="zdu.strong@gmail.com"
 
-# Use the Alibaba Cloud mirror as the dnf source
-RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' \
-    -e 's|^#baseurl=http://dl.rockylinux.org/$contentdir|baseurl=https://mirrors.aliyun.com/rockylinux|g' \
-    -i.bak \
-    /etc/yum.repos.d/rocky*.repo
-RUN dnf makecache
-
 # support utf-8
 RUN dnf install -y langpacks-en
 ENV LANG en_US.UTF-8

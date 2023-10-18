@@ -25,8 +25,6 @@ async function installDependencies() {
       env: {
         ...process.env,
         "npm_config_package_lock": "false",
-        "ELECTRON_BUILDER_BINARIES_MIRROR": "https://npmmirror.com/mirrors/electron-builder-binaries/",
-        "ELECTRON_MIRROR": "https://npmmirror.com/mirrors/electron/",
       } as any,
     }
   );
@@ -63,8 +61,6 @@ async function rebuildDependenciesOfElectron() {
       env: {
         ...process.env,
         "npm_config_package_lock": "false",
-        "ELECTRON_BUILDER_BINARIES_MIRROR": "https://npmmirror.com/mirrors/electron-builder-binaries/",
-        "ELECTRON_MIRROR": "https://npmmirror.com/mirrors/electron/",
       } as any,
     }
   );

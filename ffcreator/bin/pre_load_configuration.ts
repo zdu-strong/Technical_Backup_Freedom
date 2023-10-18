@@ -22,8 +22,6 @@ async function installDependencies() {
       env: {
         ...process.env,
         "npm_config_package_lock": "false",
-        "npm_config_canvas_binary_host_mirror": "https://npmmirror.com/mirrors/canvas",
-        "npm_config_gl_binary_host_mirror": "https://repo.huaweicloud.com/gl",
       } as any,
     }
   );
