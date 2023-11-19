@@ -1,7 +1,6 @@
 package com.springboot.project.common.logger;
 
 import java.util.Date;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import org.apache.commons.lang3.StringUtils;
 import org.jinq.orm.stream.JinqStream;
@@ -65,7 +64,7 @@ public class LoggerAppender extends AppenderBase<ILoggingEvent> {
         loggerModel.setCallerClassName(callerClassName);
         loggerModel.setCallerMethodName(callerMethodName);
         loggerModel.setCallerLineNumber(callerLineNumber);
-        CompletableFuture.runAsync(() -> {
+        Thread.startVirtualThread(() -> {
             try {
                 loggerService.createLogger(loggerModel);
             } catch (Throwable e) {

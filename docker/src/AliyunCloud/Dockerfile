@@ -20,8 +20,8 @@ RUN npm install --location=global wait-on
 RUN npm install --location=global concurrently
 
 # Install java
-RUN dnf install -y java-17-openjdk-devel
-ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk
+RUN dnf install -y https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.rpm
+ENV JAVA_HOME /usr/lib/jvm/jdk-21-oracle-x64
 
 # compile server code
 FROM first_docker as second_docker

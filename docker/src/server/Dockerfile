@@ -8,8 +8,8 @@ ENV LANG en_US.UTF-8
 ENV LC_ALL C.UTF-8
 
 # Install java
-RUN dnf install -y java-17-openjdk-devel
-ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk
+RUN dnf install -y https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.rpm
+ENV JAVA_HOME /usr/lib/jvm/jdk-21-oracle-x64
 
 # compile code
 FROM first_docker as second_docker

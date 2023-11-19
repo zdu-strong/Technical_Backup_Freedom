@@ -1,7 +1,6 @@
 package com.springboot.project.common.longtermtask;
 
 import java.net.URISyntaxException;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import org.apache.http.client.utils.URIBuilder;
@@ -33,13 +32,13 @@ public class LongTermTaskUtil {
      */
     public ResponseEntity<String> run(Supplier<ResponseEntity<?>> supplier) {
         String idOfLongTermTask = this.longTermTaskService.createLongTermTask();
-        CompletableFuture.runAsync(() -> {
+        Thread.startVirtualThread(() -> {
             var subscription = Observable.timer(1, TimeUnit.SECONDS).concatMap((a) -> {
-                CompletableFuture.runAsync(() -> {
+                Thread.startVirtualThread(() -> {
                     synchronized (idOfLongTermTask) {
                         this.longTermTaskService.updateLongTermTaskToRefreshUpdateDate(idOfLongTermTask);
                     }
-                }).get();
+                }).join();
 
                 return Observable.empty();
             }).repeat().retry().subscribe();

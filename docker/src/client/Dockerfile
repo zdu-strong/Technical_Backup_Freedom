@@ -16,8 +16,8 @@ RUN npm install --location=global serve
 # run test
 FROM first_docker as second_docker
 RUN dnf install -y git
-RUN dnf install -y java-17-openjdk-devel
-ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk
+RUN dnf install -y https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.rpm
+ENV JAVA_HOME /usr/lib/jvm/jdk-21-oracle-x64
 RUN dnf install -y procps-ng
 RUN dnf install -y xorg-x11-server-Xvfb gtk2-devel gtk3-devel libnotify-devel nss libXScrnSaver alsa-lib
 COPY . /all_code
