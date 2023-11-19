@@ -1,7 +1,6 @@
 package com.springboot.project.scheduled;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import com.springboot.project.common.storage.Storage;
@@ -11,7 +10,6 @@ import io.reactivex.rxjava3.core.Observable;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
-@EnableScheduling
 @Slf4j
 public class StorageSpaceScheduled {
     @Autowired

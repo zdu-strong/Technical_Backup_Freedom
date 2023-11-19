@@ -1,7 +1,6 @@
 package com.springboot.project.scheduled;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import com.springboot.project.properties.StorageRootPathProperties;
@@ -9,7 +8,6 @@ import com.springboot.project.service.OrganizeService;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
-@EnableScheduling
 @Slf4j
 public class FixConcurrencyMoveOrganizeScheduled {
 

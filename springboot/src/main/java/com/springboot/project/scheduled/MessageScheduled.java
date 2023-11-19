@@ -3,14 +3,12 @@ package com.springboot.project.scheduled;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import org.jinq.orm.stream.JinqStream;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import com.springboot.project.controller.UserMessageWebSocketController;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
-@EnableScheduling
 @Slf4j
 public class MessageScheduled {
 
