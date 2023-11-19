@@ -1,6 +1,9 @@
 package com.springboot.project.common.config;
 
 import java.io.IOException;
+
+import org.springframework.context.annotation.Configuration;
+
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -9,6 +12,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 
+@Configuration
 public class TrailingSlashRedirectFilter implements Filter {
 
     @Override
