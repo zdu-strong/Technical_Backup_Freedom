@@ -8,7 +8,8 @@ ENV LANG en_US.UTF-8
 ENV LC_ALL C.UTF-8
 
 # install nodejs
-RUN dnf module install -y nodejs:18
+RUN dnf install -y https://rpm.nodesource.com/pub_20.x/el/9/x86_64/nodesource-release-el9-1.noarch.rpm
+RUN dnf install -y nodejs
 
 # Install java
 RUN dnf install -y java-17-openjdk-devel

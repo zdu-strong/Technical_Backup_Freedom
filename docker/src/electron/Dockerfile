@@ -9,7 +9,8 @@ ENV LC_ALL C.UTF-8
 
 # run test
 FROM first_docker as second_docker
-RUN dnf module install -y nodejs:18
+RUN dnf install -y https://rpm.nodesource.com/pub_20.x/el/9/x86_64/nodesource-release-el9-1.noarch.rpm
+RUN dnf install -y nodejs
 RUN dnf install -y git
 RUN dnf install -y procps-ng
 RUN dnf install -y xorg-x11-server-Xvfb gtk2-devel gtk3-devel libnotify-devel nss libXScrnSaver alsa-lib
