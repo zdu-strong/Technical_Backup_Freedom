@@ -18,7 +18,7 @@ public class OrganizeControllerGetOrganizeTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        var url = new URIBuilder("/get_organize_by_id").setParameter("id", this.organizeId)
+        var url = new URIBuilder("/organize/get").setParameter("id", this.organizeId)
                 .build();
         var response = this.testRestTemplate.getForEntity(url, OrganizeModel.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -26,14 +26,14 @@ public class OrganizeControllerGetOrganizeTest extends BaseTest {
         assertEquals(36, response.getBody().getId().length());
         assertEquals("Super Saiyan Son Goku", response.getBody().getName());
         assertEquals(0, response.getBody().getLevel());
-        assertNull(response.getBody().getParentOrganize());
-        assertEquals(0, response.getBody().getChildOrganizeList().size());
+        assertNull(response.getBody().getParent());
+        assertEquals(0, response.getBody().getChildList().size());
     }
 
     @BeforeEach
     public void beforeEach() {
         var organizeModel = new OrganizeModel().setName("Super Saiyan Son Goku");
-        var organize = this.organizeService.createOrganize(organizeModel);
+        var organize = this.organizeService.create(organizeModel);
         this.organizeId = organize.getId();
     }
 }

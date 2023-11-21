@@ -28,12 +28,14 @@ public class TokenService extends BaseService {
     }
 
     public void deleteTokenEntity(String jwtId) {
-        var tokenEntityOptional = this.TokenEntity().where(s -> s.getJwtId().equals(jwtId)).findOne();
-        if (!tokenEntityOptional.isPresent()) {
-            return;
-        }
-        var tokenEntity = tokenEntityOptional.get();
+        var tokenEntity = this.TokenEntity().where(s -> s.getJwtId().equals(jwtId)).getOnlyValue();
+        tokenEntity.setUser(null);
         this.remove(tokenEntity);
+    }
+
+    public boolean isExistTokenEntity(String jwtId) {
+        var exists = this.TokenEntity().where(s -> s.getJwtId().equals(jwtId)).exists();
+        return exists;
     }
 
 }

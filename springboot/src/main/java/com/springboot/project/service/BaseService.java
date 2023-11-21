@@ -119,14 +119,6 @@ public abstract class BaseService {
         return this.streamAll(LoggerEntity.class);
     }
 
-    protected JPAJinqStream<OrganizeShadowEntity> OrganizeShadowEntity() {
-        return this.streamAll(OrganizeShadowEntity.class);
-    }
-
-    protected JPAJinqStream<OrganizeClosureEntity> OrganizeClosureEntity() {
-        return this.streamAll(OrganizeClosureEntity.class);
-    }
-
     protected JPAJinqStream<VerificationCodeEmailEntity> VerificationCodeEmailEntity() {
         return this.streamAll(VerificationCodeEmailEntity.class);
     }
@@ -138,7 +130,6 @@ public abstract class BaseService {
                     JinqJPAStreamProvider jinqJPAStreamProvider = new JinqJPAStreamProvider(
                             entityManager.getMetamodel());
                     JPQLFunction.registerCustomSqlFunction(jinqJPAStreamProvider);
-                    jinqJPAStreamProvider.setHint("automaticPageSize", 2);
                     jinqJPAStreamProvider.setHint("exceptionOnTranslationFail", true);
                     this.jinqJPAStreamProvider = jinqJPAStreamProvider;
                 }

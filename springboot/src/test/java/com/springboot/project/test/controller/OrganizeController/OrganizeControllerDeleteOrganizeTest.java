@@ -17,7 +17,7 @@ public class OrganizeControllerDeleteOrganizeTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        var url = new URIBuilder("/delete_organize").setParameter("id", this.organizeId)
+        var url = new URIBuilder("/organize/delete").setParameter("id", this.organizeId)
                 .build();
         var response = this.testRestTemplate.exchange(url, HttpMethod.DELETE, new HttpEntity<>(null), Throwable.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -26,7 +26,7 @@ public class OrganizeControllerDeleteOrganizeTest extends BaseTest {
     @BeforeEach
     public void beforeEach() {
         var organizeModel = new OrganizeModel().setName("Super Saiyan Son Goku");
-        var organize = this.organizeService.createOrganize(organizeModel);
+        var organize = this.organizeService.create(organizeModel);
         this.organizeId = organize.getId();
     }
 }

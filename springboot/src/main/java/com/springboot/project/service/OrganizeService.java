@@ -1,123 +1,79 @@
 package com.springboot.project.service;
 
+import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
-import org.jinq.orm.stream.JinqStream;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import com.springboot.project.model.OrganizeModel;
-import com.springboot.project.common.OrganizeUtil.OrganizeUtil;
+import com.fasterxml.uuid.Generators;
+import com.springboot.project.common.database.JPQLFunction;
+import com.springboot.project.entity.OrganizeEntity;
 
-@Component
-public class OrganizeService {
+@Service
+public class OrganizeService extends BaseService {
 
-    @Autowired
-    private OrganizeUtil organizeUtil;
+    public OrganizeModel create(OrganizeModel organizeModel) {
+        var parentOrganize = this.getParentOrganize(organizeModel);
+        var organizeEntity = new OrganizeEntity();
+        organizeEntity.setId(Generators.timeBasedGenerator().generate().toString());
+        organizeEntity.setName(organizeModel.getName());
+        organizeEntity.setIsDeleted(false);
+        organizeEntity.setCreateDate(new Date());
+        organizeEntity.setUpdateDate(new Date());
+        organizeEntity.setParent(parentOrganize);
+        this.persist(organizeEntity);
 
-    @Autowired
-    private OrganizeClosureService organizeClosureService;
-
-    public OrganizeModel createOrganize(OrganizeModel organizeModel) {
-        var organize = this.organizeUtil.createOrganizeToStart(organizeModel);
-        if (organizeModel.getParentOrganize() != null
-                && StringUtils.isNotBlank(organizeModel.getParentOrganize().getId())) {
-            var paginationModel = this.organizeClosureService.getAncestorOfOrganizeByPagination(1L, 1L,
-                    organizeModel.getParentOrganize().getId());
-            for (var i = paginationModel.getTotalPage(); i > 0; i--) {
-                var ancestorId = JinqStream.from(this.organizeClosureService
-                        .getAncestorOfOrganizeByPagination(i, 1L, organizeModel.getParentOrganize().getId())
-                        .getList())
-                        .getOnlyValue();
-                this.organizeClosureService.createOrganizeClosure(ancestorId, organize.getId());
+        if (organizeModel.getChildList() != null) {
+            for (var childOrganize : organizeModel.getChildList()) {
+                childOrganize.setParent(new OrganizeModel().setId(organizeEntity.getId()));
+                this.create(childOrganize);
             }
         }
-        organize = this.organizeUtil.createOrganizeToEnd(organize.getId());
-        return organize;
+
+        return this.organizeFormatter.format(organizeEntity);
     }
 
-    public void deleteOrganize(String id) {
-        this.organizeUtil.deleteOrganize(id);
+    public void update(OrganizeModel organizeModel) {
+        var id = organizeModel.getId();
+        var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
+                .where(s -> JPQLFunction.isNotDeleteOfOrganizeAndAncestors(id)).getOnlyValue();
+
+        organizeEntity.setName(organizeModel.getName());
+        organizeEntity.setUpdateDate(new Date());
+        this.merge(organizeEntity);
     }
 
-    public OrganizeModel getOrganize(String id) {
-        return this.organizeUtil.getOrganize(id);
+    public void delete(String id) {
+        var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
+                .where(s -> JPQLFunction.isNotDeleteOfOrganizeAndAncestors(id)).getOnlyValue();
+        organizeEntity.setParent(null);
+        this.remove(organizeEntity);
+    }
+
+    public OrganizeModel getById(String id) {
+        var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
+                .where(s -> JPQLFunction.isNotDeleteOfOrganizeAndAncestors(id)).getOnlyValue();
+
+        return this.organizeFormatter.format(organizeEntity);
     }
 
     public void checkExistOrganize(String id) {
-        this.organizeUtil.checkExistOrganize(id);
+        var exists = this.OrganizeEntity().where(s -> s.getId().equals(id))
+                .where(s -> JPQLFunction.isNotDeleteOfOrganizeAndAncestors(id)).exists();
+        if (!exists) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Organize does not exist");
+        }
     }
 
-    public OrganizeModel moveOrganize(String organizeId, String targetParentOrganizeId) {
-        var targetOrganizeId = this.organizeUtil.moveOrganizeToStart(organizeId, targetParentOrganizeId);
-        {
-            var paginationModel = this.organizeClosureService.getAncestorOfOrganizeByPagination(1L, 1L,
-                    targetParentOrganizeId);
-            for (var i = paginationModel.getTotalPage(); i > 0; i--) {
-                var ancestorId = JinqStream.from(this.organizeClosureService
-                        .getAncestorOfOrganizeByPagination(i, 1L,
-                                targetParentOrganizeId)
-                        .getList())
-                        .getOnlyValue();
-                this.organizeClosureService.createOrganizeClosure(ancestorId, targetOrganizeId);
-            }
+    private OrganizeEntity getParentOrganize(OrganizeModel organizeModel) {
+        var parentOrganizeId = organizeModel.getParent() == null ? null : organizeModel.getParent().getId();
+        if (StringUtils.isBlank(parentOrganizeId)) {
+            return null;
         }
 
-        while (true) {
-            var moveModel = this.organizeUtil.moveChildOrganizeList(organizeId,
-                    targetOrganizeId);
-
-            if (!moveModel.getHasNext()) {
-                break;
-            }
-            var paginationModel = this.organizeClosureService.getAncestorOfOrganizeByPagination(1L, 1L,
-                    moveModel.getTargetParentOrganizeId());
-            for (var i = paginationModel.getTotalPage(); i > 0; i--) {
-                var ancestorId = JinqStream.from(this.organizeClosureService
-                        .getAncestorOfOrganizeByPagination(i, 1L,
-                                moveModel.getTargetParentOrganizeId())
-                        .getList())
-                        .getOnlyValue();
-                this.organizeClosureService.createOrganizeClosure(ancestorId,
-                        moveModel.getTargetOrganizeId());
-            }
-        }
-        var organize = this.organizeUtil.moveOrganizeToEnd(organizeId,
-                targetOrganizeId, targetParentOrganizeId);
-        return organize;
-    }
-
-    public void fixConcurrencyMoveOrganize() {
-        while (true) {
-            if (this.organizeUtil.fixConcurrencyMoveOrganizeDueToOrganizeIsDeletedAndOrganizeEntityIsAlsoDeleted()) {
-                continue;
-            }
-
-            var fixConcurrencyMoveOrganizeModel = this.organizeUtil
-                    .fixConcurrencyMoveOrganizeDueToOrganizeHasSubOrganizationsAndOrganizeEntityAlsoHasToStart();
-            if (fixConcurrencyMoveOrganizeModel.getHasNext()) {
-                var paginationModel = this.organizeClosureService.getAncestorOfOrganizeByPagination(1L, 1L,
-                        fixConcurrencyMoveOrganizeModel.getParentOrganizeId());
-                for (var i = paginationModel.getTotalPage(); i > 0; i--) {
-                    var ancestorId = JinqStream.from(this.organizeClosureService
-                            .getAncestorOfOrganizeByPagination(i, 1L,
-                                    fixConcurrencyMoveOrganizeModel.getParentOrganizeId())
-                            .getList())
-                            .getOnlyValue();
-                    this.organizeClosureService.createOrganizeClosure(ancestorId,
-                            fixConcurrencyMoveOrganizeModel.getOrganizeId());
-                }
-                this.organizeUtil
-                        .fixConcurrencyMoveOrganizeDueToOrganizeHasSubOrganizationsAndOrganizeEntityAlsoHasToEnd(
-                                fixConcurrencyMoveOrganizeModel.getOrganizeId());
-                continue;
-            }
-
-            if (this.organizeUtil
-                    .fixConcurrencyMoveOrganizeDueToOrganizeShadowShouldOnlyHaveOneAliveOrganizeEntity()) {
-                continue;
-            }
-
-            break;
-        }
+        var parentOrganize = this.OrganizeEntity().where(s -> s.getId().equals(parentOrganizeId)).getOnlyValue();
+        return parentOrganize;
     }
 
 }

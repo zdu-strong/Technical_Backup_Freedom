@@ -2,6 +2,7 @@ package com.springboot.project.format;
 
 import org.springframework.stereotype.Service;
 import com.google.common.collect.Lists;
+import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.entity.OrganizeEntity;
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.service.BaseService;
@@ -12,27 +13,28 @@ public class OrganizeFormatter extends BaseService {
     public OrganizeModel format(OrganizeEntity organizeEntity) {
         var organizeModel = new OrganizeModel()
                 .setId(organizeEntity.getId())
-                .setName(organizeEntity.getOrganizeShadow().getName())
-                .setLevel(organizeEntity.getLevel());
+                .setName(organizeEntity.getName())
+                .setCreateDate(organizeEntity.getCreateDate())
+                .setUpdateDate(organizeEntity.getUpdateDate())
+                .setChildList(Lists.newArrayList());
 
         var id = organizeEntity.getId();
 
-        var parentOrganize = this.OrganizeClosureEntity()
-                .where(s -> s.getDescendant().getId().equals(id))
-                .where(s -> s.getGap() == 1)
-                .findOne()
-                .map(s -> new OrganizeModel().setId(s.getAncestor().getId()))
-                .orElse(null);
-        organizeModel.setParentOrganize(parentOrganize);
-
-        var childOrganizeCount = this.OrganizeClosureEntity()
-                .where(s -> s.getGap() == 1)
-                .where(s -> s.getAncestor().getId().equals(id))
-                .where(s -> !s.getDescendant().getIsDeleted())
+        var level = this.OrganizeEntity()
+                .where(s -> JPQLFunction.isChildOrganize(id, s.getId()))
+                .where(s -> !s.getId().equals(id))
                 .count();
-        organizeModel.setChildOrganizeList(Lists.newArrayList());
-        organizeModel.setChildOrganizeCount(childOrganizeCount);
+        organizeModel.setLevel(level);
 
+        if (organizeEntity.getParent() != null) {
+            organizeModel.setParent(new OrganizeModel().setId(organizeEntity.getParent().getId()));
+        }
+
+        var childOrganizeCount = this.OrganizeEntity()
+                .where(s -> s.getParent().getId().equals(id))
+                .where(s -> !s.getIsDeleted())
+                .count();
+        organizeModel.setChildCount(childOrganizeCount);
         return organizeModel;
     }
 

@@ -16,7 +16,7 @@ public class OrganizeServiceCheckExistOrganizeTest extends BaseTest {
     @BeforeEach
     public void beforeEach() {
         var organizeModel = new OrganizeModel().setName("Super Saiyan Son Goku");
-        this.organizeId = this.organizeService.createOrganize(organizeModel).getId();
+        this.organizeId = this.organizeService.create(organizeModel).getId();
     }
 
 }

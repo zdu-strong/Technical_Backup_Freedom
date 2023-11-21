@@ -14,17 +14,17 @@ public class OrganizeServiceGetOrganizeParentOrganizeAlreadyDeleteTest extends B
     @Test
     public void test() {
         assertThrows(NoSuchElementException.class, () -> {
-            this.organizeService.getOrganize(organizeId);
+            this.organizeService.getById(organizeId);
         });
     }
 
     @BeforeEach
     public void beforeEach() {
         var parentOrganizeModel = new OrganizeModel().setName("Super Saiyan Son Goku");
-        var parentOrganize = this.organizeService.createOrganize(parentOrganizeModel);
-        var childOrganizeModel = new OrganizeModel().setName("Son Gohan").setParentOrganize(parentOrganize);
-        var childOrganize = this.organizeService.createOrganize(childOrganizeModel);
-        this.organizeService.deleteOrganize(parentOrganize.getId());
+        var parentOrganize = this.organizeService.create(parentOrganizeModel);
+        var childOrganizeModel = new OrganizeModel().setName("Son Gohan").setParent(parentOrganize);
+        var childOrganize = this.organizeService.create(childOrganizeModel);
+        this.organizeService.delete(parentOrganize.getId());
         this.organizeId = childOrganize.getId();
     }
 

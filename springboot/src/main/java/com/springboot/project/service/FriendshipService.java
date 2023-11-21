@@ -26,6 +26,8 @@ public class FriendshipService extends BaseService {
         }
 
         for (var friendship : friendshipList) {
+            friendship.setFriend(null);
+            friendship.setUser(null);
             this.remove(friendship);
         }
 

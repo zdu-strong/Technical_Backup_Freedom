@@ -17,22 +17,22 @@ public class OrganizeControllerCreateOrganizeTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        var url = new URIBuilder("/create_organize").build();
+        var url = new URIBuilder("/organize/create").build();
         var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(organizeModel), OrganizeModel.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody().getId());
         assertEquals(36, response.getBody().getId().length());
-        assertEquals(this.organizeModel.getParentOrganize().getId(), response.getBody().getParentOrganize().getId());
+        assertEquals(this.organizeModel.getParent().getId(), response.getBody().getParent().getId());
         assertEquals("Son Gohan", response.getBody().getName());
-        assertEquals(0, response.getBody().getChildOrganizeList().size());
+        assertEquals(0, response.getBody().getChildList().size());
     }
 
     @BeforeEach
     public void beforeEach() {
         var parentOrganizeModel = new OrganizeModel().setName("Super Saiyan Son Goku");
-        var parentOrganize = this.organizeService.createOrganize(parentOrganizeModel);
+        var parentOrganize = this.organizeService.create(parentOrganizeModel);
         var childOrganizeModel = new OrganizeModel().setName("Son Gohan")
-                .setParentOrganize(new OrganizeModel().setId(parentOrganize.getId()));
+                .setParent(new OrganizeModel().setId(parentOrganize.getId()));
         this.organizeModel = childOrganizeModel;
     }
 }

@@ -14,7 +14,7 @@ public class OrganizeServiceDeleteOrganizeNotExistOrganizeTest extends BaseTest 
     @Test
     public void test() {
         assertThrows(NoSuchElementException.class, () -> {
-            this.organizeService.getOrganize(organizeId);
+            this.organizeService.getById(organizeId);
         });
     }
 

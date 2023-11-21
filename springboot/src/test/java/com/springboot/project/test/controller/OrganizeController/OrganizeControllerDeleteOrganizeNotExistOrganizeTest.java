@@ -17,10 +17,10 @@ public class OrganizeControllerDeleteOrganizeNotExistOrganizeTest extends BaseTe
 
     @Test
     public void test() throws URISyntaxException {
-        var url = new URIBuilder("/delete_organize").setParameter("id", this.organizeId)
+        var url = new URIBuilder("/organize/delete").setParameter("id", this.organizeId)
                 .build();
         var response = this.testRestTemplate.exchange(url, HttpMethod.DELETE, new HttpEntity<>(null), Throwable.class);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("Organize does not exist", response.getBody().getMessage());
     }
 

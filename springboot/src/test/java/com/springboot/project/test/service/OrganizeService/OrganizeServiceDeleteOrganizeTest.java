@@ -11,13 +11,13 @@ public class OrganizeServiceDeleteOrganizeTest extends BaseTest {
 
     @Test
     public void test() {
-        this.organizeService.deleteOrganize(this.organizeId);
+        this.organizeService.delete(this.organizeId);
     }
 
     @BeforeEach
     public void beforeEach() {
         var organizeModel = new OrganizeModel().setName("Super Saiyan Son Goku");
-        this.organizeId = this.organizeService.createOrganize(organizeModel).getId();
+        this.organizeId = this.organizeService.create(organizeModel).getId();
     }
 
 }

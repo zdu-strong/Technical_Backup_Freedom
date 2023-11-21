@@ -1,7 +1,7 @@
 package com.springboot.project.model;
 
+import java.util.Date;
 import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -13,9 +13,15 @@ public class OrganizeModel {
 
     private String id;
     private String name;
-    private Long level;
-    private Long childOrganizeCount;
-    private List<OrganizeModel> childOrganizeList;
 
-    private OrganizeModel parentOrganize;
+    /**
+     * init level is 0
+     */
+    private Long level;
+    private Date createDate;
+    private Date updateDate;
+    private Long childCount;
+    private List<OrganizeModel> childList;
+
+    private OrganizeModel parent;
 }

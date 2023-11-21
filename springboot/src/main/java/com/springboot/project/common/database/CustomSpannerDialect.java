@@ -16,7 +16,7 @@ public class CustomSpannerDialect extends SpannerDialect {
         BasicTypeRegistry basicTypeRegistry = functionContributions.getTypeConfiguration().getBasicTypeRegistry();
         SqmFunctionRegistry functionRegistry = functionContributions.getFunctionRegistry();
         functionRegistry.register("IFNULL", new StandardSQLFunction("IFNULL", StandardBasicTypes.LONG));
-        functionRegistry.registerPattern("FOUND_ROWS", "COUNT(*) OVER ()",
+        functionRegistry.registerPattern("FOUND_ROWS", "COUNT(*) OVER()",
                 basicTypeRegistry.resolve(StandardBasicTypes.LONG));
         functionRegistry.registerPattern("IS_SORT_AT_BEFORE", "?1 < ?2",
                 basicTypeRegistry.resolve(StandardBasicTypes.BOOLEAN));

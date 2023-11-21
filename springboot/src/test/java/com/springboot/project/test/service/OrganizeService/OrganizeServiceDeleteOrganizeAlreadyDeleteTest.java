@@ -14,15 +14,15 @@ public class OrganizeServiceDeleteOrganizeAlreadyDeleteTest extends BaseTest {
     @Test
     public void test() {
         assertThrows(NoSuchElementException.class, () -> {
-            this.organizeService.getOrganize(organizeId);
+            this.organizeService.getById(organizeId);
         });
     }
 
     @BeforeEach
     public void beforeEach() {
         var organizeModel = new OrganizeModel().setName("Super Saiyan Son Goku");
-        this.organizeId = this.organizeService.createOrganize(organizeModel).getId();
-        this.organizeService.deleteOrganize(this.organizeId);
+        this.organizeId = this.organizeService.create(organizeModel).getId();
+        this.organizeService.delete(this.organizeId);
     }
 
 }
