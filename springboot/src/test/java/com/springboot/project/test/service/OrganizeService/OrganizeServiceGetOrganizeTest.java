@@ -20,7 +20,9 @@ public class OrganizeServiceGetOrganizeTest extends BaseTest {
         assertEquals(this.organizeId, result.getId());
         assertEquals("Super Saiyan Son Goku", result.getName());
         assertEquals(0, result.getChildList().size());
+        assertEquals(0, result.getChildCount());
         assertNull(result.getParent());
+        assertEquals(0, result.getLevel());
     }
 
     @BeforeEach
