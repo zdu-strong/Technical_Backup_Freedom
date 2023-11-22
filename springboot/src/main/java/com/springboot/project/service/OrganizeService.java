@@ -66,14 +66,24 @@ public class OrganizeService extends BaseService {
         }
     }
 
+    public void move(String id, String parentId) {
+        var parentOrganizeEntity = this
+                .getParentOrganize(new OrganizeModel().setParent(new OrganizeModel().setId(parentId)));
+        var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
+                .where(s -> JPQLFunction.isNotDeleteOfOrganizeAndAncestors(id)).getOnlyValue();
+        organizeEntity.setParent(parentOrganizeEntity);
+        this.merge(organizeEntity);
+    }
+
     private OrganizeEntity getParentOrganize(OrganizeModel organizeModel) {
         var parentOrganizeId = organizeModel.getParent() == null ? null : organizeModel.getParent().getId();
         if (StringUtils.isBlank(parentOrganizeId)) {
             return null;
         }
 
-        var parentOrganize = this.OrganizeEntity().where(s -> s.getId().equals(parentOrganizeId)).getOnlyValue();
-        return parentOrganize;
+        var parentOrganizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(parentOrganizeId))
+                .where(s -> JPQLFunction.isNotDeleteOfOrganizeAndAncestors(s.getId())).getOnlyValue();
+        return parentOrganizeEntity;
     }
 
 }
