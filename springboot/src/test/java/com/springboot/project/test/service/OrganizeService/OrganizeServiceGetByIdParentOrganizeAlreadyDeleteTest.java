@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.test.BaseTest;
 
-public class OrganizeServiceGetOrganizeParentOrganizeAlreadyDeleteTest extends BaseTest {
+public class OrganizeServiceGetByIdParentOrganizeAlreadyDeleteTest extends BaseTest {
 
     private String organizeId;
 

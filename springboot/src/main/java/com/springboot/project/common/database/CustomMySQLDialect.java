@@ -101,7 +101,7 @@ public class CustomMySQLDialect extends MySQLDialect {
         }
         getDescendantCountBuilder.append(")");
         getDescendantCountBuilder.append(" ");
-        getDescendantCountBuilder.append("SELECT COUNT(*) OVER() as total_record FROM `cte`");
+        getDescendantCountBuilder.append("SELECT IFNULL(COUNT(*) OVER(), 0) as total_record FROM `cte`");
         getDescendantCountBuilder.append(" ");
         getDescendantCountBuilder.append(")");
         return getDescendantCountBuilder.toString();

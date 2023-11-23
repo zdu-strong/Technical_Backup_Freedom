@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.test.BaseTest;
 
-public class OrganizeServiceGetOrganizeNotExistTest extends BaseTest {
+public class OrganizeServiceGetByIdNotExistTest extends BaseTest {
 
     private String organizeId;
 

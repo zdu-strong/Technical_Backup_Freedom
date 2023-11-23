@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.test.BaseTest;
 
-public class OrganizeServiceGetOrganizeTest extends BaseTest {
+public class OrganizeServiceGetByIdTest extends BaseTest {
 
     private String organizeId;
 
