@@ -18,6 +18,7 @@ public class OrganizeServiceCreateOrganizeTest extends BaseTest {
         assertEquals("Super Saiyan Son Goku", result.getName());
         assertEquals(0, result.getChildList().size());
         assertEquals(0, result.getChildCount());
+        assertEquals(0, result.getDescendantCount());
         assertNull(result.getParent());
         assertEquals(0, result.getLevel());
         assertNotNull(result.getCreateDate());
