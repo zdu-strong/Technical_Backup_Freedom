@@ -112,47 +112,35 @@ public class CustomH2Dialect extends H2Dialect {
 
     private String isChild(String tableName) {
         var tmpTableNameAlias = tableName + "_tmp_alias";
-        var maxRecursionLevel = 20;
         var isChildBuilder = new StringBuilder();
         isChildBuilder.append("EXISTS (");
         isChildBuilder.append(" ");
-        isChildBuilder.append("SELECT `" + tmpTableNameAlias + "`.`id`");
+        isChildBuilder.append("WITH RECURSIVE `cte`(`id`, `" + tmpTableNameAlias + "_concat_id`) AS (");
         isChildBuilder.append(" ");
-        isChildBuilder.append("FROM `" + tableName + "` `" + tmpTableNameAlias + "`");
+        isChildBuilder.append("SELECT `id`, CONCAT(`id`, ',') as `" + tmpTableNameAlias + "_concat_id`");
         isChildBuilder.append(" ");
-        for (int i = 2; i <= maxRecursionLevel; i++) {
-            var firstTableName = tmpTableNameAlias + (i == 2 ? "" : "_" + (i - 1));
-            var secondTableName = tmpTableNameAlias + "_" + i;
-            isChildBuilder.append("LEFT JOIN  `" + tableName + "` `" + secondTableName + "`");
-            isChildBuilder.append(" ");
-            isChildBuilder
-                    .append("ON `" + firstTableName + "`.`parent_id` = `" + secondTableName + "`.`id`");
-            isChildBuilder.append(" ");
-        }
-        isChildBuilder.append("WHERE `" + tmpTableNameAlias + "`.`id` = ?1");
+        isChildBuilder.append("FROM `" + tableName + "`");
         isChildBuilder.append(" ");
-        isChildBuilder.append("AND");
+        isChildBuilder.append("WHERE `parent_id` IS NULL");
         isChildBuilder.append(" ");
-        isChildBuilder.append("?2");
+        isChildBuilder.append("UNION ALL");
         isChildBuilder.append(" ");
-        isChildBuilder.append("IN");
+        isChildBuilder.append("SELECT `" + tmpTableNameAlias + "`.`id`, CONCAT(`cte`.`" + tmpTableNameAlias
+                + "_concat_id`, " + "`" + tmpTableNameAlias + "`.`id`" + ", ',') as `"
+                + tmpTableNameAlias
+                + "_concat_id`");
         isChildBuilder.append(" ");
-        isChildBuilder.append("(");
+        isChildBuilder.append("FROM `cte` INNER JOIN `" + tableName + "` `" + tmpTableNameAlias + "`");
         isChildBuilder.append(" ");
-        isChildBuilder.append("`" + tmpTableNameAlias + "`.`id`");
-        isChildBuilder.append(",");
-        isChildBuilder.append(" ");
-        isChildBuilder.append("`" + tmpTableNameAlias + "`.`parent_id`");
-        isChildBuilder.append(" ");
-        for (int i = 2; i <= maxRecursionLevel; i++) {
-            var secondTableName = tmpTableNameAlias + "_" + i;
-            isChildBuilder.append(",");
-            isChildBuilder.append(" ");
-            isChildBuilder.append("`" + secondTableName + "`.`parent_id`");
-            isChildBuilder.append(" ");
-        }
+        isChildBuilder.append("ON `cte`.`id` = `" + tmpTableNameAlias + "`.`parent_id`");
         isChildBuilder.append(" ");
         isChildBuilder.append(")");
+        isChildBuilder.append(" ");
+        isChildBuilder
+                .append("SELECT * FROM `cte` WHERE LOCATE( CONCAT(?2, ','), `cte`.`"
+                        + tmpTableNameAlias + "_concat_id`) > 0 AND LOCATE( CONCAT(?1, ','), `cte`.`"
+                        + tmpTableNameAlias + "_concat_id`) > LOCATE( CONCAT(?2, ','), `cte`.`" + tmpTableNameAlias
+                        + "_concat_id`)");
         isChildBuilder.append(" ");
         isChildBuilder.append(")");
         return isChildBuilder.toString();
@@ -160,62 +148,40 @@ public class CustomH2Dialect extends H2Dialect {
 
     private String isNotDeleted(String tableName) {
         var tmpTableNameAlias = tableName + "_tmp_alias";
-        var maxRecursionLevel = 20;
-        var isNotDeletedBuilder = new StringBuilder();
-        isNotDeletedBuilder.append("EXISTS (");
-        isNotDeletedBuilder.append(" ");
-        isNotDeletedBuilder.append("SELECT `" + tmpTableNameAlias + "`.`id`");
-        isNotDeletedBuilder.append(" ");
-        isNotDeletedBuilder.append("FROM `" + tableName + "` `" + tmpTableNameAlias + "`");
-        isNotDeletedBuilder.append(" ");
-        for (int i = 2; i <= maxRecursionLevel; i++) {
-            var firstTableName = tmpTableNameAlias + (i == 2 ? "" : "_" + (i - 1));
-            var secondTableName = tmpTableNameAlias + "_" + i;
-            isNotDeletedBuilder
-                    .append("LEFT JOIN `" + tableName + "` `" + secondTableName + "`");
-            isNotDeletedBuilder.append(" ");
-            isNotDeletedBuilder
-                    .append("ON `" + firstTableName + "`.`parent_id` = `" + secondTableName + "`.`id`");
-            isNotDeletedBuilder.append(" ");
-            isNotDeletedBuilder.append("AND");
-            isNotDeletedBuilder.append(" ");
-            isNotDeletedBuilder.append("`" + secondTableName + "`.`is_deleted` = false");
-            isNotDeletedBuilder.append(" ");
-        }
-        isNotDeletedBuilder.append("WHERE `" + tmpTableNameAlias + "`.`id` = ?1");
-        isNotDeletedBuilder.append(" ");
-        isNotDeletedBuilder.append("AND");
-        isNotDeletedBuilder.append(" ");
-        isNotDeletedBuilder.append("`" + tmpTableNameAlias + "`.`is_deleted` = false");
-        isNotDeletedBuilder.append(" ");
-        isNotDeletedBuilder.append("AND");
-        isNotDeletedBuilder.append(" ");
-        isNotDeletedBuilder.append("'PARENT_ID_NULL'");
-        isNotDeletedBuilder.append(" ");
-        isNotDeletedBuilder.append("IN");
-        isNotDeletedBuilder.append(" ");
-        isNotDeletedBuilder.append("(");
-        isNotDeletedBuilder.append(" ");
-        isNotDeletedBuilder.append("`" + tmpTableNameAlias + "`.`id`");
-        isNotDeletedBuilder.append(",");
-        isNotDeletedBuilder.append(" ");
-        isNotDeletedBuilder
-                .append("IFNULL(`" + tmpTableNameAlias + "`.`parent_id`, 'PARENT_ID_NULL')");
-        isNotDeletedBuilder.append(" ");
-        for (int i = 2; i <= maxRecursionLevel; i++) {
-            var secondTableName = tmpTableNameAlias + "_" + i;
-            isNotDeletedBuilder.append(",");
-            isNotDeletedBuilder.append(" ");
-            isNotDeletedBuilder
-                    .append("IFNULL(`" + secondTableName + "`.`parent_id`, (CASE WHEN `" + secondTableName
-                            + "`.`id` IS NULL THEN 'CHILD_ID_NULL' ELSE 'PARENT_ID_NULL' END) )");
-            isNotDeletedBuilder.append(" ");
-        }
-        isNotDeletedBuilder.append(" ");
-        isNotDeletedBuilder.append(")");
-        isNotDeletedBuilder.append(" ");
-        isNotDeletedBuilder.append(")");
-        return isNotDeletedBuilder.toString();
+        var isChildBuilder = new StringBuilder();
+        isChildBuilder.append("EXISTS (");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("WITH RECURSIVE `cte`(`id`, `" + tmpTableNameAlias + "_concat_id`) AS (");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("SELECT `id`, CONCAT(`id`, ',') as `" + tmpTableNameAlias + "_concat_id`");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("FROM `" + tableName + "`");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("WHERE `parent_id` IS NULL");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("AND `is_deleted` = false");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("UNION ALL");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("SELECT `" + tmpTableNameAlias + "`.`id`, CONCAT(`cte`.`" + tmpTableNameAlias
+                + "_concat_id`, " + "`" + tmpTableNameAlias + "`.`id`" + ", ',') as `"
+                + tmpTableNameAlias
+                + "_concat_id`");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("FROM `cte` INNER JOIN `" + tableName + "` `" + tmpTableNameAlias + "`");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("ON `cte`.`id` = `" + tmpTableNameAlias + "`.`parent_id`");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("AND `" + tmpTableNameAlias + "`.`is_deleted` = false");
+        isChildBuilder.append(" ");
+        isChildBuilder.append(")");
+        isChildBuilder.append(" ");
+        isChildBuilder
+                .append("SELECT * FROM `cte` WHERE LOCATE( CONCAT(?1, ','), `cte`.`"
+                        + tmpTableNameAlias + "_concat_id`) > 0");
+        isChildBuilder.append(" ");
+        isChildBuilder.append(")");
+        return isChildBuilder.toString();
     }
 
     public CustomH2Dialect() {
