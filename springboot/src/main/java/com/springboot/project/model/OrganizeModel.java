@@ -21,7 +21,8 @@ public class OrganizeModel {
     private Date createDate;
     private Date updateDate;
     private Long childCount;
-    private List<OrganizeModel> childList;
+    private Long descendantCount;
 
     private OrganizeModel parent;
+    private List<OrganizeModel> childList;
 }
