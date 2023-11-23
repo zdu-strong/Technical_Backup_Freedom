@@ -10,7 +10,7 @@ public class TimeZoneUtilsGetTimeZoneTest extends BaseTest {
 
     @Test
     public void test() {
-        var result = this.timeZoneUtils.getTimeZone(this.timeZone);
+        var result = this.timeZoneUtil.getTimeZone(this.timeZone);
         assertEquals("+08:00", result);
     }
 

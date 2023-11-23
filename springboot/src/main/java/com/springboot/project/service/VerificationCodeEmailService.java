@@ -89,7 +89,7 @@ public class VerificationCodeEmailService extends BaseService {
             var email = verificationCodeEmailEntity.getEmail();
             var createDate = verificationCodeEmailEntity.getCreateDate();
 
-            var timeZone = this.timeZoneUtils.getTimeZoneFromUTC();
+            var timeZone = this.timeZoneUtil.getTimeZoneFromUTC();
             var simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             simpleDateFormat.setTimeZone(TimeZone.getTimeZone(timeZone));
             var createDateString = simpleDateFormat.format(createDate);
@@ -126,7 +126,7 @@ public class VerificationCodeEmailService extends BaseService {
                 var email = verificationCodeEmailEntity.getEmail();
                 var createDate = verificationCodeEmailEntity.getCreateDate();
 
-                var timeZone = this.timeZoneUtils.getTimeZoneFromUTC();
+                var timeZone = this.timeZoneUtil.getTimeZoneFromUTC();
                 var simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 simpleDateFormat.setTimeZone(TimeZone.getTimeZone(timeZone));
                 var createDateString = simpleDateFormat.format(createDate);

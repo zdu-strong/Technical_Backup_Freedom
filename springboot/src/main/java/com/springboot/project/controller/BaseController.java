@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.GitProperties;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.springboot.project.common.TimeZoneUtil.TimeZoneUtils;
+import com.springboot.project.common.TimeZoneUtil.TimeZoneUtil;
 import com.springboot.project.common.longtermtask.LongTermTaskUtil;
 import com.springboot.project.common.permission.AuthorizationEmailUtil;
 import com.springboot.project.common.permission.PermissionUtil;
@@ -52,7 +52,7 @@ public class BaseController {
     protected AuthorizationEmailUtil authorizationEmailUtil;
 
     @Autowired
-    protected TimeZoneUtils timeZoneUtils;
+    protected TimeZoneUtil timeZoneUtil;
 
     @Autowired
     protected UserService userService;

@@ -8,7 +8,7 @@ public class TimeZoneUtilsGetTimeZoneFromUTCTest extends BaseTest {
 
     @Test
     public void test() {
-        var result = this.timeZoneUtils.getTimeZoneFromUTC();
+        var result = this.timeZoneUtil.getTimeZoneFromUTC();
         assertEquals("+00:00", result);
     }
 

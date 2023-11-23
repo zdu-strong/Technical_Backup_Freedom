@@ -255,7 +255,7 @@ javascript:
 
 java:
 
-    var timeZone = this.timeZoneUtils.getTimeZone("Asia/Shanghai");
+    var timeZone = this.timeZoneUtil.getTimeZone("Asia/Shanghai");
 
     +08:00
 

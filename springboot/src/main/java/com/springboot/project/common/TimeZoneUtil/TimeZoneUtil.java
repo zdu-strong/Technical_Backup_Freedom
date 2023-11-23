@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TimeZoneUtils {
+public class TimeZoneUtil {
 
     /**
      * return value like +08:00
