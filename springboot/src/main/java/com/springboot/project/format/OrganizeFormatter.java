@@ -16,6 +16,8 @@ public class OrganizeFormatter extends BaseService {
                 .setName(organizeEntity.getName())
                 .setCreateDate(organizeEntity.getCreateDate())
                 .setUpdateDate(organizeEntity.getUpdateDate())
+                .setChildCount(0L)
+                .setDescendantCount(0L)
                 .setChildList(Lists.newArrayList());
 
         var id = organizeEntity.getId();
@@ -30,18 +32,23 @@ public class OrganizeFormatter extends BaseService {
             organizeModel.setParent(new OrganizeModel().setId(organizeEntity.getParent().getId()));
         }
 
-        var childOrganizeCount = this.OrganizeEntity()
-                .where(s -> s.getParent().getId().equals(id))
-                .where(s -> !s.getIsDeleted())
-                .count();
-        organizeModel.setChildCount(childOrganizeCount);
+        var isDeleted = !this.OrganizeEntity()
+                .where(s -> s.getId().equals(id))
+                .select(s -> JPQLFunction.isNotDeletedOfOrganize(s.getId()))
+                .getOnlyValue();
+        if (!isDeleted) {
+            var childOrganizeCount = this.OrganizeEntity()
+                    .where(s -> s.getParent().getId().equals(id))
+                    .where(s -> !s.getIsDeleted())
+                    .count();
+            organizeModel.setChildCount(childOrganizeCount);
 
-        var descendantCount = this.OrganizeEntity()
-                .where(s -> JPQLFunction.isChildOfOrganize(s.getId(), id))
-                .where(s -> JPQLFunction.isNotDeletedOfOrganize(s.getId()))
-                .where(s -> !s.getId().equals(id))
-                .count();
-        organizeModel.setDescendantCount(descendantCount);
+            var descendantCount = this.OrganizeEntity()
+                    .where(s -> s.getId().equals(id))
+                    .select(s -> JPQLFunction.getDescendantCountOfOrganize(s.getId()))
+                    .getOnlyValue();
+            organizeModel.setDescendantCount(descendantCount);
+        }
         return organizeModel;
     }
 
