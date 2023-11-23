@@ -54,127 +54,121 @@ public class CustomH2Dialect extends H2Dialect {
                 basicTypeRegistry.resolve(StandardBasicTypes.BIG_DECIMAL));
         functionRegistry.registerPattern("CONVERT_TO_STRING", "CAST(?1 AS CHARACTER VARYING)",
                 basicTypeRegistry.resolve(StandardBasicTypes.STRING));
-        this.registerFunctionOfIS_CHILD_ORGANIZE(functionRegistry, basicTypeRegistry);
-        this.registerFunctionOfIS_NOT_DELETE_OF_ORGANIZE_AND_ANCESTORS(functionRegistry, basicTypeRegistry);
-    }
-
-    private void registerFunctionOfIS_CHILD_ORGANIZE(SqmFunctionRegistry functionRegistry,
-            BasicTypeRegistry basicTypeRegistry) {
-        var maxRecursionLevel = 10;
-        var isChildStringBuilder = new StringBuilder();
-        isChildStringBuilder.append("EXISTS (");
-        isChildStringBuilder.append(" ");
-        isChildStringBuilder.append("SELECT `organize`.`id`");
-        isChildStringBuilder.append(" ");
-        isChildStringBuilder.append("FROM `organize_entity` `organize`");
-        isChildStringBuilder.append(" ");
-        for (int i = 2; i <= maxRecursionLevel; i++) {
-            var firstTableName = "organize" + (i == 2 ? "" : "_" + (i - 1));
-            var secondTableName = "organize_" + i;
-            isChildStringBuilder.append("LEFT JOIN  `organize_entity` `" + secondTableName + "`");
-            isChildStringBuilder.append(" ");
-            isChildStringBuilder
-                    .append("ON `" + firstTableName + "`.`parent_id` = `" + secondTableName + "`.`id`");
-            isChildStringBuilder.append(" ");
-        }
-        isChildStringBuilder.append("WHERE `organize`.`id` = ?1");
-        isChildStringBuilder.append(" ");
-        isChildStringBuilder.append("AND");
-        isChildStringBuilder.append(" ");
-        isChildStringBuilder.append("?2");
-        isChildStringBuilder.append(" ");
-        isChildStringBuilder.append("IN");
-        isChildStringBuilder.append(" ");
-        isChildStringBuilder.append("(");
-        isChildStringBuilder.append(" ");
-        isChildStringBuilder.append("`organize`.`id`");
-        isChildStringBuilder.append(",");
-        isChildStringBuilder.append(" ");
-        isChildStringBuilder.append("`organize`.`parent_id`");
-        isChildStringBuilder.append(" ");
-        for (int i = 2; i <= maxRecursionLevel; i++) {
-            var secondTableName = "organize_" + i;
-            isChildStringBuilder.append(",");
-            isChildStringBuilder.append(" ");
-            isChildStringBuilder.append("`" + secondTableName + "`.`parent_id`");
-            isChildStringBuilder.append(" ");
-        }
-        isChildStringBuilder.append(" ");
-        isChildStringBuilder.append(")");
-        isChildStringBuilder.append(" ");
-        isChildStringBuilder.append(")");
+        functionRegistry.registerPattern("IS_NOT_DELETED_OF_ORGANIZE",
+                isNotDeleted("organize_entity"),
+                basicTypeRegistry.resolve(StandardBasicTypes.BOOLEAN));
         functionRegistry.registerPattern(
                 "IS_CHILD_ORGANIZE",
-                isChildStringBuilder.toString(),
+                isChild("organize_entity").toString(),
                 basicTypeRegistry.resolve(StandardBasicTypes.BOOLEAN));
-
     }
 
-    private void registerFunctionOfIS_NOT_DELETE_OF_ORGANIZE_AND_ANCESTORS(SqmFunctionRegistry functionRegistry,
-            BasicTypeRegistry basicTypeRegistry) {
+    private String isChild(String tableName) {
+        var tmpTableNameAlias = tableName + "_tmp_alias";
         var maxRecursionLevel = 10;
-        var isNotDeleteOfOrganizeAndAncestorsStringBuilder = new StringBuilder();
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append("EXISTS (");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append("SELECT `organize`.`id`");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append("FROM `organize_entity` `organize`");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
+        var isChildBuilder = new StringBuilder();
+        isChildBuilder.append("EXISTS (");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("SELECT `" + tmpTableNameAlias + "`.`id`");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("FROM `" + tableName + "` `" + tmpTableNameAlias + "`");
+        isChildBuilder.append(" ");
         for (int i = 2; i <= maxRecursionLevel; i++) {
-            var firstTableName = "organize" + (i == 2 ? "" : "_" + (i - 1));
-            var secondTableName = "organize_" + i;
-            isNotDeleteOfOrganizeAndAncestorsStringBuilder
-                    .append("LEFT JOIN `organize_entity` `" + secondTableName + "`");
-            isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
-            isNotDeleteOfOrganizeAndAncestorsStringBuilder
+            var firstTableName = tmpTableNameAlias + (i == 2 ? "" : "_" + (i - 1));
+            var secondTableName = tmpTableNameAlias + "_" + i;
+            isChildBuilder.append("LEFT JOIN  `" + tableName + "` `" + secondTableName + "`");
+            isChildBuilder.append(" ");
+            isChildBuilder
                     .append("ON `" + firstTableName + "`.`parent_id` = `" + secondTableName + "`.`id`");
-            isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
-            isNotDeleteOfOrganizeAndAncestorsStringBuilder.append("AND");
-            isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
-            isNotDeleteOfOrganizeAndAncestorsStringBuilder.append("`" + secondTableName + "`.`is_deleted` = false");
-            isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
+            isChildBuilder.append(" ");
         }
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append("WHERE `organize`.`id` = ?1");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append("AND");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append("`organize`.`is_deleted` = false");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append("AND");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append("'parent_id_NULL'");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append("IN");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append("(");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append("`organize`.`id`");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(",");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder
-                .append("IFNULL(`organize`.`parent_id`, 'parent_id_NULL')");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
+        isChildBuilder.append("WHERE `" + tmpTableNameAlias + "`.`id` = ?1");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("AND");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("?2");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("IN");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("(");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("`" + tmpTableNameAlias + "`.`id`");
+        isChildBuilder.append(",");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("`" + tmpTableNameAlias + "`.`parent_id`");
+        isChildBuilder.append(" ");
         for (int i = 2; i <= maxRecursionLevel; i++) {
-            var secondTableName = "organize_" + i;
-            isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(",");
-            isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
-            isNotDeleteOfOrganizeAndAncestorsStringBuilder.append("IFNULL(");
-            isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
-            isNotDeleteOfOrganizeAndAncestorsStringBuilder.append("`" + secondTableName + "`.`parent_id`");
-            isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(", ");
-            isNotDeleteOfOrganizeAndAncestorsStringBuilder.append("(CASE WHEN `" + secondTableName
-                    + "`.`id` IS NULL THEN 'CHILD_ORGANIZE_ORGANIZE_ID_NULL' ELSE 'parent_id_NULL' END)");
-            isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
-            isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(")");
-            isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
+            var secondTableName = tmpTableNameAlias + "_" + i;
+            isChildBuilder.append(",");
+            isChildBuilder.append(" ");
+            isChildBuilder.append("`" + secondTableName + "`.`parent_id`");
+            isChildBuilder.append(" ");
         }
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(")");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(" ");
-        isNotDeleteOfOrganizeAndAncestorsStringBuilder.append(")");
-        functionRegistry.registerPattern("IS_NOT_DELETE_OF_ORGANIZE_AND_ANCESTORS",
-                isNotDeleteOfOrganizeAndAncestorsStringBuilder.toString(),
-                basicTypeRegistry.resolve(StandardBasicTypes.BOOLEAN));
+        isChildBuilder.append(" ");
+        isChildBuilder.append(")");
+        isChildBuilder.append(" ");
+        isChildBuilder.append(")");
+        return isChildBuilder.toString();
+    }
+
+    private String isNotDeleted(String tableName) {
+        var tmpTableNameAlias = tableName + "_tmp_alias";
+        var maxRecursionLevel = 10;
+        var isNotDeletedBuilder = new StringBuilder();
+        isNotDeletedBuilder.append("EXISTS (");
+        isNotDeletedBuilder.append(" ");
+        isNotDeletedBuilder.append("SELECT `" + tmpTableNameAlias + "`.`id`");
+        isNotDeletedBuilder.append(" ");
+        isNotDeletedBuilder.append("FROM `" + tableName + "` `" + tmpTableNameAlias + "`");
+        isNotDeletedBuilder.append(" ");
+        for (int i = 2; i <= maxRecursionLevel; i++) {
+            var firstTableName = tmpTableNameAlias + (i == 2 ? "" : "_" + (i - 1));
+            var secondTableName = tmpTableNameAlias + "_" + i;
+            isNotDeletedBuilder
+                    .append("LEFT JOIN `" + tableName + "` `" + secondTableName + "`");
+            isNotDeletedBuilder.append(" ");
+            isNotDeletedBuilder
+                    .append("ON `" + firstTableName + "`.`parent_id` = `" + secondTableName + "`.`id`");
+            isNotDeletedBuilder.append(" ");
+            isNotDeletedBuilder.append("AND");
+            isNotDeletedBuilder.append(" ");
+            isNotDeletedBuilder.append("`" + secondTableName + "`.`is_deleted` = false");
+            isNotDeletedBuilder.append(" ");
+        }
+        isNotDeletedBuilder.append("WHERE `" + tmpTableNameAlias + "`.`id` = ?1");
+        isNotDeletedBuilder.append(" ");
+        isNotDeletedBuilder.append("AND");
+        isNotDeletedBuilder.append(" ");
+        isNotDeletedBuilder.append("`" + tmpTableNameAlias + "`.`is_deleted` = false");
+        isNotDeletedBuilder.append(" ");
+        isNotDeletedBuilder.append("AND");
+        isNotDeletedBuilder.append(" ");
+        isNotDeletedBuilder.append("'PARENT_ID_NULL'");
+        isNotDeletedBuilder.append(" ");
+        isNotDeletedBuilder.append("IN");
+        isNotDeletedBuilder.append(" ");
+        isNotDeletedBuilder.append("(");
+        isNotDeletedBuilder.append(" ");
+        isNotDeletedBuilder.append("`" + tmpTableNameAlias + "`.`id`");
+        isNotDeletedBuilder.append(",");
+        isNotDeletedBuilder.append(" ");
+        isNotDeletedBuilder
+                .append("IFNULL(`" + tmpTableNameAlias + "`.`parent_id`, 'PARENT_ID_NULL')");
+        isNotDeletedBuilder.append(" ");
+        for (int i = 2; i <= maxRecursionLevel; i++) {
+            var secondTableName = tmpTableNameAlias + "_" + i;
+            isNotDeletedBuilder.append(",");
+            isNotDeletedBuilder.append(" ");
+            isNotDeletedBuilder
+                    .append("IFNULL(`" + secondTableName + "`.`parent_id`, (CASE WHEN `" + secondTableName
+                            + "`.`id` IS NULL THEN 'CHILD_ID_NULL' ELSE 'PARENT_ID_NULL' END) )");
+            isNotDeletedBuilder.append(" ");
+        }
+        isNotDeletedBuilder.append(" ");
+        isNotDeletedBuilder.append(")");
+        isNotDeletedBuilder.append(" ");
+        isNotDeletedBuilder.append(")");
+        return isNotDeletedBuilder.toString();
     }
 
     public CustomH2Dialect() {

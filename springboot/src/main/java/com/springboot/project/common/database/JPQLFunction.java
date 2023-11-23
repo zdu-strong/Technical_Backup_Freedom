@@ -227,7 +227,7 @@ public class JPQLFunction {
      * @param parentOrganizeId
      * @return
      */
-    public static Boolean isNotDeleteOfOrganizeAndAncestors(String oganizeId) {
+    public static Boolean isNotDeletedOfOrganize(String oganizeId) {
         throw new RuntimeException();
     }
 
@@ -303,10 +303,10 @@ public class JPQLFunction {
             jinqJPAStreamProvider.registerCustomSqlFunction(method, "IS_CHILD_ORGANIZE");
         }
         for (var method : Arrays.asList(JPQLFunction.class.getMethods()).stream()
-                .filter(s -> s.getName().equals("isNotDeleteOfOrganizeAndAncestors"))
+                .filter(s -> s.getName().equals("isNotDeletedOfOrganize"))
                 .toList()) {
             jinqJPAStreamProvider.registerCustomSqlFunction(method,
-                    "IS_NOT_DELETE_OF_ORGANIZE_AND_ANCESTORS");
+                    "IS_NOT_DELETED_OF_ORGANIZE");
         }
     }
 

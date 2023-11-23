@@ -37,7 +37,7 @@ public class OrganizeService extends BaseService {
     public void update(OrganizeModel organizeModel) {
         var id = organizeModel.getId();
         var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
-                .where(s -> JPQLFunction.isNotDeleteOfOrganizeAndAncestors(id)).getOnlyValue();
+                .where(s -> JPQLFunction.isNotDeletedOfOrganize(id)).getOnlyValue();
 
         organizeEntity.setName(organizeModel.getName());
         organizeEntity.setUpdateDate(new Date());
@@ -46,21 +46,21 @@ public class OrganizeService extends BaseService {
 
     public void delete(String id) {
         var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
-                .where(s -> JPQLFunction.isNotDeleteOfOrganizeAndAncestors(id)).getOnlyValue();
+                .where(s -> JPQLFunction.isNotDeletedOfOrganize(id)).getOnlyValue();
         organizeEntity.setParent(null);
         this.remove(organizeEntity);
     }
 
     public OrganizeModel getById(String id) {
         var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
-                .where(s -> JPQLFunction.isNotDeleteOfOrganizeAndAncestors(id)).getOnlyValue();
+                .where(s -> JPQLFunction.isNotDeletedOfOrganize(id)).getOnlyValue();
 
         return this.organizeFormatter.format(organizeEntity);
     }
 
     public void checkExistOrganize(String id) {
         var exists = this.OrganizeEntity().where(s -> s.getId().equals(id))
-                .where(s -> JPQLFunction.isNotDeleteOfOrganizeAndAncestors(id)).exists();
+                .where(s -> JPQLFunction.isNotDeletedOfOrganize(id)).exists();
         if (!exists) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Organize does not exist");
         }
@@ -70,7 +70,7 @@ public class OrganizeService extends BaseService {
         var parentOrganizeEntity = this
                 .getParentOrganize(new OrganizeModel().setParent(new OrganizeModel().setId(parentId)));
         var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
-                .where(s -> JPQLFunction.isNotDeleteOfOrganizeAndAncestors(id)).getOnlyValue();
+                .where(s -> JPQLFunction.isNotDeletedOfOrganize(id)).getOnlyValue();
         organizeEntity.setParent(parentOrganizeEntity);
         this.merge(organizeEntity);
     }
@@ -82,7 +82,7 @@ public class OrganizeService extends BaseService {
         }
 
         var parentOrganizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(parentOrganizeId))
-                .where(s -> JPQLFunction.isNotDeleteOfOrganizeAndAncestors(s.getId())).getOnlyValue();
+                .where(s -> JPQLFunction.isNotDeletedOfOrganize(s.getId())).getOnlyValue();
         return parentOrganizeEntity;
     }
 
