@@ -49,8 +49,8 @@ public class UserService extends BaseService {
         return user;
     }
 
-    public UserModel getUserById(String userId) {
-        var user = this.UserEntity().where(s -> s.getId().equals(userId)).where(s -> !s.getIsDeleted())
+    public UserModel getUserById(String id) {
+        var user = this.UserEntity().where(s -> s.getId().equals(id)).where(s -> !s.getIsDeleted())
                 .getOnlyValue();
         return this.userFormatter.format(user);
     }

@@ -4,7 +4,7 @@ import axios from "axios";
 import { TypedJSON } from "typedjson";
 
 export async function getUserById(userId: string) {
-  const response = await axios.get<UserModel>("/get_user_by_id", { params: { userId: userId } });
+  const response = await axios.get<UserModel>("/user", { params: { id: userId } });
   response.data = new TypedJSON(UserModel).parse(response.data)!;
   response.data.encryptByPublicKeyOfRSA = async (data: string) => {
     return await encryptByPublicKeyOfRSA(response.data!.publicKeyOfRSA, data);

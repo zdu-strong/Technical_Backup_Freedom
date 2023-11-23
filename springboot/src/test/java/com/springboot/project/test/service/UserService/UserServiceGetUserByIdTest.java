@@ -1,6 +1,6 @@
 package com.springboot.project.test.service.UserService;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.net.URISyntaxException;
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +20,7 @@ public class UserServiceGetUserByIdTest extends BaseTest {
         assertTrue(StringUtils.isNotBlank(result.getPublicKeyOfRSA()));
         assertTrue(StringUtils.isNotBlank(result.getUsername()));
         assertTrue(StringUtils.isBlank(result.getPrivateKeyOfRSA()));
-        assertNull(result.getUserEmailList());
+        assertEquals(0, result.getUserEmailList().size());
     }
 
     @BeforeEach

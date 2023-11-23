@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController extends BaseController {
 
-    @GetMapping("/get_user_by_id")
-    public ResponseEntity<?> sendMessage(@RequestParam String userId) throws IOException {
-        var userModel = this.userService.getUserById(userId);
+    @GetMapping("/user")
+    public ResponseEntity<?> getUserById(@RequestParam String id) throws IOException {
+        var userModel = this.userService.getUserById(id);
         return ResponseEntity.ok(userModel);
     }
 
