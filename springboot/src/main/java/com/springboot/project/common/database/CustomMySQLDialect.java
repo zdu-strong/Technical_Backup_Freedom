@@ -59,7 +59,7 @@ public class CustomMySQLDialect extends MySQLDialect {
                 isNotDeleted("organize_entity"),
                 basicTypeRegistry.resolve(StandardBasicTypes.BOOLEAN));
         functionRegistry.registerPattern(
-                "IS_CHILD_ORGANIZE",
+                "IS_CHILD_OF_ORGANIZE",
                 isChild("organize_entity").toString(),
                 basicTypeRegistry.resolve(StandardBasicTypes.BOOLEAN));
     }

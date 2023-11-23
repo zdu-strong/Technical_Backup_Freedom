@@ -216,7 +216,7 @@ public class JPQLFunction {
      * @param parentOrganizeId
      * @return
      */
-    public static Boolean isChildOrganize(String childOrganizeId, String parentOrganizeId) {
+    public static Boolean isChildOfOrganize(String childOrganizeId, String parentOrganizeId) {
         throw new RuntimeException();
     }
 
@@ -299,8 +299,8 @@ public class JPQLFunction {
                     "CONVERT_TO_STRING");
         }
         for (var method : Arrays.asList(JPQLFunction.class.getMethods()).stream()
-                .filter(s -> s.getName().equals("isChildOrganize")).toList()) {
-            jinqJPAStreamProvider.registerCustomSqlFunction(method, "IS_CHILD_ORGANIZE");
+                .filter(s -> s.getName().equals("isChildOfOrganize")).toList()) {
+            jinqJPAStreamProvider.registerCustomSqlFunction(method, "IS_CHILD_OF_ORGANIZE");
         }
         for (var method : Arrays.asList(JPQLFunction.class.getMethods()).stream()
                 .filter(s -> s.getName().equals("isNotDeletedOfOrganize"))

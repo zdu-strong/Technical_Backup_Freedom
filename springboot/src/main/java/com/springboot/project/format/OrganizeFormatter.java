@@ -21,7 +21,7 @@ public class OrganizeFormatter extends BaseService {
         var id = organizeEntity.getId();
 
         var level = this.OrganizeEntity()
-                .where(s -> JPQLFunction.isChildOrganize(id, s.getId()))
+                .where(s -> JPQLFunction.isChildOfOrganize(id, s.getId()))
                 .where(s -> !s.getId().equals(id))
                 .count();
         organizeModel.setLevel(level);
