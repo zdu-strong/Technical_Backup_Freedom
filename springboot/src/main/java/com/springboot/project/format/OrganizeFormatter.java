@@ -35,6 +35,13 @@ public class OrganizeFormatter extends BaseService {
                 .where(s -> !s.getIsDeleted())
                 .count();
         organizeModel.setChildCount(childOrganizeCount);
+
+        var descendantCount = this.OrganizeEntity()
+                .where(s -> JPQLFunction.isChildOfOrganize(s.getId(), id))
+                .where(s -> JPQLFunction.isNotDeletedOfOrganize(s.getId()))
+                .where(s -> !s.getId().equals(id))
+                .count();
+        organizeModel.setDescendantCount(descendantCount);
         return organizeModel;
     }
 
