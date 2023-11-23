@@ -21,7 +21,7 @@ export function getUserMessageWebsocket(websocketInput$: Subject<{
   pageNum: number,
   isCancel: boolean,
 }>) {
-  const url = `${WebSocketServerAddress}/message?${qs.stringify({
+  const url = `${WebSocketServerAddress}/user_message/websocket?${qs.stringify({
     accessToken: GlobalUserInfo.accessToken,
   })}`;
   const websocketOutput$ = makeWebSocketObservable(url).pipe(

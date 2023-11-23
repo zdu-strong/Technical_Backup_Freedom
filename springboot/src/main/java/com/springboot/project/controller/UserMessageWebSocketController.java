@@ -34,7 +34,7 @@ import lombok.Getter;
  * @author zdu
  *
  */
-@ServerEndpoint("/message")
+@ServerEndpoint("/user_message/websocket")
 @Component
 public class UserMessageWebSocketController {
 

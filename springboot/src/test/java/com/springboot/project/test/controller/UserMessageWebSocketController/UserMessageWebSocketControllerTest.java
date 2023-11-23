@@ -31,7 +31,7 @@ public class UserMessageWebSocketControllerTest extends BaseTest {
     @Test
     public void test() throws URISyntaxException, InterruptedException, ExecutionException, TimeoutException,
             JsonProcessingException {
-        URI url = new URIBuilder(webSocketServer).setPath("/message").setParameter("accessToken", accessToken)
+        URI url = new URIBuilder(webSocketServer).setPath("/user_message/websocket").setParameter("accessToken", accessToken)
                 .build();
         ReplaySubject<UserMessageWebSocketSendModel> subject = ReplaySubject.create();
         WebSocketClient webSocketClient = new WebSocketClient(url) {
