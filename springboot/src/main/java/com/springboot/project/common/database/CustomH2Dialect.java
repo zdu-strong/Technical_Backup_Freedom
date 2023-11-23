@@ -65,7 +65,7 @@ public class CustomH2Dialect extends H2Dialect {
 
     private String isChild(String tableName) {
         var tmpTableNameAlias = tableName + "_tmp_alias";
-        var maxRecursionLevel = 10;
+        var maxRecursionLevel = 20;
         var isChildBuilder = new StringBuilder();
         isChildBuilder.append("EXISTS (");
         isChildBuilder.append(" ");
@@ -113,7 +113,7 @@ public class CustomH2Dialect extends H2Dialect {
 
     private String isNotDeleted(String tableName) {
         var tmpTableNameAlias = tableName + "_tmp_alias";
-        var maxRecursionLevel = 10;
+        var maxRecursionLevel = 20;
         var isNotDeletedBuilder = new StringBuilder();
         isNotDeletedBuilder.append("EXISTS (");
         isNotDeletedBuilder.append(" ");
