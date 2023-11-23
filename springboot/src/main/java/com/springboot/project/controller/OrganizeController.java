@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +15,7 @@ import com.springboot.project.model.OrganizeModel;
 @RestController
 public class OrganizeController extends BaseController {
 
-    @PostMapping("/organize/create")
+    @PostMapping("/organize")
     public ResponseEntity<?> create(@RequestBody OrganizeModel organizeModel) {
 
         if (organizeModel.getParent() != null) {
@@ -28,7 +29,7 @@ public class OrganizeController extends BaseController {
         return ResponseEntity.ok(organize);
     }
 
-    @PostMapping("/organize/update")
+    @PutMapping("/organize")
     public ResponseEntity<?> update(@RequestBody OrganizeModel organizeModel) {
         this.organizeService.checkExistOrganize(organizeModel.getId());
 
@@ -36,7 +37,7 @@ public class OrganizeController extends BaseController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/organize/delete")
+    @DeleteMapping("/organize")
     public ResponseEntity<?> deleteOrganize(@RequestParam String id) {
 
         this.organizeService.checkExistOrganize(id);
@@ -45,7 +46,7 @@ public class OrganizeController extends BaseController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/organize/get")
+    @GetMapping("/organize")
     public ResponseEntity<?> getOrganizeById(@RequestParam String id) {
 
         this.organizeService.checkExistOrganize(id);

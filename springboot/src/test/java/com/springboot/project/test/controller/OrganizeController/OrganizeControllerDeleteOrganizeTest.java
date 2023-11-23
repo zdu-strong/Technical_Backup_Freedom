@@ -17,7 +17,7 @@ public class OrganizeControllerDeleteOrganizeTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        var url = new URIBuilder("/organize/delete").setParameter("id", this.organizeId)
+        var url = new URIBuilder("/organize").setParameter("id", this.organizeId)
                 .build();
         var response = this.testRestTemplate.exchange(url, HttpMethod.DELETE, new HttpEntity<>(null), Throwable.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());

@@ -15,7 +15,7 @@ public class OrganizeControllerGetOrganizeNotExistOrganizeTest extends BaseTest 
 
     @Test
     public void test() throws URISyntaxException {
-        var url = new URIBuilder("/organize/get").setParameter("id", this.organizeId)
+        var url = new URIBuilder("/organize").setParameter("id", this.organizeId)
                 .build();
         var response = this.testRestTemplate.getForEntity(url, Throwable.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());

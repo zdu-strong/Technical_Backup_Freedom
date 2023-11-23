@@ -18,7 +18,7 @@ public class OrganizeControllerGetOrganizeTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        var url = new URIBuilder("/organize/get").setParameter("id", this.organizeId)
+        var url = new URIBuilder("/organize").setParameter("id", this.organizeId)
                 .build();
         var response = this.testRestTemplate.getForEntity(url, OrganizeModel.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
