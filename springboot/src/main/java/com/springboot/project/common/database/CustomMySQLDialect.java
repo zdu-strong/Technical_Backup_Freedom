@@ -107,6 +107,8 @@ public class CustomMySQLDialect extends MySQLDialect {
         getDescendantCountBuilder.append(" ");
         getDescendantCountBuilder.append("SELECT COUNT(*) as total_record FROM `cte`");
         getDescendantCountBuilder.append(" ");
+        getDescendantCountBuilder.append("WHERE `cte`.`id` != ?1");
+        getDescendantCountBuilder.append(" ");
         getDescendantCountBuilder.append(")");
         return getDescendantCountBuilder.toString();
     }
@@ -141,6 +143,8 @@ public class CustomMySQLDialect extends MySQLDialect {
         getDescendantCountBuilder.append(")");
         getDescendantCountBuilder.append(" ");
         getDescendantCountBuilder.append("SELECT COUNT(*) as total_record FROM `cte`");
+        getDescendantCountBuilder.append(" ");
+        getDescendantCountBuilder.append("WHERE `cte`.`id` != ?1");
         getDescendantCountBuilder.append(" ");
         getDescendantCountBuilder.append(")");
         return getDescendantCountBuilder.toString();
@@ -182,7 +186,7 @@ public class CustomMySQLDialect extends MySQLDialect {
     private String isNotDeleted(String tableName) {
         var tmpTableNameAlias = tableName + "_tmp_alias";
         var isNotDeletedBuilder = new StringBuilder();
-        isNotDeletedBuilder.append("'EXISTS'");
+        isNotDeletedBuilder.append("EXISTS");
         isNotDeletedBuilder.append(" ");
         isNotDeletedBuilder.append("(");
         isNotDeletedBuilder.append(" ");
