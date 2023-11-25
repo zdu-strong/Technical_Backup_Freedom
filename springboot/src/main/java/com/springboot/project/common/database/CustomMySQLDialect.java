@@ -63,10 +63,6 @@ public class CustomMySQLDialect extends MySQLDialect {
                 isChild("organize_entity"),
                 basicTypeRegistry.resolve(StandardBasicTypes.BOOLEAN));
         functionRegistry.registerPattern(
-                "IS_CHILD_OF_ORGANIZE",
-                isChild("organize_entity"),
-                basicTypeRegistry.resolve(StandardBasicTypes.BOOLEAN));
-        functionRegistry.registerPattern(
                 "GET_ANCESTOR_COUNT_OF_ORGANIZE",
                 getAncestorCount("organize_entity"),
                 basicTypeRegistry.resolve(StandardBasicTypes.LONG));
@@ -91,7 +87,8 @@ public class CustomMySQLDialect extends MySQLDialect {
         getDescendantCountBuilder.append(" ");
         getDescendantCountBuilder.append("UNION ALL");
         getDescendantCountBuilder.append(" ");
-        getDescendantCountBuilder.append("SELECT `" + tmpTableNameAlias + "`.`id`, `"+tmpTableNameAlias+"`.`parent_id`");
+        getDescendantCountBuilder
+                .append("SELECT `" + tmpTableNameAlias + "`.`id`, `" + tmpTableNameAlias + "`.`parent_id`");
         getDescendantCountBuilder.append(" ");
         getDescendantCountBuilder.append("FROM `cte` INNER JOIN `" + tableName + "` `" + tmpTableNameAlias + "`");
         getDescendantCountBuilder.append(" ");
