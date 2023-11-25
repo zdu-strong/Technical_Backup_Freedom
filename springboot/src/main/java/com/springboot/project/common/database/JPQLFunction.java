@@ -240,6 +240,15 @@ public class JPQLFunction {
         throw new RuntimeException();
     }
 
+    /**
+     * Get the number of undeleted ancestors, excluding self
+     * @param organizeId
+     * @return
+     */
+    public static Long getAncestorCountOfOrganize(String organizeId){
+        throw new RuntimeException();
+    }
+
     public static void registerCustomSqlFunction(JinqJPAStreamProvider jinqJPAStreamProvider) {
         for (var method : Arrays.asList(JPQLFunction.class.getMethods()).stream()
                 .filter(s -> s.getName().equals("ifnull")).toList()) {
@@ -322,6 +331,12 @@ public class JPQLFunction {
                 .toList()) {
             jinqJPAStreamProvider.registerCustomSqlFunction(method,
                     "GET_DESCENDANT_COUNT_OF_ORGANIZE");
+        }
+        for (var method : Arrays.asList(JPQLFunction.class.getMethods()).stream()
+                .filter(s -> s.getName().equals("getAncestorCountOfOrganize"))
+                .toList()) {
+            jinqJPAStreamProvider.registerCustomSqlFunction(method,
+                    "GET_ANCESTOR_COUNT_OF_ORGANIZE");
         }
     }
 

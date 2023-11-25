@@ -62,9 +62,54 @@ public class CustomH2Dialect extends H2Dialect {
                 isChild("organize_entity"),
                 basicTypeRegistry.resolve(StandardBasicTypes.BOOLEAN));
         functionRegistry.registerPattern(
+                "GET_ANCESTOR_COUNT_OF_ORGANIZE",
+                getAncestorCount("organize_entity"),
+                basicTypeRegistry.resolve(StandardBasicTypes.LONG));
+        functionRegistry.registerPattern(
                 "GET_DESCENDANT_COUNT_OF_ORGANIZE",
                 getDescendantCount("organize_entity"),
                 basicTypeRegistry.resolve(StandardBasicTypes.LONG));
+    }
+
+    private String getAncestorCount(String tableName, String... conditions) {
+        var tmpTableNameAlias = tableName + "_tmp_alias";
+        var getDescendantCountBuilder = new StringBuilder();
+        getDescendantCountBuilder.append("(");
+        getDescendantCountBuilder.append(" ");
+        getDescendantCountBuilder.append("WITH RECURSIVE `cte`(`id`, `" + tmpTableNameAlias + "_concat_id`) AS (");
+        getDescendantCountBuilder.append(" ");
+        getDescendantCountBuilder.append("SELECT `id`, CONCAT(`id`, ',') as `" + tmpTableNameAlias + "_concat_id`");
+        getDescendantCountBuilder.append(" ");
+        getDescendantCountBuilder.append("FROM `" + tableName + "`");
+        getDescendantCountBuilder.append(" ");
+        getDescendantCountBuilder.append("WHERE `parent_id` IS NULL");
+        getDescendantCountBuilder.append(" ");
+        getDescendantCountBuilder.append("UNION ALL");
+        getDescendantCountBuilder.append(" ");
+        getDescendantCountBuilder.append("SELECT `" + tmpTableNameAlias + "`.`id`, CONCAT(`cte`.`" + tmpTableNameAlias
+                + "_concat_id`, " + "`" + tmpTableNameAlias + "`.`id`" + ", ',') as `"
+                + tmpTableNameAlias
+                + "_concat_id`");
+        getDescendantCountBuilder.append(" ");
+        getDescendantCountBuilder.append("FROM `cte` INNER JOIN `" + tableName + "` `" + tmpTableNameAlias + "`");
+        getDescendantCountBuilder.append(" ");
+        getDescendantCountBuilder.append("ON `cte`.`id` = `" + tmpTableNameAlias + "`.`parent_id`");
+        getDescendantCountBuilder.append(" ");
+        for (var condition : conditions) {
+            if (!condition.startsWith("`")) {
+                throw new RuntimeException("condition must start with \"`\"");
+            }
+            getDescendantCountBuilder.append("AND `" + tmpTableNameAlias + "`." + condition + " ");
+        }
+        getDescendantCountBuilder.append(")");
+        getDescendantCountBuilder.append(" ");
+        getDescendantCountBuilder
+                .append("SELECT COUNT(*) as total_record FROM `cte` WHERE LOCATE( CONCAT(?1, ','), `cte`.`"
+                        + tmpTableNameAlias + "_concat_id`) = (CHAR_LENGTH(`cte`.`" + tmpTableNameAlias
+                        + "_concat_id`) - CHAR_LENGTH(`cte`.`id`)) AND ?1 != `cte`.`id`");
+        getDescendantCountBuilder.append(" ");
+        getDescendantCountBuilder.append(")");
+        return getDescendantCountBuilder.toString();
     }
 
     private String getDescendantCount(String tableName, String... conditions) {
@@ -98,7 +143,7 @@ public class CustomH2Dialect extends H2Dialect {
             if (!condition.startsWith("`")) {
                 throw new RuntimeException("condition must start with \"`\"");
             }
-            getDescendantCountBuilder.append("`" + tmpTableNameAlias + "`." + condition + " ");
+            getDescendantCountBuilder.append("AND `" + tmpTableNameAlias + "`." + condition + " ");
         }
         getDescendantCountBuilder.append(")");
         getDescendantCountBuilder.append(" ");
