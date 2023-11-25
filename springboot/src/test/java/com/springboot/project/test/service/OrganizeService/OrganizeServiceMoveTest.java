@@ -1,6 +1,7 @@
 package com.springboot.project.test.service.OrganizeService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.springboot.project.model.OrganizeModel;
@@ -16,7 +17,14 @@ public class OrganizeServiceMoveTest extends BaseTest {
         this.organizeService.move(organizeId, parentOrganizeId);
         var result = this.organizeService.getById(organizeId);
         assertEquals(this.parentOrganizeId, result.getParent().getId());
+        assertEquals(36, result.getId().length());
+        assertEquals("Son Gohan", result.getName());
+        assertEquals(0, result.getChildList().size());
+        assertEquals(0, result.getChildCount());
+        assertEquals(0, result.getDescendantCount());
         assertEquals(1, result.getLevel());
+        assertNotNull(result.getCreateDate());
+        assertNotNull(result.getUpdateDate());
     }
 
     @BeforeEach
