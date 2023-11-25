@@ -16,6 +16,7 @@ public class OrganizeServiceMoveTest extends BaseTest {
         this.organizeService.move(organizeId, parentOrganizeId);
         var result = this.organizeService.getById(organizeId);
         assertEquals(this.parentOrganizeId, result.getParent().getId());
+        assertEquals(1, result.getLevel());
     }
 
     @BeforeEach
