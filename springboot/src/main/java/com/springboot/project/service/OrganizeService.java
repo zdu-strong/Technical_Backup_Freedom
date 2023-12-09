@@ -24,13 +24,6 @@ public class OrganizeService extends BaseService {
         organizeEntity.setParent(parentOrganize);
         this.persist(organizeEntity);
 
-        if (organizeModel.getChildList() != null) {
-            for (var childOrganize : organizeModel.getChildList()) {
-                childOrganize.setParent(new OrganizeModel().setId(organizeEntity.getId()));
-                this.create(childOrganize);
-            }
-        }
-
         return this.organizeFormatter.format(organizeEntity);
     }
 
