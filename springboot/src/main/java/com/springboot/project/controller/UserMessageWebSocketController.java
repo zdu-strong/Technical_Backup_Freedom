@@ -27,7 +27,6 @@ import com.springboot.project.model.UserMessageWebSocketReceiveModel;
 import com.springboot.project.model.UserMessageWebSocketSendModel;
 import com.springboot.project.service.UserMessageService;
 import lombok.Getter;
-import lombok.Synchronized;
 
 /**
  * Required parameters: String access_token;
