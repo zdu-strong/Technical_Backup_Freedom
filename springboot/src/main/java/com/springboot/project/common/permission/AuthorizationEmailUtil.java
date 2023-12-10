@@ -13,7 +13,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import com.springboot.project.properties.AuthorizationEmailProperties;
-import com.springboot.project.properties.StorageRootPathProperties;
+import com.springboot.project.properties.IsTestOrDevModeProperties;
 
 @Component
 public class AuthorizationEmailUtil {
@@ -25,10 +25,10 @@ public class AuthorizationEmailUtil {
     private AuthorizationEmailProperties authorizationEmailProperties;
 
     @Autowired
-    private StorageRootPathProperties storageRootPathProperties;
+    private IsTestOrDevModeProperties isTestOrDevModeProperties;
 
     public void sendVerificationCode(String email, String verificationCode) {
-        if (this.storageRootPathProperties.isTestEnviroment()) {
+        if (this.isTestOrDevModeProperties.getIsTestOrDevMode()) {
             return;
         }
 

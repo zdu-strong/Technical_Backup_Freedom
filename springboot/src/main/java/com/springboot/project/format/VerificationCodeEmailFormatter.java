@@ -1,12 +1,17 @@
 package com.springboot.project.format;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.springboot.project.entity.*;
 import com.springboot.project.model.VerificationCodeEmailModel;
+import com.springboot.project.properties.IsTestOrDevModeProperties;
 import com.springboot.project.service.BaseService;
 
 @Service
 public class VerificationCodeEmailFormatter extends BaseService {
+
+    @Autowired
+    private IsTestOrDevModeProperties isTestOrDevModeProperties;
 
     public VerificationCodeEmailModel format(VerificationCodeEmailEntity verificationCodeEmailEntity) {
         var verificationCodeEmailModel = new VerificationCodeEmailModel()
@@ -18,6 +23,11 @@ public class VerificationCodeEmailFormatter extends BaseService {
                 .setIsPassed(verificationCodeEmailEntity.getIsPassed())
                 .setCreateDate(verificationCodeEmailEntity.getCreateDate())
                 .setUpdateDate(verificationCodeEmailEntity.getUpdateDate());
+
+        if(!this.isTestOrDevModeProperties.getIsTestOrDevMode()){
+            verificationCodeEmailModel.setVerificationCode(null);
+        }
+
         return verificationCodeEmailModel;
     }
 }

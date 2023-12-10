@@ -14,15 +14,18 @@ import lombok.Setter;
 @Component
 @ConfigurationProperties
 @PropertySource("classpath:application.yml")
-public class StorageRootPathProperties {
+public class IsTestOrDevModeProperties {
 
     @Autowired
     private Environment environment;
 
-    @Value("${properties.storage.root.path}")
-    private String storageRootPath;
+    @Value("${properties.is.test.or.dev.mode}")
+    private Boolean isTestOrDevMode;
 
-    public String getStorageRootPath() {
-        return this.environment.getProperty("PROPERTIES_STORAGE_ROOT_PATH", this.storageRootPath);
+    public Boolean getIsTestOrDevMode() {
+        return Boolean.valueOf(
+                this.environment.getProperty("PROPERTIES_IS_TEST_OR_DEF_MODE",
+                        String.valueOf(this.isTestOrDevMode)));
     }
 }
+

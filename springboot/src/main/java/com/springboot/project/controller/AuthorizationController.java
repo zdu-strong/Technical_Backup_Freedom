@@ -4,14 +4,16 @@ import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.jinq.orm.stream.JinqStream;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,13 +31,9 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.model.VerificationCodeEmailModel;
-import com.springboot.project.properties.StorageRootPathProperties;
 
 @RestController
 public class AuthorizationController extends BaseController {
-
-    @Autowired
-    private StorageRootPathProperties storageRootPathProperties;
 
     @PostMapping("/sign_up")
     public ResponseEntity<?> signUp(@RequestBody UserModel userModel)
@@ -176,7 +174,7 @@ public class AuthorizationController extends BaseController {
 
     @PostMapping("/email/send_verification_code")
     public ResponseEntity<?> sendVerificationCode(@RequestParam String email)
-            throws InvalidKeySpecException, NoSuchAlgorithmException, InterruptedException {
+            throws InvalidKeySpecException, NoSuchAlgorithmException, InterruptedException, ParseException {
 
         if (StringUtils.isBlank(email)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please enter your email");
@@ -190,9 +188,15 @@ public class AuthorizationController extends BaseController {
         for (var i = 10; i > 0; i--) {
             var verificationCodeEmailModelTwo = this.verificationCodeEmailService.createVerificationCodeEmail(email);
 
-            if (!this.storageRootPathProperties.isTestEnviroment()) {
-                Thread.sleep(1000);
-            }
+            var timeZone = TimeZone.getTimeZone(this.timeZoneUtil.getTimeZoneFromUTC());
+            var calendar = Calendar.getInstance();
+            calendar.setTimeZone(timeZone);
+            calendar.setTime(verificationCodeEmailModelTwo.getCreateDate());
+            calendar.add(Calendar.SECOND, 1);
+            var simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            simpleDateFormat.setTimeZone(timeZone);
+            var createDate = simpleDateFormat.parse(simpleDateFormat.format(calendar.getTime()));
+            Thread.sleep(createDate.getTime() - verificationCodeEmailModelTwo.getCreateDate().getTime());
 
             if (this.verificationCodeEmailService
                     .isFirstOnTheDurationOfVerificationCodeEmail(verificationCodeEmailModelTwo.getId())) {
@@ -207,10 +211,6 @@ public class AuthorizationController extends BaseController {
         }
 
         this.authorizationEmailUtil.sendVerificationCode(email, verificationCodeEmailModel.getVerificationCode());
-
-        if (!this.storageRootPathProperties.isTestEnviroment()) {
-            verificationCodeEmailModel.setVerificationCode(null);
-        }
 
         return ResponseEntity.ok(verificationCodeEmailModel);
     }

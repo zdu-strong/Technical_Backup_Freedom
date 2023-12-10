@@ -74,3 +74,8 @@ properties:
         bucketName: ""
         accessKeyId: ""
         accessKeySecret: ""
+  is:
+    test:
+      or:
+        dev:
+          mode: true

@@ -6,10 +6,8 @@ import org.jinq.orm.stream.JinqStream;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import com.springboot.project.controller.UserMessageWebSocketController;
-import lombok.extern.slf4j.Slf4j;
 
 @Component
-@Slf4j
 public class MessageScheduled {
 
     @Scheduled(initialDelay = 1000, fixedDelay = 1)
@@ -19,11 +17,7 @@ public class MessageScheduled {
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             for (var websocket : websocketList) {
                 executor.submit(() -> {
-                    try {
-                        websocket.sendMessage();
-                    } catch (Throwable e) {
-                        log.error("Failed to send latest message for UserId \"" + websocket.getUserId() + "\"", e);
-                    }
+                    websocket.sendMessage();
                 });
             }
         }

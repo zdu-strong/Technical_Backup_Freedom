@@ -74,3 +74,8 @@ properties:
         bucketName: ${storage.cloud.aliyun.bucketName}
         accessKeyId: ${storage.cloud.aliyun.accessKeyId}
         accessKeySecret: ${storage.cloud.aliyun.accessKeySecret}
+  is:
+    test:
+      or:
+        dev:
+          mode: ${is.test.or.dev.mode}

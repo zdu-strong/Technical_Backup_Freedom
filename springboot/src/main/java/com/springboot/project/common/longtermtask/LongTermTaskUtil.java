@@ -10,10 +10,8 @@ import org.springframework.stereotype.Component;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.LongTermTaskService;
 import io.reactivex.rxjava3.core.Observable;
-import lombok.extern.slf4j.Slf4j;
 
 @Component
-@Slf4j
 public class LongTermTaskUtil {
     @Autowired
     private LongTermTaskService longTermTaskService;
@@ -50,13 +48,8 @@ public class LongTermTaskUtil {
                 }
             } catch (Throwable e) {
                 subscription.dispose();
-                try {
-                    synchronized (idOfLongTermTask) {
-                        this.longTermTaskService.updateLongTermTaskByErrorMessage(idOfLongTermTask, e);
-                    }
-                } catch (Throwable e4) {
-                    log.error("Failed to saving exception message for long term task \"" + idOfLongTermTask + "\"",
-                            e4);
+                synchronized (idOfLongTermTask) {
+                    this.longTermTaskService.updateLongTermTaskByErrorMessage(idOfLongTermTask, e);
                 }
             }
         });

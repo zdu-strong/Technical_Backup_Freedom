@@ -18,6 +18,7 @@
         jar package.
         -->
         <storage.root.path>default</storage.root.path>
+        <is.test.or.dev.mode>true</is.test.or.dev.mode>
         <resource.delimiter>${}</resource.delimiter>
         <database.mysql.jdbc.url>localhost:3306</database.mysql.jdbc.url>
         <database.mysql.name>springboot_dev</database.mysql.name>
