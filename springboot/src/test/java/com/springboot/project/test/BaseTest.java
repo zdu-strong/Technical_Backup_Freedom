@@ -53,6 +53,7 @@ import com.springboot.project.model.UserModel;
 import com.springboot.project.model.VerificationCodeEmailModel;
 import com.springboot.project.properties.AuthorizationEmailProperties;
 import com.springboot.project.properties.StorageRootPathProperties;
+import com.springboot.project.scheduled.MessageScheduled;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.FriendshipService;
 import com.springboot.project.service.LoggerService;
@@ -145,6 +146,9 @@ public class BaseTest {
 
     @Autowired
     protected GitProperties gitProperties;
+
+    @Autowired
+    protected MessageScheduled messageScheduled;
 
     @BeforeEach
     public void beforeEachOfBaseTest() {

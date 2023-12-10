@@ -1,6 +1,10 @@
 package com.springboot.project.scheduled;
 
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -24,18 +28,22 @@ public class StorageSpaceScheduled {
     private Long pageSize = 1L;
 
     @Scheduled(initialDelay = 1000, fixedDelay = 60 * 60 * 1000)
-    public void scheduled() {
+    public void scheduled() throws InterruptedException, ExecutionException {
         if (this.isTestOrDevModeProperties.getIsTestOrDevMode()) {
             return;
         }
 
+        var futureList = new ArrayList<Future<?>>();
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            executor.submit(() -> {
+            futureList.add(executor.submit(() -> {
                 this.cleanDatabaseStorage();
-            });
-            executor.submit(() -> {
+            }));
+            futureList.add(executor.submit(() -> {
                 this.cleanDiskStorage();
-            });
+            }));
+        }
+        for (var future : futureList) {
+            future.get();
         }
     }
 
