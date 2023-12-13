@@ -54,6 +54,7 @@ import com.springboot.project.model.VerificationCodeEmailModel;
 import com.springboot.project.properties.AuthorizationEmailProperties;
 import com.springboot.project.properties.StorageRootPathProperties;
 import com.springboot.project.scheduled.MessageScheduled;
+import com.springboot.project.scheduled.StorageSpaceScheduled;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.FriendshipService;
 import com.springboot.project.service.LoggerService;
@@ -149,6 +150,9 @@ public class BaseTest {
 
     @Autowired
     protected MessageScheduled messageScheduled;
+
+    @Autowired
+    protected StorageSpaceScheduled storageSpaceScheduled;
 
     @BeforeEach
     public void beforeEachOfBaseTest() {
