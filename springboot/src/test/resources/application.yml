@@ -46,6 +46,9 @@ spring:
     date-format: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
     write-dates-as-timestamps: false
     time-zone: UTC
+  threads:
+    virtual:
+      enabled: true
 logging:
   level:
     org:
