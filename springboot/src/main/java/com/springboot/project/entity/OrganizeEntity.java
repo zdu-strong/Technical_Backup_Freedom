@@ -7,9 +7,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -18,13 +19,15 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "name", "deleteKey" })
+})
 public class OrganizeEntity {
 
     @Id
     private String id;
 
-    @Column(nullable = false, length = 1024 * 1024 * 1024)
-    @Lob
+    @Column(nullable = false, length = 512)
     private String name;
 
     @Column(nullable = false)
@@ -35,6 +38,9 @@ public class OrganizeEntity {
 
     @Column(nullable = false)
     private Boolean isDeleted;
+
+    @Column(nullable = false)
+    private String deleteKey;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = true)
     private OrganizeEntity parent;

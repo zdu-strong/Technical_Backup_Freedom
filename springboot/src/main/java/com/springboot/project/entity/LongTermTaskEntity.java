@@ -25,16 +25,6 @@ public class LongTermTaskEntity {
     @Id
     private String id;
 
-    @Column(nullable = false)
-    private Date createDate;
-
-    /**
-     * When the update time exceeds one minute, it means that the task is
-     * interrupted.
-     */
-    @Column(nullable = false)
-    private Date updateDate;
-
     /**
      * Is it running or has ended
      */
@@ -47,5 +37,15 @@ public class LongTermTaskEntity {
     @Column(nullable = true, length = 1024 * 1024 * 1024)
     @Lob
     private String result;
+
+    @Column(nullable = false)
+    private Date createDate;
+
+    /**
+     * When the update time exceeds one minute, it means that the task is
+     * interrupted.
+     */
+    @Column(nullable = false)
+    private Date updateDate;
 
 }

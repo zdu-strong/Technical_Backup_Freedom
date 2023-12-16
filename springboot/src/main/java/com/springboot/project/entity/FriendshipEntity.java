@@ -15,7 +15,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Entity
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "user_id", "friend_id" }) })
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "userId", "friendId" }) })
 @Getter
 @Setter
 @Accessors(chain = true)
