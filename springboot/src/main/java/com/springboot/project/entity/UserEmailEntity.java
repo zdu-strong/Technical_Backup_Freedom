@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 
 @Entity
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "email", "deleteKey" })
+        @UniqueConstraint(columnNames = { "email", "deletedKey" })
 }, indexes = {
         @Index(columnList = "email, isDeleted")
 })
@@ -41,7 +41,7 @@ public class UserEmailEntity {
     private Boolean isDeleted;
 
     @Column(nullable = false)
-    private String deleteKey;
+    private String deletedKey;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
     private UserEntity user;

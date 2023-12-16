@@ -20,7 +20,7 @@ public class OrganizeService extends BaseService {
         organizeEntity.setName(organizeModel.getName());
         organizeEntity.setIsDeleted(false);
         organizeEntity
-                .setDeleteKey(parentOrganize == null ? Generators.timeBasedGenerator().generate().toString() : "");
+                .setDeletedKey("");
         organizeEntity.setCreateDate(new Date());
         organizeEntity.setUpdateDate(new Date());
         organizeEntity.setParent(parentOrganize);
@@ -44,7 +44,7 @@ public class OrganizeService extends BaseService {
                 .where(s -> JPQLFunction.isNotDeletedOfOrganize(id)).getOnlyValue();
         organizeEntity.setUpdateDate(new Date());
         organizeEntity.setIsDeleted(true);
-        organizeEntity.setDeleteKey(Generators.timeBasedGenerator().generate().toString());
+        organizeEntity.setDeletedKey(Generators.timeBasedGenerator().generate().toString());
         this.merge(organizeEntity);
     }
 
@@ -69,8 +69,6 @@ public class OrganizeService extends BaseService {
         var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
                 .where(s -> JPQLFunction.isNotDeletedOfOrganize(id)).getOnlyValue();
         organizeEntity.setParent(parentOrganizeEntity);
-        organizeEntity.setDeleteKey(
-                parentOrganizeEntity == null ? Generators.timeBasedGenerator().generate().toString() : "");
         organizeEntity.setUpdateDate(new Date());
         this.merge(organizeEntity);
     }

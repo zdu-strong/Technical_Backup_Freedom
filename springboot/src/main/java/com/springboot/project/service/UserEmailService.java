@@ -22,7 +22,7 @@ public class UserEmailService extends BaseService {
         userEmailEntity.setCreateDate(new Date());
         userEmailEntity.setUpdateDate(new Date());
         userEmailEntity.setIsDeleted(false);
-        userEmailEntity.setDeleteKey("");
+        userEmailEntity.setDeletedKey("");
 
         this.persist(userEmailEntity);
     }
