@@ -27,7 +27,7 @@ public class StorageSpaceScheduled {
 
     private Long pageSize = 1L;
 
-    @Scheduled(initialDelay = 1000, fixedDelay = 60 * 60 * 1000)
+    @Scheduled(initialDelay = 60 * 60 * 1000, fixedDelay = 60 * 60 * 1000)
     public void scheduled() throws InterruptedException, ExecutionException {
         if (this.isTestOrDevModeProperties.getIsTestOrDevMode()) {
             return;
