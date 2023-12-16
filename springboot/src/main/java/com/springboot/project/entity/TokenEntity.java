@@ -21,7 +21,7 @@ public class TokenEntity {
     @Id
     private String id;
 
-    @Column(unique = false)
+    @Column(nullable = false)
     private String jwtId;
 
     @Column(nullable = false, length = 1024 * 1024 * 1024)
