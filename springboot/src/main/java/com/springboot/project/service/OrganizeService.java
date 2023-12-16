@@ -19,7 +19,8 @@ public class OrganizeService extends BaseService {
         organizeEntity.setId(Generators.timeBasedGenerator().generate().toString());
         organizeEntity.setName(organizeModel.getName());
         organizeEntity.setIsDeleted(false);
-        organizeEntity.setDeleteKey("");
+        organizeEntity
+                .setDeleteKey(parentOrganize == null ? Generators.timeBasedGenerator().generate().toString() : "");
         organizeEntity.setCreateDate(new Date());
         organizeEntity.setUpdateDate(new Date());
         organizeEntity.setParent(parentOrganize);
@@ -68,6 +69,8 @@ public class OrganizeService extends BaseService {
         var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
                 .where(s -> JPQLFunction.isNotDeletedOfOrganize(id)).getOnlyValue();
         organizeEntity.setParent(parentOrganizeEntity);
+        organizeEntity.setDeleteKey(
+                parentOrganizeEntity == null ? Generators.timeBasedGenerator().generate().toString() : "");
         organizeEntity.setUpdateDate(new Date());
         this.merge(organizeEntity);
     }

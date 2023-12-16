@@ -34,12 +34,22 @@ public class SpringbootProjectApplication {
             return;
         }
 
-        var newDatabaseName = getANewDatabaseName();
-        var oldDatabaseName = getANewDatabaseName();
-        buildNewDatabase(newDatabaseName);
-        var isCreateChangeLogFile = diffDatabase(newDatabaseName, oldDatabaseName);
-        deleteDatabase(oldDatabaseName);
-        deleteDatabase(newDatabaseName);
+        var isCreateChangeLogFile = false;
+
+        while (true) {
+            var newDatabaseName = getANewDatabaseName();
+            var oldDatabaseName = getANewDatabaseName();
+            buildNewDatabase(newDatabaseName);
+            var isCreateChangeLogFileOfThis = diffDatabase(newDatabaseName, oldDatabaseName);
+            deleteDatabase(oldDatabaseName);
+            deleteDatabase(newDatabaseName);
+
+            if (!isCreateChangeLogFileOfThis) {
+                break;
+            } else {
+                isCreateChangeLogFile = true;
+            }
+        }
         clean();
         if (!isCreateChangeLogFile) {
             System.out.println("\nAn empty changelog file was generated, so delete it.");
