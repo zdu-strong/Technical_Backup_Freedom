@@ -22,10 +22,10 @@ import com.aliyun.oss.model.ListObjectsV2Result;
 import com.aliyun.oss.model.OSSObjectSummary;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.collect.Lists;
+import com.springboot.project.common.StorageResource.CloudStorageUrlResource;
+import com.springboot.project.common.StorageResource.RangeCloudStorageUrlResource;
+import com.springboot.project.common.StorageResource.SequenceResource;
 import com.springboot.project.common.storage.BaseStorage;
-import com.springboot.project.common.storage.CloudStorageUrlResource;
-import com.springboot.project.common.storage.RangeCloudStorageUrlResource;
-import com.springboot.project.common.storage.SequenceResource;
 import com.springboot.project.properties.AliyunCloudStorageProperties;
 import io.reactivex.rxjava3.core.Observable;
 

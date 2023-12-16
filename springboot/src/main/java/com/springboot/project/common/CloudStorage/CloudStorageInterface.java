@@ -3,7 +3,9 @@ package com.springboot.project.common.CloudStorage;
 import java.io.File;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import com.springboot.project.common.storage.SequenceResource;
+
+import com.springboot.project.common.StorageResource.SequenceResource;
+
 import io.reactivex.rxjava3.core.Observable;
 
 @Component

@@ -17,6 +17,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.springboot.project.common.StorageResource.SequenceResource;
 import com.springboot.project.model.StorageFileModel;
 
 @Component

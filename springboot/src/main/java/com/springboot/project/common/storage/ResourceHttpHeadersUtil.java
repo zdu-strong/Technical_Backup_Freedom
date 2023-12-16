@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.server.ResponseStatusException;
 import com.google.common.collect.Lists;
+import com.springboot.project.common.StorageResource.SequenceResource;
 
 @Component
 public class ResourceHttpHeadersUtil {

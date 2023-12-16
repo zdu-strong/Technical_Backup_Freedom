@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import com.google.common.collect.Lists;
-import com.springboot.project.common.storage.SequenceResource;
+import com.springboot.project.common.StorageResource.SequenceResource;
+
 import io.reactivex.rxjava3.core.Observable;
 
 @Component

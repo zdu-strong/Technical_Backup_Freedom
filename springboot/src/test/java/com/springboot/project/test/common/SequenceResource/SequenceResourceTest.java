@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import com.google.common.collect.Lists;
-import com.springboot.project.common.storage.RangeClassPathResource;
-import com.springboot.project.common.storage.SequenceResource;
+import com.springboot.project.common.StorageResource.RangeClassPathResource;
+import com.springboot.project.common.StorageResource.SequenceResource;
 import com.springboot.project.test.BaseTest;
 
 public class SequenceResourceTest extends BaseTest {

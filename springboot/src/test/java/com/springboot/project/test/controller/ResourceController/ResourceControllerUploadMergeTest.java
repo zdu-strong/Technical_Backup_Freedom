@@ -21,7 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import com.google.common.collect.Lists;
-import com.springboot.project.common.storage.RangeClassPathResource;
+import com.springboot.project.common.StorageResource.RangeClassPathResource;
 import com.springboot.project.model.LongTermTaskModel;
 import com.springboot.project.test.BaseTest;
 import io.reactivex.rxjava3.core.Observable;

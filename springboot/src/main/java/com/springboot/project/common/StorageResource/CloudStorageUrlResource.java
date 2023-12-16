@@ -1,4 +1,4 @@
-package com.springboot.project.common.storage;
+package com.springboot.project.common.StorageResource;
 
 import java.io.IOException;
 import java.net.URL;

@@ -12,6 +12,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.collect.Lists;
+import com.springboot.project.common.StorageResource.RandomAccessFileSystemResource;
+import com.springboot.project.common.StorageResource.RangeFileSystemResource;
 
 @Component
 public class BaseStorageGetResourceForRequest extends BaseStorageDeleteResource {

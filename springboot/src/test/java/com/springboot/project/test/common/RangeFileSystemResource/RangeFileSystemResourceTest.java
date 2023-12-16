@@ -6,7 +6,8 @@ import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
-import com.springboot.project.common.storage.RangeFileSystemResource;
+
+import com.springboot.project.common.StorageResource.RangeFileSystemResource;
 import com.springboot.project.test.BaseTest;
 
 public class RangeFileSystemResourceTest extends BaseTest {
