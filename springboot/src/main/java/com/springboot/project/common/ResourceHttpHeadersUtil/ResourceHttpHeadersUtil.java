@@ -1,4 +1,4 @@
-package com.springboot.project.common.storage;
+package com.springboot.project.common.ResourceHttpHeadersUtil;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -27,9 +27,11 @@ import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.server.ResponseStatusException;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.StorageResource.SequenceResource;
+import com.springboot.project.common.storage.Storage;
 
 @Component
 public class ResourceHttpHeadersUtil {
+
     @Autowired
     private Storage storage;
 

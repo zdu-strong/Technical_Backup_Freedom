@@ -114,7 +114,7 @@ public class BaseStorage {
                 .replaceAll(Pattern.quote("\\"), "/");
     }
 
-    protected String getRelativePathFromRequest(HttpServletRequest request) {
+    public String getRelativePathFromRequest(HttpServletRequest request) {
         try {
             var pathSegmentList = new URIBuilder(request.getRequestURI()).getPathSegments().stream()
                     .filter(s -> StringUtils.isNotBlank(s)).toList();
