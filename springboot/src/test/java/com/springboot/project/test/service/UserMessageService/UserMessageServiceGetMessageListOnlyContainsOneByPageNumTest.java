@@ -26,7 +26,7 @@ public class UserMessageServiceGetMessageListOnlyContainsOneByPageNumTest extend
         assertEquals(1, messageList.size());
         assertTrue(StringUtils.isNotBlank(message.getId()));
         assertNotNull(message.getCreateDate());
-        assertFalse(message.getIsDelete());
+        assertFalse(message.getIsDeleted());
         assertEquals(1, message.getPageNum());
         assertTrue(message.getTotalPage() >= 1);
         assertNotNull(message.getUpdateDate());
@@ -44,7 +44,7 @@ public class UserMessageServiceGetMessageListOnlyContainsOneByPageNumTest extend
         assertEquals("Hello, World!", message.getContent());
         assertEquals(userId, message.getUser().getId());
         assertFalse(message.getIsRecall());
-        assertFalse(message.getIsDelete());
+        assertFalse(message.getIsDeleted());
         this.userMessage = message;
     }
 }

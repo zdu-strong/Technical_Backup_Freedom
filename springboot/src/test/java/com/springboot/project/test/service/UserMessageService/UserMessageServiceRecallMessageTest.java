@@ -32,7 +32,7 @@ public class UserMessageServiceRecallMessageTest extends BaseTest {
         assertEquals("Hello, World!", message.getContent());
         assertEquals(userId, message.getUser().getId());
         assertFalse(message.getIsRecall());
-        assertFalse(message.getIsDelete());
+        assertFalse(message.getIsDeleted());
         this.userMessage = message;
     }
 }

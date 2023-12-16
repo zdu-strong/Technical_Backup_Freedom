@@ -31,7 +31,7 @@ public class UserMessageControllerSendMessageTest extends BaseTest {
         assertEquals("Hello, World!", response.getBody().getContent());
         assertTrue(StringUtils.isNotBlank(response.getBody().getUser().getId()));
         assertEquals("zdu.strong@gmail.com", response.getBody().getUser().getUsername());
-        assertFalse(response.getBody().getIsDelete());
+        assertFalse(response.getBody().getIsDeleted());
         assertFalse(response.getBody().getIsRecall());
     }
 

@@ -40,8 +40,9 @@ public class OrganizeService extends BaseService {
     public void delete(String id) {
         var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
                 .where(s -> JPQLFunction.isNotDeletedOfOrganize(id)).getOnlyValue();
-        organizeEntity.setParent(null);
-        this.remove(organizeEntity);
+        organizeEntity.setUpdateDate(new Date());
+        organizeEntity.setIsDeleted(true);
+        this.merge(organizeEntity);
     }
 
     public OrganizeModel getById(String id) {
@@ -65,6 +66,7 @@ public class OrganizeService extends BaseService {
         var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
                 .where(s -> JPQLFunction.isNotDeletedOfOrganize(id)).getOnlyValue();
         organizeEntity.setParent(parentOrganizeEntity);
+        organizeEntity.setUpdateDate(new Date());
         this.merge(organizeEntity);
     }
 

@@ -29,7 +29,7 @@ public class UserMessageServiceGetMessageListByLastTwentyMessagesTest extends Ba
         assertFalse(message.getIsRecall());
         assertTrue(StringUtils.isNotBlank(message.getContent()));
         assertNotNull(message.getCreateDate());
-        assertFalse(message.getIsDelete());
+        assertFalse(message.getIsDeleted());
         assertTrue(message.getPageNum() >= 1);
         assertTrue(message.getTotalPage() >= 1);
         assertNotNull(message.getUpdateDate());
@@ -47,7 +47,7 @@ public class UserMessageServiceGetMessageListByLastTwentyMessagesTest extends Ba
         assertEquals("Hello, World!", message.getContent());
         assertEquals(userId, message.getUser().getId());
         assertFalse(message.getIsRecall());
-        assertFalse(message.getIsDelete());
+        assertFalse(message.getIsDeleted());
         this.userMessage = message;
     }
 }

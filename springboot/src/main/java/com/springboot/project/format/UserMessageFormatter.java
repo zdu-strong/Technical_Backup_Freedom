@@ -15,7 +15,7 @@ public class UserMessageFormatter extends BaseService {
         var userMessage = new UserMessageModel().setId(userMessageEntity.getId())
                 .setContent(userMessageEntity.getContent())
                 .setCreateDate(userMessageEntity.getCreateDate()).setUpdateDate(userMessageEntity.getUpdateDate())
-                .setIsDelete(false)
+                .setIsDeleted(false)
                 .setIsRecall(userMessageEntity.getIsRecall())
                 .setUser(this.userFormatter.format(userMessageEntity.getUser()));
         if (!userMessage.getIsRecall() && StringUtils.isNotBlank(userMessageEntity.getFolderName())) {
@@ -41,7 +41,7 @@ public class UserMessageFormatter extends BaseService {
                 .count();
         userMessage.setPageNum(pageNum + 1);
         if (!userMessage.getUser().getId().equals(userId)) {
-            userMessage.setIsDelete(false);
+            userMessage.setIsDeleted(false);
         }
         return userMessage;
     }

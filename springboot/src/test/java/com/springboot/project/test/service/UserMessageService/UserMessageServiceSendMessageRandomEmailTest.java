@@ -20,7 +20,7 @@ public class UserMessageServiceSendMessageRandomEmailTest extends BaseTest {
         assertEquals("Hello, World!", message.getContent());
         assertEquals(this.userMessage.getUser().getId(), message.getUser().getId());
         assertFalse(message.getIsRecall());
-        assertFalse(message.getIsDelete());
+        assertFalse(message.getIsDeleted());
     }
 
     @BeforeEach

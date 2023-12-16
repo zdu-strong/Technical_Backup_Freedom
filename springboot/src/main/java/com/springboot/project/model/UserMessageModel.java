@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 public class UserMessageModel {
     private String id;
 
-    private Boolean isDelete;
+    private Boolean isDeleted;
 
     private Boolean isRecall;
 

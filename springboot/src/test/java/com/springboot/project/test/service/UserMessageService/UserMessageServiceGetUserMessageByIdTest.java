@@ -26,7 +26,7 @@ public class UserMessageServiceGetUserMessageByIdTest extends BaseTest {
         assertFalse(result.getIsRecall());
         assertEquals("Hello, World!", result.getContent());
         assertNotNull(result.getCreateDate());
-        assertFalse(result.getIsDelete());
+        assertFalse(result.getIsDeleted());
         assertFalse(result.getIsRecall());
         assertNull(result.getPageNum());
         assertNull(result.getTotalPage());
@@ -45,7 +45,7 @@ public class UserMessageServiceGetUserMessageByIdTest extends BaseTest {
         assertEquals("Hello, World!", message.getContent());
         assertEquals(userId, message.getUser().getId());
         assertFalse(message.getIsRecall());
-        assertFalse(message.getIsDelete());
+        assertFalse(message.getIsDeleted());
         this.userMessage = message;
     }
 }
