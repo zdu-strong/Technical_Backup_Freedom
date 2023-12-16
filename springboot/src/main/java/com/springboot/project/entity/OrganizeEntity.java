@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "name", "parentId", "deleteKey" })
+        @UniqueConstraint(columnNames = { "parentId", "name", "deleteKey" })
 })
 public class OrganizeEntity {
 
