@@ -63,6 +63,7 @@ public class StorageSpaceScheduled {
     }
 
     public void cleanDatabaseStorage() {
+        Long pageNumOfGlobal = null;
         while (true) {
             var pageNumOfThis = Observable.just("")
                     .concatMap(s -> {
@@ -80,6 +81,12 @@ public class StorageSpaceScheduled {
                     })
                     .retry(1000)
                     .blockingLast();
+            if (pageNumOfGlobal == null || pageNumOfThis < pageNumOfGlobal) {
+                pageNumOfGlobal = pageNumOfThis;
+            }
+            if (pageNumOfThis > pageNumOfGlobal) {
+                break;
+            }
             if (pageNumOfThis == 1) {
                 break;
             }
