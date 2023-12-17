@@ -2,7 +2,6 @@ import { observer, useMobxState } from "mobx-react-use-autorun";
 import { stylesheet } from "typestyle";
 import { useNavigate } from "react-router-dom";
 import MessageChat from "@/component/Message/MessageChat";
-import { GlobalUserInfo } from "@/common/axios-config/AxiosConfig";
 import { useMount } from "mobx-react-use-autorun";
 import api from "@/api";
 import LoadingOrErrorComponent from "@/common/LoadingOrErrorComponent/LoadingOrErrorComponent";
@@ -11,6 +10,7 @@ import MessageMenu from "@/component/Message/MessageMenu";
 import MessageUnlimitedList from "@/component/Message/MessageUnlimitedList";
 import { useRef } from "react";
 import { concatMap, from, timer } from "rxjs";
+import { GlobalUserInfo } from "@/common/Server";
 
 const css = stylesheet({
   container: {
@@ -46,7 +46,7 @@ export default observer(() => {
     subscription.add(timer(1).pipe(
       concatMap(() => from((async () => {
         try {
-          if (!(await api.Authorization.isSignIn())) {
+          if (!api.Authorization.isSignIn()) {
             await api.Authorization.signUp(v1(), "visitor", []);
           }
           state.readyForStart = true;
@@ -67,7 +67,7 @@ export default observer(() => {
           username={GlobalUserInfo.username!}
           setReadyForMessageList={state.setReadyForMessageList}
           variableSizeListRef={state.variableSizeListRef}
-          key={GlobalUserInfo.accessToken}
+          key={GlobalUserInfo.id}
         />
         <MessageChat
           userId={GlobalUserInfo.id!}

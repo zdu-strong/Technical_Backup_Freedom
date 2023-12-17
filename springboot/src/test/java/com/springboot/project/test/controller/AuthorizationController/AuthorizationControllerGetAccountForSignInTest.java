@@ -23,10 +23,15 @@ public class AuthorizationControllerGetAccountForSignInTest extends BaseTest {
         var response = this.testRestTemplate.postForEntity(url, null, UserModel.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(this.user.getId(), response.getBody().getId());
-        assertTrue(StringUtils.isNotBlank(response.getBody().getPrivateKeyOfRSA()));
+        assertTrue(StringUtils.isNotBlank(response.getBody().getPassword()));
+        assertTrue(StringUtils.isBlank(response.getBody().getPrivateKeyOfRSA()));
         assertTrue(StringUtils.isBlank(response.getBody().getUsername()));
         assertTrue(StringUtils.isBlank(response.getBody().getPublicKeyOfRSA()));
         assertNull(response.getBody().getUserEmailList());
+        assertNull(response.getBody().getCreateDate());
+        assertNull(response.getBody().getUpdateDate());
+        assertTrue(StringUtils.isBlank(response.getBody().getAccessToken()));
+
     }
 
     @BeforeEach

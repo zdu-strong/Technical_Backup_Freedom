@@ -18,6 +18,6 @@ public class TokenUtilGetAccessTokenTest extends BaseTest {
     @BeforeEach
     public void beforeEach() {
         var user = this.createAccount("zdu.strong@gmail.com");
-        this.request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + user.getAccess_token());
+        this.request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + user.getAccessToken());
     }
 }

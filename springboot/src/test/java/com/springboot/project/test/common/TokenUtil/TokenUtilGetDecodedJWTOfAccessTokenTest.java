@@ -14,7 +14,7 @@ public class TokenUtilGetDecodedJWTOfAccessTokenTest extends BaseTest {
 
     @Test
     public void test() {
-        var decodedJWT = this.tokenUtil.getDecodedJWTOfAccessToken(this.user.getAccess_token());
+        var decodedJWT = this.tokenUtil.getDecodedJWTOfAccessToken(this.user.getAccessToken());
         assertNotNull(decodedJWT);
         assertTrue(StringUtils.isNotBlank(decodedJWT.getId()));
         assertTrue(StringUtils.isNotBlank(decodedJWT.getSubject()));

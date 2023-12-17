@@ -214,8 +214,9 @@ public class BaseTest {
                 .setPublicKeyOfRSA(keyPairOfRSA.getPublicKeyOfRSA());
         var keyPairOfRSAForPassword = this.encryptDecryptService.generateKeyPairOfRSA();
         userModelOfSignUp
-                .setPrivateKeyOfRSA(this.encryptDecryptService.encryptByPublicKeyOfRSA(
-                        keyPairOfRSA.getPrivateKeyOfRSA(), keyPairOfRSAForPassword.getPublicKeyOfRSA()));
+                .setPrivateKeyOfRSA(this.encryptDecryptService.encryptByAES(
+                        keyPairOfRSA.getPrivateKeyOfRSA(),
+                        this.encryptDecryptService.generateSecretKeyOfAES(password)));
         userModelOfSignUp.setPassword(
                 Base64.getEncoder().encodeToString(this.objectMapper.writeValueAsString(Lists.newArrayList(
                         this.encryptDecryptService.encryptByAES(keyPairOfRSAForPassword.getPrivateKeyOfRSA(),
@@ -223,7 +224,7 @@ public class BaseTest {
                         keyPairOfRSAForPassword.getPublicKeyOfRSA())).getBytes(StandardCharsets.UTF_8)));
         var url = new URIBuilder("/sign_up").build();
         var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(userModelOfSignUp),
-                UserModel.class);
+                String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
@@ -255,16 +256,9 @@ public class BaseTest {
             userForSignIn = response.getBody();
         }
         {
-            var secretKeyOfAESOfAccessToken = this.encryptDecryptService.generateSecretKeyOfAES();
-            var privateKeyOfRSA = this.encryptDecryptService
-                    .decryptByByPrivateKeyOfRSA(userForSignIn.getPrivateKeyOfRSA(),
-                            this.encryptDecryptService.decryptByAES(userForSignIn.getPassword(),
-                                    this.encryptDecryptService.generateSecretKeyOfAES(password)));
             var passwordParameter = this.encryptDecryptService.encryptByPrivateKeyOfRSA(
                     this.objectMapper.writeValueAsString(
-                            new UserModel().setCreateDate(new Date())
-                                    .setPrivateKeyOfRSA(this.encryptDecryptService.encryptByAES(privateKeyOfRSA,
-                                            secretKeyOfAESOfAccessToken))),
+                            new UserModel().setCreateDate(new Date())),
                     this.encryptDecryptService.decryptByAES(userForSignIn.getPassword(),
                             this.encryptDecryptService.generateSecretKeyOfAES(password)));
             var url = new URIBuilder("/sign_in").setParameter("userId", userForSignIn.getId())
@@ -278,8 +272,9 @@ public class BaseTest {
                             "Bearer " + accessToken)));
             var user = getUserInfo(accessToken);
             user.setPrivateKeyOfRSA(
-                    this.encryptDecryptService.decryptByAES(user.getPrivateKeyOfRSA(), secretKeyOfAESOfAccessToken));
-            user.setAccess_token(accessToken);
+                    this.encryptDecryptService.decryptByAES(user.getPrivateKeyOfRSA(),
+                            this.encryptDecryptService.generateSecretKeyOfAES(password)));
+            user.setAccessToken(accessToken);
             return user;
         }
     }

@@ -48,7 +48,7 @@ public class MessageScheduledTest extends BaseTest {
         var webSocketServer = new URIBuilder("ws" + this.testRestTemplate.getRootUri().substring(4)).build()
                 .toString();
         this.user = this.createAccount("zdu.strong@gmail.com");
-        var accessToken = this.user.getAccess_token();
+        var accessToken = this.user.getAccessToken();
         var userMessage = new UserMessageModel().setUser(this.user).setContent("Hello, World!");
         this.userMessageService.sendMessage(userMessage);
         URI url = new URIBuilder(webSocketServer).setPath("/user_message/websocket")

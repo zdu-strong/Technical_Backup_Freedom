@@ -16,7 +16,6 @@ export default observer(() => {
 
   useMount(async () => {
     try {
-      await api.Authorization.isSignIn();
       await getFriendshipList();
       state.ready = true;
     } catch (error) {

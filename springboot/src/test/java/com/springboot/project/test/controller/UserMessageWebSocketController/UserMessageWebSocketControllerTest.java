@@ -85,7 +85,7 @@ public class UserMessageWebSocketControllerTest extends BaseTest {
         this.webSocketServer = new URIBuilder("ws" + this.testRestTemplate.getRootUri().substring(4)).build()
                 .toString();
         this.user = this.createAccount("zdu.strong@gmail.com");
-        this.accessToken = this.user.getAccess_token();
+        this.accessToken = this.user.getAccessToken();
         var userMessage = new UserMessageModel().setUser(this.user).setContent("Hello, World!");
         this.userMessageService.sendMessage(userMessage);
     }

@@ -17,6 +17,6 @@ public class PermissionUtilIsSignInFromAccessTokenTest extends BaseTest {
     @BeforeEach
     public void beforeEach() {
         var user = this.createAccount("zdu.strong@gmail.com");
-        this.accessToken = user.getAccess_token();
+        this.accessToken = user.getAccessToken();
     }
 }

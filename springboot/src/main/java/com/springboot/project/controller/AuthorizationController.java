@@ -84,14 +84,15 @@ public class AuthorizationController extends BaseController {
 
         var user = this.userService.signUp(userModel);
 
-        return ResponseEntity.ok(user);
+        var accessToken = this.tokenUtil.generateAccessToken(user.getId());
+
+        return ResponseEntity.ok(accessToken);
     }
 
     @PostMapping("/sign_in")
     public ResponseEntity<?> signIn(@RequestParam String userId, @RequestParam String password)
             throws InvalidKeySpecException, NoSuchAlgorithmException, JsonMappingException, JsonProcessingException {
         var user = this.userService.getUserWithMoreInformation(userId);
-        String privateKeyOfRSA = null;
 
         {
             var publicKeyOfRSA = JinqStream
@@ -104,7 +105,6 @@ public class AuthorizationController extends BaseController {
                     publicKeyOfRSA);
             var userModel = this.objectMapper.readValue(passwordString, UserModel.class);
             var createDate = userModel.getCreateDate();
-            privateKeyOfRSA = userModel.getPrivateKeyOfRSA();
 
             var minCalendar = Calendar.getInstance();
             minCalendar.setTime(createDate);
@@ -119,7 +119,7 @@ public class AuthorizationController extends BaseController {
             }
         }
 
-        var accessToken = this.tokenUtil.generateAccessToken(userId, privateKeyOfRSA);
+        var accessToken = this.tokenUtil.generateAccessToken(userId);
 
         return ResponseEntity.ok(accessToken);
     }
@@ -141,9 +141,6 @@ public class AuthorizationController extends BaseController {
 
         var userId = this.permissionUtil.getUserId(request);
         var user = this.userService.getUserWithMoreInformation(userId);
-        var jwtId = this.tokenUtil.getDecodedJWTOfAccessToken(this.tokenUtil.getAccessToken(request)).getId();
-        var privateKeyOfRSA = this.tokenService.getPrivateKeyOfRSAOfToken(jwtId);
-        user.setPrivateKeyOfRSA(privateKeyOfRSA);
         user.setPassword(null);
         return ResponseEntity.ok(user);
     }
@@ -161,7 +158,6 @@ public class AuthorizationController extends BaseController {
         var userModel = this.userService.getUserWithMoreInformation(userId);
         var user = new UserModel();
         user.setId(userModel.getId());
-        user.setPrivateKeyOfRSA(userModel.getPrivateKeyOfRSA());
         user.setPassword(JinqStream
                 .from(this.objectMapper.readValue(
                         new String(Base64.getDecoder().decode(userModel.getPassword()), StandardCharsets.UTF_8),

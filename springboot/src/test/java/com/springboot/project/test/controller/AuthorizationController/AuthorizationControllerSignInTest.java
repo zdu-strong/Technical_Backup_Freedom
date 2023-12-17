@@ -19,7 +19,7 @@ public class AuthorizationControllerSignInTest extends BaseTest {
         assertNotNull(result);
         assertTrue(StringUtils.isNotBlank(result.getId()));
         assertTrue(StringUtils.isNotBlank(result.getUsername()));
-        assertTrue(StringUtils.isNotBlank(result.getAccess_token()));
+        assertTrue(StringUtils.isNotBlank(result.getAccessToken()));
         assertTrue(StringUtils.isBlank(result.getPassword()));
         assertTrue(StringUtils.isNotBlank(result.getPrivateKeyOfRSA()));
         assertTrue(StringUtils.isNotBlank(result.getPublicKeyOfRSA()));

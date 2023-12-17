@@ -2,6 +2,7 @@ package com.springboot.project.test.controller.AuthorizationController;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.net.URISyntaxException;
@@ -18,6 +19,7 @@ import com.springboot.project.model.UserModel;
 import com.springboot.project.test.BaseTest;
 
 public class AuthorizationControllerGetUserInfoTest extends BaseTest {
+
     private UserModel user;
     private String email;
 
@@ -30,6 +32,11 @@ public class AuthorizationControllerGetUserInfoTest extends BaseTest {
         assertTrue(StringUtils.isNotBlank(response.getBody().getUsername()));
         assertTrue(StringUtils.isNotBlank(response.getBody().getPrivateKeyOfRSA()));
         assertTrue(StringUtils.isNotBlank(response.getBody().getPublicKeyOfRSA()));
+        assertTrue(StringUtils.isBlank(response.getBody().getPassword()));
+        assertTrue(StringUtils.isBlank(response.getBody().getAccessToken()));
+        assertNotNull(response.getBody().getCreateDate());
+        assertNotNull(response.getBody().getUpdateDate());
+
         assertEquals(1, response.getBody().getUserEmailList().size());
         assertEquals(this.email,
                 JinqStream.from(response.getBody().getUserEmailList()).select(s -> s.getEmail()).getOnlyValue());

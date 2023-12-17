@@ -14,8 +14,7 @@ public class TokenUtilGenerateAccessTokenTest extends BaseTest {
 
     @Test
     public void test() {
-        var accessToken = this.tokenUtil.generateAccessToken(this.user.getId(),
-                this.user.getPrivateKeyOfRSA());
+        var accessToken = this.tokenUtil.generateAccessToken(this.user.getId());
         assertTrue(StringUtils.isNotBlank(accessToken));
         assertNotNull(this.tokenUtil.getDecodedJWTOfAccessToken(accessToken).getId());
         assertEquals(user.getId(),

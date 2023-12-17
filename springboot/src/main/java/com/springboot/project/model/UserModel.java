@@ -17,6 +17,6 @@ public class UserModel {
     private Date createDate;
     private Date updateDate;
     private String password;
-    private String access_token;
+    private String accessToken;
     private List<UserEmailModel> userEmailList;
 }

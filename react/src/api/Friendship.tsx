@@ -2,10 +2,9 @@ import { FriendshipModel } from "@/model/FriendshipModel";
 import { FriendshipPaginationModel } from "@/model/FriendshipPaginationModel";
 import axios from "axios";
 import { v1 } from "uuid";
-import { GlobalUserInfo } from "@/common/axios-config/AxiosConfig";
 import { getUserById } from "@/api/User";
-import { isSignIn } from "@/api/Authorization";
 import { generateSecretKeyOfAES } from "@/common/AESUtils";
+import { GlobalUserInfo } from "@/common/Server";
 
 export async function getFriendList() {
   const response = await axios.get<FriendshipPaginationModel>("/get_friend_list", { params: { pageNum: 1, pageSize: 100 } });
@@ -36,7 +35,6 @@ export async function getFriendship(friendId: string) {
 }
 
 export async function createFriendship(friendId: string) {
-  await isSignIn();
   const keyOfAES = await generateSecretKeyOfAES();
   const aesOfUser = await GlobalUserInfo.encryptByPublicKeyOfRSA(await GlobalUserInfo.encryptByPrivateKeyOfRSA(keyOfAES));
   const friend = await getUserById(friendId);

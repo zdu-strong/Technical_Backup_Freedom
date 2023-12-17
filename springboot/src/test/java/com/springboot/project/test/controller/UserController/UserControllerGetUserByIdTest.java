@@ -23,7 +23,7 @@ public class UserControllerGetUserByIdTest extends BaseTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(StringUtils.isNotBlank(response.getBody().getId()));
         assertTrue(StringUtils.isNotBlank(response.getBody().getUsername()));
-        assertTrue(StringUtils.isBlank(response.getBody().getAccess_token()));
+        assertTrue(StringUtils.isBlank(response.getBody().getAccessToken()));
         assertTrue(StringUtils.isBlank(response.getBody().getPassword()));
         assertTrue(StringUtils.isBlank(response.getBody().getPrivateKeyOfRSA()));
         assertTrue(StringUtils.isNotBlank(response.getBody().getPublicKeyOfRSA()));

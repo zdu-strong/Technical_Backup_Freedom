@@ -13,7 +13,7 @@ public class PermissionUtilGetUserIdFromAccessTokenTest extends BaseTest {
 
     @Test
     public void test() {
-        var userId = this.permissionUtil.getUserId(this.user.getAccess_token());
+        var userId = this.permissionUtil.getUserId(this.user.getAccessToken());
         assertTrue(StringUtils.isNotBlank(userId));
         assertEquals(this.user.getId(), userId);
     }

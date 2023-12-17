@@ -1,7 +1,7 @@
 import 'tailwindcss/utilities.css';
 import '@/common/app-base-css/index.css';
 import '@fontsource/roboto';
-import '@/common/axios-config/AxiosConfig';
+import '@/common/Server';
 import 'reflect-metadata';
 import { CssBaseline } from '@mui/material';
 import Router from '@/router';

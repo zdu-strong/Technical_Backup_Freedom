@@ -7,7 +7,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -24,7 +26,7 @@ public class TokenUtil {
     @Autowired
     private TokenService tokenService;
 
-    public String generateAccessToken(String userId, String privateKeyOfRSA) {
+    public String generateAccessToken(String userId) {
         /* generate jwtId */
         var jwtId = Generators.timeBasedGenerator().generate().toString();
 
@@ -34,12 +36,12 @@ public class TokenUtil {
                 .sign(Algorithm.RSA512((RSAPublicKey) this.encryptDecryptService.getRSA().getPublicKey(),
                         (RSAPrivateKey) this.encryptDecryptService.getRSA().getPrivateKey()));
 
-        this.tokenService.createTokenEntity(jwtId, userId, privateKeyOfRSA);
+        this.tokenService.createTokenEntity(jwtId, userId);
 
         return accessToken;
     }
 
-    public String generateNewAccessToken(String accessToken, String privateKeyOfRSA) {
+    public String generateNewAccessToken(String accessToken) {
         /* generate jwtId */
         var jwtId = Generators.timeBasedGenerator().generate().toString();
 
@@ -52,7 +54,7 @@ public class TokenUtil {
                 .sign(Algorithm.RSA512((RSAPublicKey) this.encryptDecryptService.getRSA().getPublicKey(),
                         (RSAPrivateKey) this.encryptDecryptService.getRSA().getPrivateKey()));
 
-        this.tokenService.createTokenEntity(jwtId, userId, privateKeyOfRSA);
+        this.tokenService.createTokenEntity(jwtId, userId);
 
         return accessTokenOfNew;
     }
@@ -73,7 +75,9 @@ public class TokenUtil {
                 .require(Algorithm.RSA512((RSAPublicKey) this.encryptDecryptService.getRSA().getPublicKey(),
                         (RSAPrivateKey) this.encryptDecryptService.getRSA().getPrivateKey()))
                 .build().verify(accessToken);
-        this.tokenService.getPrivateKeyOfRSAOfToken(decodedJWT.getId());
+        if (!this.tokenService.isExistTokenEntity(decodedJWT.getId())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Please login first and then visit");
+        }
         return decodedJWT;
     }
 

@@ -15,14 +15,13 @@ public class TokenUtilGenerateNewAccessTokenTest extends BaseTest {
 
     @Test
     public void test() {
-        var accessToken = this.tokenUtil.generateNewAccessToken(this.user.getAccess_token(),
-                this.user.getPrivateKeyOfRSA());
+        var accessToken = this.tokenUtil.generateNewAccessToken(this.user.getAccessToken());
         assertTrue(StringUtils.isNotBlank(accessToken));
         assertNotNull(this.tokenUtil.getDecodedJWTOfAccessToken(accessToken).getId());
         assertEquals(this.user.getId(),
                 this.tokenUtil.getDecodedJWTOfAccessToken(accessToken).getSubject());
         assertNotNull(this.tokenUtil.getDecodedJWTOfAccessToken(accessToken).getIssuedAt());
-        assertNotEquals(this.tokenUtil.getDecodedJWTOfAccessToken(this.user.getAccess_token()).getId(),
+        assertNotEquals(this.tokenUtil.getDecodedJWTOfAccessToken(this.user.getAccessToken()).getId(),
                 this.tokenUtil.getDecodedJWTOfAccessToken(accessToken).getId());
     }
 

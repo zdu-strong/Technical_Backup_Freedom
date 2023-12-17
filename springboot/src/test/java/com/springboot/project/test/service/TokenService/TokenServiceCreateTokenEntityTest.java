@@ -2,7 +2,6 @@ package com.springboot.project.test.service.TokenService;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.net.URISyntaxException;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.uuid.Generators;
@@ -15,8 +14,8 @@ public class TokenServiceCreateTokenEntityTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        this.tokenService.createTokenEntity(this.jwtId, this.user.getId(), this.user.getPrivateKeyOfRSA());
-        assertTrue(StringUtils.isNotBlank(this.tokenService.getPrivateKeyOfRSAOfToken(jwtId)));
+        this.tokenService.createTokenEntity(this.jwtId, this.user.getId());
+        assertTrue(this.tokenService.isExistTokenEntity(jwtId));
     }
 
     @BeforeEach

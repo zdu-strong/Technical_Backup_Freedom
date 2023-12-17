@@ -6,7 +6,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,10 +22,6 @@ public class TokenEntity {
 
     @Column(nullable = false)
     private String jwtId;
-
-    @Column(nullable = false, length = 1024 * 1024 * 1024)
-    @Lob
-    private String privateKeyOfRSA;
 
     @Column(nullable = false)
     private Date createDate;
