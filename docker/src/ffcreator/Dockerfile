@@ -9,7 +9,7 @@ ENV LC_ALL C.UTF-8
 
 # run test
 FROM first_docker as second_docker
-RUN dnf module install -y nodejs:20
+RUN dnf module install -y nodejs:18
 RUN dnf install -y git
 RUN dnf install -y gcc-c++ cairo-devel pango-devel libjpeg-turbo-devel giflib
 RUN dnf install -y mesa-dri-drivers Xvfb libXi-devel libXinerama-devel libX11-devel

@@ -11,8 +11,8 @@ ENV LC_ALL C.UTF-8
 RUN dnf module install -y nodejs:20
 
 # Install java
-RUN dnf install -y java-21-openjdk-devel
-ENV JAVA_HOME /usr/lib/jvm/java-21-openjdk
+RUN dnf install -y java-17-openjdk-devel
+ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk
 
 # run test
 FROM first_docker as second_docker
