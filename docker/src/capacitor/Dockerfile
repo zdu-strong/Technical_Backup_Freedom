@@ -12,8 +12,8 @@ RUN dnf install -y https://rpm.nodesource.com/pub_20.x/el/9/x86_64/nodesource-re
 RUN dnf install -y nodejs
 
 # Install java
-RUN dnf install -y java-17-openjdk-devel
-ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk
+RUN dnf install -y java-21-openjdk-devel
+ENV JAVA_HOME /usr/lib/jvm/java-21-openjdk
 
 # run test
 FROM first_docker as second_docker
