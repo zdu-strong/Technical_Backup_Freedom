@@ -17,16 +17,16 @@ public class MessageScheduled {
     public void scheduled() throws InterruptedException, ExecutionException {
         var websocketList = JinqStream.from(UserMessageWebSocketController.getStaticWebSocketList())
                 .sortedBy(s -> s.getUserId()).toList();
-        var futureList = new ArrayList<Future<?>>();
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            var futureList = new ArrayList<Future<?>>();
             for (var websocket : websocketList) {
                 futureList.add(executor.submit(() -> {
                     websocket.sendMessage();
                 }));
             }
-        }
-        for (var future : futureList) {
-            future.get();
+            for (var future : futureList) {
+                future.get();
+            }
         }
     }
 
