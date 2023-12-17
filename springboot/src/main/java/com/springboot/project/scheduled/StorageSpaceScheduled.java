@@ -37,17 +37,17 @@ public class StorageSpaceScheduled {
             return;
         }
 
+        var futureList = new ArrayList<Future<?>>();
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            var futureList = new ArrayList<Future<?>>();
             futureList.add(executor.submit(() -> {
                 this.cleanDatabaseStorage();
             }));
             futureList.add(executor.submit(() -> {
                 this.cleanDiskStorage();
             }));
-            for (var future : futureList) {
-                future.get();
-            }
+        }
+        for (var future : futureList) {
+            future.get();
         }
     }
 
