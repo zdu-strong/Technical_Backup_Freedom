@@ -12,6 +12,7 @@ import com.springboot.project.common.TimeZoneUtil.TimeZoneUtil;
 import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.common.storage.Storage;
 import com.springboot.project.entity.*;
+import com.springboot.project.format.DistributedExecutionFormatter;
 import com.springboot.project.format.FriendshipFormatter;
 import com.springboot.project.format.LoggerFormatter;
 import com.springboot.project.format.LongTermTaskFormatter;
@@ -67,6 +68,9 @@ public abstract class BaseService {
     @Autowired
     protected VerificationCodeEmailFormatter verificationCodeEmailFormatter;
 
+    @Autowired
+    protected DistributedExecutionFormatter distributedExecutionFormatter;
+
     protected void persist(Object entity) {
         this.entityManager.persist(entity);
     }
@@ -121,6 +125,10 @@ public abstract class BaseService {
 
     protected JPAJinqStream<VerificationCodeEmailEntity> VerificationCodeEmailEntity() {
         return this.streamAll(VerificationCodeEmailEntity.class);
+    }
+
+    protected JPAJinqStream<DistributedExecutionEntity> DistributedExecutionEntity() {
+        return this.streamAll(DistributedExecutionEntity.class);
     }
 
     private <U> JPAJinqStream<U> streamAll(Class<U> entity) {

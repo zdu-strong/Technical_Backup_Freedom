@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import com.springboot.project.common.storage.Storage;
 import com.springboot.project.properties.IsTestOrDevModeProperties;
+import com.springboot.project.service.DistributedExecutionService;
 import com.springboot.project.service.StorageSpaceService;
 import io.reactivex.rxjava3.core.Observable;
 
@@ -18,6 +19,9 @@ public class StorageSpaceScheduled {
 
     @Autowired
     private StorageSpaceService storageSpaceService;
+
+    @Autowired
+    private DistributedExecutionService distributedExecutionService;
 
     @Autowired
     private Storage storage;
@@ -59,24 +63,26 @@ public class StorageSpaceScheduled {
     }
 
     public void cleanDatabaseStorage() {
-        long totalPage = this.storageSpaceService.getStorageSpaceListByPagination(1L, pageSize).getTotalPage();
-        Observable.rangeLong(1, totalPage).concatMap((s) -> {
-            var pageNum = totalPage - s + 1;
-            return Observable.just(pageNum);
-        }).concatMap(pageNum -> {
-            return Observable.just("").concatMap(s -> {
-                var list = this.storageSpaceService
-                        .getStorageSpaceListByPagination(pageNum, pageSize)
-                        .getList();
-                return Observable.fromIterable(list);
-            }).retry(10);
-        }).concatMap(storageSpaceModel -> {
-            return Observable.just("").concatMap((s) -> {
-                if (!this.storageSpaceService.isUsed(storageSpaceModel.getFolderName())) {
-                    this.storageSpaceService.deleteStorageSpaceEntity(storageSpaceModel.getFolderName());
-                }
-                return Observable.empty();
-            }).retry(10);
-        }).blockingSubscribe();
+        while (true) {
+            var pageNumOfThis = Observable.just("")
+                    .concatMap(s -> {
+                        long pageNum = this.distributedExecutionService.getDistributedExecutionOfStorageSpace(pageSize)
+                                .getPageNum();
+                        var list = this.storageSpaceService
+                                .getStorageSpaceListByPagination(pageNum, pageSize)
+                                .getList();
+                        for (var storageSpaceModel : list) {
+                            if (!this.storageSpaceService.isUsed(storageSpaceModel.getFolderName())) {
+                                this.storageSpaceService.deleteStorageSpaceEntity(storageSpaceModel.getFolderName());
+                            }
+                        }
+                        return Observable.just(pageNum);
+                    })
+                    .retry(1000)
+                    .blockingLast();
+            if (pageNumOfThis == 1) {
+                break;
+            }
+        }
     }
 }

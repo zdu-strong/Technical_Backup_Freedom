@@ -13,8 +13,8 @@ public class DistributedExecutionModel {
     private String id;
     private String name;
     private String version;
-    private Long pageSize;
     private Long pageNum;
+    private Long pageSize;
     private Date createDate;
     private Date updateDate;
 }

@@ -27,10 +27,10 @@ public class DistributedExecutionEntity {
     private String version;
 
     @Column(nullable = false)
-    private Long pageSize;
+    private Long pageNum;
 
     @Column(nullable = false)
-    private Long pageNum;
+    private Long pageSize;
 
     @Column(nullable = false)
     private Date createDate;

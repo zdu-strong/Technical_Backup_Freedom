@@ -13,8 +13,8 @@ public class DistributedExecutionFormatter extends BaseService {
                 .setId(distributedExecutionEntity.getId())
                 .setName(distributedExecutionEntity.getName())
                 .setVersion(distributedExecutionEntity.getVersion())
-                .setPageSize(distributedExecutionEntity.getPageSize())
                 .setPageNum(distributedExecutionEntity.getPageNum())
+                .setPageSize(distributedExecutionEntity.getPageSize())
                 .setCreateDate(distributedExecutionEntity.getCreateDate())
                 .setUpdateDate(distributedExecutionEntity.getUpdateDate());
         return distributedExecutionModel;
