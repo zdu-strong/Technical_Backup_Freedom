@@ -4,20 +4,26 @@ import { UserEmailModel } from "@/model/UserEmailModel";
 import { encryptByPrivateKeyOfRSA, generateKeyPairOfRSA } from "@/common/RSAUtils";
 import { decryptByAES, encryptByAES, generateSecretKeyOfAES } from '@/common/AESUtils';
 import { VerificationCodeEmailModel } from "@/model/VerificationCodeEmailModel";
-import { getAccessToken, removeGlobalUserInfo, setGlobalUserInfo } from "@/common/Server";
+import { getAccessToken, removeGlobalUserInfo, setGlobalUserInfo, setGlobalUserInfoWithPrivateKeyOfRSA } from "@/common/Server";
 
 export async function signUp(password: string, nickname: string, userEmailList: UserEmailModel[]): Promise<void> {
-  const { privateKey, publicKey } = await generateKeyPairOfRSA();
-  const keyPairOfRSAForPassword = await generateKeyPairOfRSA();
+  const secretKeyOfAESPromise = generateSecretKeyOfAES(password);
+  const keyPairPromise = generateKeyPairOfRSA();
+  const keyPairOfRSAForPasswordPromise = generateKeyPairOfRSA();
+  const { privateKey, publicKey } = await keyPairPromise;
+  const keyPairOfRSAForPassword = await keyPairOfRSAForPasswordPromise;
+  const secretKeyOfAES = await secretKeyOfAESPromise;
+  const privateKeyOfRSAPromise = encryptByAES(secretKeyOfAES, privateKey);
+  const privateKeyOfRSAForPasswordPromise = encryptByAES(secretKeyOfAES, keyPairOfRSAForPassword.privateKey);
   var { data: accessToken } = await axios.post<string>(`/sign_up`, {
     username: nickname,
     userEmailList: userEmailList,
     publicKeyOfRSA: publicKey,
-    privateKeyOfRSA: await encryptByAES(await generateSecretKeyOfAES(password), privateKey),
-    password: Buffer.from(JSON.stringify([await encryptByAES(await generateSecretKeyOfAES(password), keyPairOfRSAForPassword.privateKey), keyPairOfRSAForPassword.publicKey]), "utf8").toString("base64"),
+    privateKeyOfRSA: await privateKeyOfRSAPromise,
+    password: Buffer.from(JSON.stringify([await privateKeyOfRSAForPasswordPromise, keyPairOfRSAForPassword.publicKey]), "utf8").toString("base64"),
   });
   await signOut();
-  await setGlobalUserInfo(accessToken, password);
+  await setGlobalUserInfoWithPrivateKeyOfRSA(accessToken, privateKey);
 }
 
 export async function sendVerificationCode(email: string) {

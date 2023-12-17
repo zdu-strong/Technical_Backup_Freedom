@@ -71,6 +71,33 @@ export const GlobalUserInfo = observable({
   accessToken: '',
 } as UserModel);
 
+export async function setGlobalUserInfoWithPrivateKeyOfRSA(accessToken: string, privateKeyOfRSA: string) {
+  const userInfo = new TypedJSON(UserModel).parse(await runWoker(new Worker(new URL('../../common/WebWorker/GetUserInfo/getUserInfo.worker', import.meta.url), { type: "module" }),
+    {
+      ServerAddress,
+      accessToken
+    }
+  ))!;
+  userInfo.privateKeyOfRSA = privateKeyOfRSA!;
+  userInfo.accessToken = accessToken;
+  GlobalUserInfo.id = userInfo!.id;
+  GlobalUserInfo.username = userInfo!.username;
+  GlobalUserInfo.accessToken = userInfo!.accessToken;
+  GlobalUserInfo.encryptByPublicKeyOfRSA = async (data: string) => {
+    return await encryptByPublicKeyOfRSA(GlobalUserInfo.publicKeyOfRSA, data);
+  };
+  GlobalUserInfo.decryptByPrivateKeyOfRSA = async (data: string) => {
+    return await decryptByPrivateKeyOfRSA(GlobalUserInfo.privateKeyOfRSA, data);
+  };
+  GlobalUserInfo.encryptByPrivateKeyOfRSA = async (data: string) => {
+    return await encryptByPrivateKeyOfRSA(GlobalUserInfo.privateKeyOfRSA, data);
+  };
+  GlobalUserInfo.decryptByPublicKeyOfRSA = async (data: string) => {
+    return await decryptByPublicKeyOfRSA(GlobalUserInfo.publicKeyOfRSA!, data);
+  };
+  window.localStorage.setItem(keyOfGlobalUserInfoOfLocalStorage, JSON.stringify(GlobalUserInfo));
+}
+
 export async function setGlobalUserInfo(accessToken?: string, password?: string): Promise<void> {
   let userInfo: UserModel;
   if (accessToken) {
