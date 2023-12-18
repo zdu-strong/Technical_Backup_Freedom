@@ -237,14 +237,6 @@ public class BaseTest {
         }
     }
 
-    private UserModel getUserInfo(String accessToken) throws URISyntaxException {
-        var url = new URIBuilder("/get_user_info").build();
-        var response = this.testRestTemplate.getForEntity(url, UserModel.class);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        var user = response.getBody();
-        return user;
-    }
-
     private UserModel signIn(String email, String password)
             throws URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException, JsonMappingException,
             JsonProcessingException {
@@ -264,17 +256,15 @@ public class BaseTest {
             var url = new URIBuilder("/sign_in").setParameter("userId", userForSignIn.getId())
                     .setParameter("password", passwordParameter)
                     .build();
-            var response = this.testRestTemplate.postForEntity(url, null, String.class);
+            var response = this.testRestTemplate.postForEntity(url, null, UserModel.class);
             assertEquals(HttpStatus.OK, response.getStatusCode());
-            var accessToken = response.getBody();
+            var user = response.getBody();
             this.testRestTemplate.getRestTemplate()
                     .setInterceptors(Lists.newArrayList(new HttpHeaderInterceptor(HttpHeaders.AUTHORIZATION,
-                            "Bearer " + accessToken)));
-            var user = getUserInfo(accessToken);
+                            "Bearer " + user.getAccessToken())));
             user.setPrivateKeyOfRSA(
                     this.encryptDecryptService.decryptByAES(user.getPrivateKeyOfRSA(),
                             this.encryptDecryptService.generateSecretKeyOfAES(password)));
-            user.setAccessToken(accessToken);
             return user;
         }
     }

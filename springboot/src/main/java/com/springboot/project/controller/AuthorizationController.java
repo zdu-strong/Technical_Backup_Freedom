@@ -83,10 +83,11 @@ public class AuthorizationController extends BaseController {
         }
 
         var user = this.userService.signUp(userModel);
-
+        user = this.userService.getUserWithMoreInformation(user.getId());
+        user.setPassword(null);
         var accessToken = this.tokenUtil.generateAccessToken(user.getId());
-
-        return ResponseEntity.ok(accessToken);
+        user.setAccessToken(accessToken);
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/sign_in")
@@ -120,8 +121,9 @@ public class AuthorizationController extends BaseController {
         }
 
         var accessToken = this.tokenUtil.generateAccessToken(userId);
-
-        return ResponseEntity.ok(accessToken);
+        user.setAccessToken(accessToken);
+        user.setPassword(null);
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/sign_out")

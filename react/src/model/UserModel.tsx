@@ -12,9 +12,6 @@ export class UserModel {
   username!: string;
 
   @jsonMember(String)
-  email!: string;
-
-  @jsonMember(String)
   publicKeyOfRSA!: string;
 
   @jsonMember(String)
