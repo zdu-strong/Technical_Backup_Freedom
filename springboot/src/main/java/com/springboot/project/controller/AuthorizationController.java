@@ -144,6 +144,7 @@ public class AuthorizationController extends BaseController {
         var userId = this.permissionUtil.getUserId(request);
         var user = this.userService.getUserWithMoreInformation(userId);
         user.setPassword(null);
+        user.setPrivateKeyOfRSA(null);
         return ResponseEntity.ok(user);
     }
 
