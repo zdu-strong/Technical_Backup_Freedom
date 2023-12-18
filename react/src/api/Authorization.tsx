@@ -35,18 +35,19 @@ export async function sendVerificationCode(email: string) {
 
 export async function signIn(userIdOrEmail: string, password: string): Promise<void> {
   await signOut();
+  var secretKeyOfAES = await generateSecretKeyOfAES(password);
   const { data: userInfo } = await axios.post<UserModel>(`/sign_in/get_account`, null, { params: { userId: userIdOrEmail } });
   try {
     let { data: user } = await axios.post<UserModel>(`/sign_in`, null, {
       params: {
         userId: userInfo.id,
-        password: await encryptByPrivateKeyOfRSA(await decryptByAES(await generateSecretKeyOfAES(password), userInfo.password), JSON.stringify({
+        password: await encryptByPrivateKeyOfRSA(await decryptByAES(secretKeyOfAES, userInfo.password), JSON.stringify({
           createDate: new Date(),
         })),
       }
     });
     user = new TypedJSON(UserModel).parse(user)!;
-    user.privateKeyOfRSA = await decryptByAES(await generateSecretKeyOfAES(password!), user.privateKeyOfRSA);
+    user.privateKeyOfRSA = await decryptByAES(secretKeyOfAES, user.privateKeyOfRSA);
     await setGlobalUserInfo(user);
   } catch (e) {
     if ((e as any as Error).message.includes("Malformed UTF-8 data")) {
