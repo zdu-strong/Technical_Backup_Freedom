@@ -28,6 +28,8 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.model.VerificationCodeEmailModel;
 
+import cn.hutool.crypto.CryptoException;
+
 @RestController
 public class AuthorizationController extends BaseController {
 
@@ -93,8 +95,17 @@ public class AuthorizationController extends BaseController {
 
         var user = this.userService.getUserWithMoreInformation(userId);
 
-        if (!this.encryptDecryptService.decryptByAES(user.getPassword(), password).equals(password)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Authentication was not successful because an unknown username or incorrect password was used");
+        String passwordParam;
+        try {
+            passwordParam = this.encryptDecryptService.decryptByAES(user.getPassword(), password);
+        } catch (CryptoException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Authentication was not successful because an unknown username or incorrect password was used");
+        }
+
+        if (!passwordParam.equals(password)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Authentication was not successful because an unknown username or incorrect password was used");
         }
 
         var accessToken = this.tokenUtil.generateAccessToken(user.getId());
