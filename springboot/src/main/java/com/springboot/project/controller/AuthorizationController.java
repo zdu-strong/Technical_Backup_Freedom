@@ -100,12 +100,12 @@ public class AuthorizationController extends BaseController {
             passwordParam = this.encryptDecryptService.decryptByAES(user.getPassword(), password);
         } catch (CryptoException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Authentication was not successful because an unknown username or incorrect password was used");
+                    "Incorrect username or password");
         }
 
         if (!passwordParam.equals(password)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Authentication was not successful because an unknown username or incorrect password was used");
+                    "Incorrect username or password");
         }
 
         var accessToken = this.tokenUtil.generateAccessToken(user.getId());
