@@ -4,14 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.tika.Tika;
@@ -212,16 +211,13 @@ public class BaseTest {
                 .setUserEmailList(Lists.newArrayList(new UserEmailModel().setEmail(email)
                         .setVerificationCodeEmail(verificationCodeEmail)))
                 .setPublicKeyOfRSA(keyPairOfRSA.getPublicKeyOfRSA());
-        var keyPairOfRSAForPassword = this.encryptDecryptService.generateKeyPairOfRSA();
         userModelOfSignUp
                 .setPrivateKeyOfRSA(this.encryptDecryptService.encryptByAES(
                         keyPairOfRSA.getPrivateKeyOfRSA(),
                         this.encryptDecryptService.generateSecretKeyOfAES(password)));
-        userModelOfSignUp.setPassword(
-                Base64.getEncoder().encodeToString(this.objectMapper.writeValueAsString(Lists.newArrayList(
-                        this.encryptDecryptService.encryptByAES(keyPairOfRSAForPassword.getPrivateKeyOfRSA(),
-                                this.encryptDecryptService.generateSecretKeyOfAES(password)),
-                        keyPairOfRSAForPassword.getPublicKeyOfRSA())).getBytes(StandardCharsets.UTF_8)));
+        var secretKeyOfAES = this.encryptDecryptService
+                .generateSecretKeyOfAES(Base64.getEncoder().encodeToString(DigestUtils.md5(password)));
+        userModelOfSignUp.setPassword(this.encryptDecryptService.encryptByAES(secretKeyOfAES, secretKeyOfAES));
         var url = new URIBuilder("/sign_up").build();
         var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(userModelOfSignUp),
                 String.class);
@@ -240,33 +236,21 @@ public class BaseTest {
     private UserModel signIn(String email, String password)
             throws URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException, JsonMappingException,
             JsonProcessingException {
-        UserModel userForSignIn;
-        {
-            var url = new URIBuilder("/sign_in/get_account").setParameter("userId", email).build();
-            var response = this.testRestTemplate.postForEntity(url, null, UserModel.class);
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            userForSignIn = response.getBody();
-        }
-        {
-            var passwordParameter = this.encryptDecryptService.encryptByPrivateKeyOfRSA(
-                    this.objectMapper.writeValueAsString(
-                            new UserModel().setCreateDate(new Date())),
-                    this.encryptDecryptService.decryptByAES(userForSignIn.getPassword(),
-                            this.encryptDecryptService.generateSecretKeyOfAES(password)));
-            var url = new URIBuilder("/sign_in").setParameter("userId", userForSignIn.getId())
-                    .setParameter("password", passwordParameter)
-                    .build();
-            var response = this.testRestTemplate.postForEntity(url, null, UserModel.class);
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            var user = response.getBody();
-            this.testRestTemplate.getRestTemplate()
-                    .setInterceptors(Lists.newArrayList(new HttpHeaderInterceptor(HttpHeaders.AUTHORIZATION,
-                            "Bearer " + user.getAccessToken())));
-            user.setPrivateKeyOfRSA(
-                    this.encryptDecryptService.decryptByAES(user.getPrivateKeyOfRSA(),
-                            this.encryptDecryptService.generateSecretKeyOfAES(password)));
-            return user;
-        }
+        var passwordParameter = this.encryptDecryptService
+                .generateSecretKeyOfAES(Base64.getEncoder().encodeToString(DigestUtils.md5(password)));
+        var url = new URIBuilder("/sign_in").setParameter("userId", email)
+                .setParameter("password", passwordParameter)
+                .build();
+        var response = this.testRestTemplate.postForEntity(url, null, UserModel.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        var user = response.getBody();
+        this.testRestTemplate.getRestTemplate()
+                .setInterceptors(Lists.newArrayList(new HttpHeaderInterceptor(HttpHeaders.AUTHORIZATION,
+                        "Bearer " + user.getAccessToken())));
+        user.setPrivateKeyOfRSA(
+                this.encryptDecryptService.decryptByAES(user.getPrivateKeyOfRSA(),
+                        this.encryptDecryptService.generateSecretKeyOfAES(password)));
+        return user;
     }
 
     protected String fromLongTermTask(Supplier<String> supplier) {

@@ -1,27 +1,28 @@
 import { UserModel } from "@/model/UserModel";
 import axios from "axios";
 import { UserEmailModel } from "@/model/UserEmailModel";
-import { encryptByPrivateKeyOfRSA, generateKeyPairOfRSA } from "@/common/RSAUtils";
+import { generateKeyPairOfRSA } from "@/common/RSAUtils";
 import { decryptByAES, encryptByAES, generateSecretKeyOfAES } from '@/common/AESUtils';
 import { VerificationCodeEmailModel } from "@/model/VerificationCodeEmailModel";
 import { getAccessToken, removeGlobalUserInfo, setGlobalUserInfo } from "@/common/Server";
 import { TypedJSON } from "typedjson";
+import CryptoJS from 'crypto-js';
 
 export async function signUp(password: string, nickname: string, userEmailList: UserEmailModel[]): Promise<void> {
   const secretKeyOfAESPromise = generateSecretKeyOfAES(password);
   const keyPairPromise = generateKeyPairOfRSA();
-  const keyPairOfRSAForPasswordPromise = generateKeyPairOfRSA();
+  const secretKeyOfAESOfPasswordPromise = generateSecretKeyOfAES(CryptoJS.MD5(password).toString(CryptoJS.enc.Base64));
   const { privateKey, publicKey } = await keyPairPromise;
-  const keyPairOfRSAForPassword = await keyPairOfRSAForPasswordPromise;
   const secretKeyOfAES = await secretKeyOfAESPromise;
+  const secretKeyOfAESOfPassword = await secretKeyOfAESOfPasswordPromise;
   const privateKeyOfRSAPromise = encryptByAES(secretKeyOfAES, privateKey);
-  const privateKeyOfRSAForPasswordPromise = encryptByAES(secretKeyOfAES, keyPairOfRSAForPassword.privateKey);
-  var { data: user } = await axios.post<UserModel>(`/sign_up`, {
+  const passwordParamPromise = encryptByAES(secretKeyOfAESOfPassword, secretKeyOfAESOfPassword);
+  let { data: user } = await axios.post<UserModel>(`/sign_up`, {
     username: nickname,
     userEmailList: userEmailList,
     publicKeyOfRSA: publicKey,
     privateKeyOfRSA: await privateKeyOfRSAPromise,
-    password: Buffer.from(JSON.stringify([await privateKeyOfRSAForPasswordPromise, keyPairOfRSAForPassword.publicKey]), "utf8").toString("base64"),
+    password: await passwordParamPromise,
   });
   user = new TypedJSON(UserModel).parse(user)!;
   user.privateKeyOfRSA = privateKey;
@@ -35,26 +36,17 @@ export async function sendVerificationCode(email: string) {
 
 export async function signIn(userIdOrEmail: string, password: string): Promise<void> {
   await signOut();
-  var secretKeyOfAES = await generateSecretKeyOfAES(password);
-  const { data: userInfo } = await axios.post<UserModel>(`/sign_in/get_account`, null, { params: { userId: userIdOrEmail } });
-  try {
-    let { data: user } = await axios.post<UserModel>(`/sign_in`, null, {
-      params: {
-        userId: userInfo.id,
-        password: await encryptByPrivateKeyOfRSA(await decryptByAES(secretKeyOfAES, userInfo.password), JSON.stringify({
-          createDate: new Date(),
-        })),
-      }
-    });
-    user = new TypedJSON(UserModel).parse(user)!;
-    user.privateKeyOfRSA = await decryptByAES(secretKeyOfAES, user.privateKeyOfRSA);
-    await setGlobalUserInfo(user);
-  } catch (e) {
-    if ((e as any as Error).message.includes("Malformed UTF-8 data")) {
-      throw new Error("Incorrect password");
+  const secretKeyOfAESPromise = generateSecretKeyOfAES(password);
+  const secretKeyOfAESOfPasswordPromise = generateSecretKeyOfAES(CryptoJS.MD5(password).toString(CryptoJS.enc.Base64));
+  let { data: user } = await axios.post<UserModel>(`/sign_in`, null, {
+    params: {
+      userId: userIdOrEmail,
+      password: await secretKeyOfAESOfPasswordPromise,
     }
-    throw e;
-  }
+  });
+  user = new TypedJSON(UserModel).parse(user)!;
+  user.privateKeyOfRSA = await decryptByAES(await secretKeyOfAESPromise, user.privateKeyOfRSA);
+  await setGlobalUserInfo(user);
 }
 
 export async function signOut() {

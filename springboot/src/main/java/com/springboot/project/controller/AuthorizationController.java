@@ -1,19 +1,16 @@
 package com.springboot.project.controller;
 
 import java.io.ByteArrayOutputStream;
-import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Calendar;
-import java.util.List;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
-import org.jinq.orm.stream.JinqStream;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -93,34 +89,15 @@ public class AuthorizationController extends BaseController {
     @PostMapping("/sign_in")
     public ResponseEntity<?> signIn(@RequestParam String userId, @RequestParam String password)
             throws InvalidKeySpecException, NoSuchAlgorithmException, JsonMappingException, JsonProcessingException {
+        this.userService.checkExistAccount(userId);
+
         var user = this.userService.getUserWithMoreInformation(userId);
 
-        {
-            var publicKeyOfRSA = JinqStream
-                    .from(this.objectMapper.readValue(
-                            new String(Base64.getDecoder().decode(user.getPassword()), StandardCharsets.UTF_8),
-                            new TypeReference<List<String>>() {
-                            }))
-                    .skip(1).getOnlyValue();
-            var passwordString = this.encryptDecryptService.decryptByByPublicKeyOfRSA(password,
-                    publicKeyOfRSA);
-            var userModel = this.objectMapper.readValue(passwordString, UserModel.class);
-            var createDate = userModel.getCreateDate();
-
-            var minCalendar = Calendar.getInstance();
-            minCalendar.setTime(createDate);
-            minCalendar.add(Calendar.MINUTE, -5);
-            var minDate = minCalendar.getTime();
-            var maxCalendar = Calendar.getInstance();
-            maxCalendar.setTime(createDate);
-            maxCalendar.add(Calendar.MINUTE, 5);
-            var maxDate = maxCalendar.getTime();
-            if (createDate.before(minDate) || createDate.after(maxDate)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect password");
-            }
+        if (!this.encryptDecryptService.decryptByAES(user.getPassword(), password).equals(password)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Authentication was not successful because an unknown username or incorrect password was used");
         }
 
-        var accessToken = this.tokenUtil.generateAccessToken(userId);
+        var accessToken = this.tokenUtil.generateAccessToken(user.getId());
         user.setAccessToken(accessToken);
         user.setPassword(null);
         return ResponseEntity.ok(user);
@@ -145,29 +122,6 @@ public class AuthorizationController extends BaseController {
         var user = this.userService.getUserWithMoreInformation(userId);
         user.setPassword(null);
         user.setPrivateKeyOfRSA(null);
-        return ResponseEntity.ok(user);
-    }
-
-    @PostMapping("/sign_in/get_account")
-    public ResponseEntity<?> getAccountForSignIn(@RequestParam String userId)
-            throws JsonMappingException, JsonProcessingException {
-
-        if (StringUtils.isBlank(userId)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please fill in the account");
-        }
-
-        this.userService.checkExistAccount(userId);
-
-        var userModel = this.userService.getUserWithMoreInformation(userId);
-        var user = new UserModel();
-        user.setId(userModel.getId());
-        user.setPassword(JinqStream
-                .from(this.objectMapper.readValue(
-                        new String(Base64.getDecoder().decode(userModel.getPassword()), StandardCharsets.UTF_8),
-                        new TypeReference<List<String>>() {
-                        }))
-                .limit(1).getOnlyValue());
-
         return ResponseEntity.ok(user);
     }
 

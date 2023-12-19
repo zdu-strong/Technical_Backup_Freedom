@@ -74,7 +74,7 @@ export const GlobalUserInfo = observable({
 } as UserModel);
 
 export async function setGlobalUserInfo(user?: UserModel): Promise<void> {
-  var hasParam = !!user;
+  const hasParam = !!user;
   if (!hasParam) {
     const jsonStringOfLocalStorage = window.localStorage.getItem(keyOfGlobalUserInfoOfLocalStorage);
     if (jsonStringOfLocalStorage) {

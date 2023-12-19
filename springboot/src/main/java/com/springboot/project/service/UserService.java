@@ -36,17 +36,21 @@ public class UserService extends BaseService {
     }
 
     public UserModel getUserWithMoreInformation(String userIdOrEmail) {
-        var user = this.UserEntity().leftOuterJoinList(s -> s.getUserEmailList())
-                .where(s -> s.getOne().getId().equals(userIdOrEmail)
-                        || (s.getTwo().getEmail().equals(userIdOrEmail) && !s.getTwo().getIsDeleted()))
-                .where(s -> !s.getOne().getIsDeleted())
-                .group(s -> s.getOne().getId(), (s, t) -> t.count())
-                .select(s -> s.getOne())
-                .findOne()
-                .map(s -> this.UserEntity().where(m -> m.getId().equals(s)).getOnlyValue())
-                .map(s -> this.userFormatter.formatWithMoreInformation(s))
-                .get();
-        return user;
+        var userOptional = this.UserEntity().where(s -> s.getId().equals(userIdOrEmail))
+                .where(s -> !s.getIsDeleted())
+                .findOne();
+        if (userOptional.isPresent()) {
+            return this.userFormatter.formatWithMoreInformation(userOptional.get());
+        }
+
+        var user = this.UserEmailEntity()
+                .where(s -> s.getEmail().equals(userIdOrEmail))
+                .where(s -> !s.getIsDeleted())
+                .where(s -> !s.getUser().getIsDeleted())
+                .select(s -> s.getUser())
+                .getOnlyValue();
+
+        return this.userFormatter.formatWithMoreInformation(user);
     }
 
     public UserModel getUserById(String id) {
