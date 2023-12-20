@@ -11,7 +11,7 @@ import CryptoJS from 'crypto-js';
 export async function signUp(password: string, nickname: string, userEmailList: UserEmailModel[]): Promise<void> {
   const secretKeyOfAESPromise = generateSecretKeyOfAES(password);
   const keyPairPromise = generateKeyPairOfRSA();
-  const secretKeyOfAESOfPasswordPromise = generateSecretKeyOfAES(CryptoJS.MD5(password).toString(CryptoJS.enc.Base64));
+  const secretKeyOfAESOfPasswordPromise = generateSecretKeyOfAES(CryptoJS.SHA3(password).toString(CryptoJS.enc.Base64));
   await Promise.all([secretKeyOfAESPromise, keyPairPromise, secretKeyOfAESOfPasswordPromise]);
   const { privateKey, publicKey } = await keyPairPromise;
   const secretKeyOfAES = await secretKeyOfAESPromise;
@@ -39,7 +39,7 @@ export async function sendVerificationCode(email: string) {
 export async function signIn(userIdOrEmail: string, password: string): Promise<void> {
   await signOut();
   const secretKeyOfAESPromise = generateSecretKeyOfAES(password);
-  const secretKeyOfAESOfPasswordPromise = generateSecretKeyOfAES(CryptoJS.MD5(password).toString(CryptoJS.enc.Base64));
+  const secretKeyOfAESOfPasswordPromise = generateSecretKeyOfAES(CryptoJS.SHA3(password).toString(CryptoJS.enc.Base64));
   await Promise.all([secretKeyOfAESPromise, secretKeyOfAESOfPasswordPromise]);
   let { data: user } = await axios.post<UserModel>(`/sign_in`, null, {
     params: {

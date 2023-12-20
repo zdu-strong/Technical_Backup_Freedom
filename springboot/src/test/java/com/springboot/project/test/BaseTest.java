@@ -216,7 +216,7 @@ public class BaseTest {
                         keyPairOfRSA.getPrivateKeyOfRSA(),
                         this.encryptDecryptService.generateSecretKeyOfAES(password)));
         var secretKeyOfAES = this.encryptDecryptService
-                .generateSecretKeyOfAES(Base64.getEncoder().encodeToString(DigestUtils.md5(password)));
+                .generateSecretKeyOfAES(Base64.getEncoder().encodeToString(DigestUtils.sha3_512(password)));
         userModelOfSignUp.setPassword(this.encryptDecryptService.encryptByAES(secretKeyOfAES, secretKeyOfAES));
         var url = new URIBuilder("/sign_up").build();
         var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(userModelOfSignUp),
@@ -237,7 +237,7 @@ public class BaseTest {
             throws URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException, JsonMappingException,
             JsonProcessingException {
         var passwordParameter = this.encryptDecryptService
-                .generateSecretKeyOfAES(Base64.getEncoder().encodeToString(DigestUtils.md5(password)));
+                .generateSecretKeyOfAES(Base64.getEncoder().encodeToString(DigestUtils.sha3_512(password)));
         var url = new URIBuilder("/sign_in").setParameter("userId", email)
                 .setParameter("password", passwordParameter)
                 .build();
