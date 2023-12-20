@@ -12,11 +12,13 @@ export async function signUp(password: string, nickname: string, userEmailList: 
   const secretKeyOfAESPromise = generateSecretKeyOfAES(password);
   const keyPairPromise = generateKeyPairOfRSA();
   const secretKeyOfAESOfPasswordPromise = generateSecretKeyOfAES(CryptoJS.MD5(password).toString(CryptoJS.enc.Base64));
+  await Promise.all([secretKeyOfAESPromise, keyPairPromise, secretKeyOfAESOfPasswordPromise]);
   const { privateKey, publicKey } = await keyPairPromise;
   const secretKeyOfAES = await secretKeyOfAESPromise;
   const secretKeyOfAESOfPassword = await secretKeyOfAESOfPasswordPromise;
   const privateKeyOfRSAPromise = encryptByAES(secretKeyOfAES, privateKey);
   const passwordParamPromise = encryptByAES(secretKeyOfAESOfPassword, secretKeyOfAESOfPassword);
+  await Promise.all([privateKeyOfRSAPromise, passwordParamPromise]);
   let { data: user } = await axios.post<UserModel>(`/sign_up`, {
     username: nickname,
     userEmailList: userEmailList,
@@ -38,6 +40,7 @@ export async function signIn(userIdOrEmail: string, password: string): Promise<v
   await signOut();
   const secretKeyOfAESPromise = generateSecretKeyOfAES(password);
   const secretKeyOfAESOfPasswordPromise = generateSecretKeyOfAES(CryptoJS.MD5(password).toString(CryptoJS.enc.Base64));
+  await Promise.all([secretKeyOfAESPromise, secretKeyOfAESOfPasswordPromise]);
   let { data: user } = await axios.post<UserModel>(`/sign_in`, null, {
     params: {
       userId: userIdOrEmail,
