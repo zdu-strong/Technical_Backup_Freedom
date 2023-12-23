@@ -1,6 +1,5 @@
 import { StorageSpaceService } from "@/service";
-import { concatMap, lastValueFrom, retry, repeat, timer, of } from "rxjs";
-import { from } from "linq";
+import { concatMap, lastValueFrom, retry, repeat, timer, of, from } from "rxjs";
 import remote from "@/remote";
 
 async function runManageStorageSpace() {
