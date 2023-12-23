@@ -92,7 +92,7 @@
     "inquirer": "8.2.4",
     "linq": "3.2.4",
     "mathjs": "12.1.0",
-    "mobx-react-use-autorun": "4.0.15",
+    "mobx-react-use-autorun": "4.0.17",
     "node-polyfill-webpack-plugin": "2.0.1",
     "postcss": "8.4.31",
     "qs": "6.11.2",
