@@ -17,11 +17,9 @@ public class LongTermTaskUtilTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        var result = this.fromLongTermTask(() -> {
-            return this.longTermTaskUtil.run(() -> {
-                return ResponseEntity.ok().build();
-            }).getBody();
-        }, new ParameterizedTypeReference<LongTermTaskModel<Void>>() {
+        var result = this.fromLongTermTask(() -> this.longTermTaskUtil.run(() -> {
+            return ResponseEntity.ok().build();
+        }), new ParameterizedTypeReference<LongTermTaskModel<Void>>() {
         });
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody().getId());

@@ -254,13 +254,14 @@ public class BaseTest {
         return user;
     }
 
-    protected <T> ResponseEntity<LongTermTaskModel<T>> fromLongTermTask(Supplier<String> supplier,
+    protected <T> ResponseEntity<LongTermTaskModel<T>> fromLongTermTask(Supplier<ResponseEntity<String>> supplier,
             ParameterizedTypeReference<LongTermTaskModel<T>> responseType) {
         var relativeUrlList = new ArrayList<String>();
-        Flowable.fromSupplier(() -> supplier.get()).concatMap((relativeUrl) -> {
-            relativeUrlList.add(relativeUrl);
+        Flowable.fromSupplier(() -> supplier.get()).concatMap((relativeUrlResponse) -> {
+            assertEquals(HttpStatus.ACCEPTED, relativeUrlResponse.getStatusCode());
+            relativeUrlList.add(relativeUrlResponse.getBody());
             while (true) {
-                var url = new URIBuilder(this.testRestTemplate.getRootUri() + relativeUrl).build();
+                var url = new URIBuilder(this.testRestTemplate.getRootUri() + relativeUrlResponse.getBody()).build();
                 var result = new RestTemplate().exchange(url, HttpMethod.GET, new HttpEntity<>(null),
                         new ParameterizedTypeReference<LongTermTaskModel<Object>>() {
                         });

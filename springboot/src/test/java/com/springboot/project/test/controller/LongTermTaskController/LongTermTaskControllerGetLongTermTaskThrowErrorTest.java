@@ -12,11 +12,9 @@ public class LongTermTaskControllerGetLongTermTaskThrowErrorTest extends BaseTes
     @Test
     public void test() throws URISyntaxException {
         assertThrows(RuntimeException.class, () -> {
-            this.fromLongTermTask(() -> {
-                return this.longTermTaskUtil.run(() -> {
-                    throw new RuntimeException("Failed due to insufficient funds");
-                }).getBody();
-            }, new ParameterizedTypeReference<LongTermTaskModel<String>>() {
+            this.fromLongTermTask(() -> this.longTermTaskUtil.run(() -> {
+                throw new RuntimeException("Failed due to insufficient funds");
+            }), new ParameterizedTypeReference<LongTermTaskModel<String>>() {
             });
         });
     }

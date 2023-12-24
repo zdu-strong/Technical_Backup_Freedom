@@ -32,7 +32,7 @@ public class ResourceControllerUploadMergeTest extends BaseTest {
                 var urlOfMerge = new URIBuilder("/upload/merge").build();
                 var responseOfMerge = this.testRestTemplate.postForEntity(urlOfMerge, urlList, String.class);
                 assertEquals(HttpStatus.ACCEPTED, responseOfMerge.getStatusCode());
-                return responseOfMerge.getBody();
+                return responseOfMerge;
             } catch (URISyntaxException e) {
                 throw new RuntimeException(e.getMessage(), e);
             }
