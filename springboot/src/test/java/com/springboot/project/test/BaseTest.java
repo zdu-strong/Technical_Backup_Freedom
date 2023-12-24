@@ -31,6 +31,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.client.RestTemplate;
@@ -253,7 +254,8 @@ public class BaseTest {
         return user;
     }
 
-    protected String fromLongTermTask(Supplier<String> supplier) {
+    protected <T> ResponseEntity<LongTermTaskModel<T>> fromLongTermTask(Supplier<String> supplier,
+            ParameterizedTypeReference<LongTermTaskModel<T>> responseType) {
         var relativeUrlList = new ArrayList<String>();
         Flowable.fromSupplier(() -> supplier.get()).concatMap((relativeUrl) -> {
             relativeUrlList.add(relativeUrl);
@@ -276,9 +278,16 @@ public class BaseTest {
             } else {
                 return false;
             }
-        }).onErrorComplete().blockingSubscribe();
+        }).blockingSubscribe();
         var relativeUrl = JinqStream.from(CollectionUtil.reverseNew(relativeUrlList)).findFirst().get();
-        return relativeUrl;
+        try {
+            var url = new URIBuilder(this.testRestTemplate.getRootUri() + relativeUrl).build();
+            var response = new RestTemplate().exchange(url, HttpMethod.GET, new HttpEntity<>(null),
+                    responseType);
+            return response;
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
 }

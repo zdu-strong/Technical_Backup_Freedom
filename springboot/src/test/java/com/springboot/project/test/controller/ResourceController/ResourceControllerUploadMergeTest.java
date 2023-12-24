@@ -9,18 +9,14 @@ import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
-import com.google.common.collect.Lists;
 import com.springboot.project.common.StorageResource.RangeClassPathResource;
 import com.springboot.project.model.LongTermTaskModel;
 import com.springboot.project.test.BaseTest;
@@ -31,23 +27,17 @@ public class ResourceControllerUploadMergeTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        var urlOfMerge = new URIBuilder("/upload/merge").build();
-        var responseOfMerge = this.testRestTemplate.postForEntity(urlOfMerge, urlList, String.class);
-        assertEquals(HttpStatus.ACCEPTED, responseOfMerge.getStatusCode());
-        var urlOfResource = Flowable.interval(0, 1, TimeUnit.SECONDS).concatMap((s) -> {
-            var urlOfLongTermTask = new URIBuilder(responseOfMerge.getBody()).build();
-            var responseOfLongTermTask = this.testRestTemplate.exchange(urlOfLongTermTask, HttpMethod.GET,
-                    new HttpEntity<>(null),
-                    new ParameterizedTypeReference<LongTermTaskModel<String>>() {
-                    });
-            assertTrue(Lists.newArrayList(HttpStatus.OK, HttpStatus.ACCEPTED)
-                    .contains(responseOfLongTermTask.getStatusCode()));
-            if (responseOfLongTermTask.getBody().getIsDone()) {
-                return Flowable.just(responseOfLongTermTask.getBody().getResult());
-            } else {
-                return Flowable.empty();
+        var urlOfResource = this.fromLongTermTask(() -> {
+            try {
+                var urlOfMerge = new URIBuilder("/upload/merge").build();
+                var responseOfMerge = this.testRestTemplate.postForEntity(urlOfMerge, urlList, String.class);
+                assertEquals(HttpStatus.ACCEPTED, responseOfMerge.getStatusCode());
+                return responseOfMerge.getBody();
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e.getMessage(), e);
             }
-        }).take(1).blockingSingle();
+        }, new ParameterizedTypeReference<LongTermTaskModel<String>>() {
+        }).getBody().getResult();
         assertTrue(urlOfResource.startsWith("/resource/"));
         var result = this.testRestTemplate.getForEntity(new URIBuilder(urlOfResource).build(), byte[].class);
         assertEquals(HttpStatus.OK, result.getStatusCode());

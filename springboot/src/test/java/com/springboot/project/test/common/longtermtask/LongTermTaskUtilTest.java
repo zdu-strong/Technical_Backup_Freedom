@@ -1,26 +1,35 @@
 package com.springboot.project.test.common.longtermtask;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.springboot.project.model.LongTermTaskModel;
 import com.springboot.project.test.BaseTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.net.URISyntaxException;
-import org.apache.http.client.utils.URIBuilder;
 
 public class LongTermTaskUtilTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        var relativeUrl = this.fromLongTermTask(() -> {
+        var result = this.fromLongTermTask(() -> {
             return this.longTermTaskUtil.run(() -> {
                 return ResponseEntity.ok().build();
             }).getBody();
+        }, new ParameterizedTypeReference<LongTermTaskModel<Void>>() {
         });
-        var url = new URIBuilder(relativeUrl).build();
-        var result = this.testRestTemplate.getForEntity(url, JsonNode.class);
         assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertNotNull(result.getBody().getId());
+        assertEquals(36, result.getBody().getId().length());
+        assertTrue(result.getBody().getIsDone());
+        assertNotNull(result.getBody().getCreateDate());
+        assertNotNull(result.getBody().getUpdateDate());
+        assertNull(result.getBody().getResult());
     }
 
 }
