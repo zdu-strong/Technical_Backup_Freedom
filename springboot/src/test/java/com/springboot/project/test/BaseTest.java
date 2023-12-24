@@ -268,7 +268,7 @@ public class BaseTest {
                 if (result.getBody().getIsDone()) {
                     break;
                 }
-                Thread.sleep(1000);
+                Thread.sleep(1);
             }
             return Flowable.empty();
         }).retry(s -> {

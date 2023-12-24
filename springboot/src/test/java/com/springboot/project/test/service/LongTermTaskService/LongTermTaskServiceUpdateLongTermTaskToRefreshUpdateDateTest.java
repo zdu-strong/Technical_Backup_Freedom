@@ -28,7 +28,7 @@ public class LongTermTaskServiceUpdateLongTermTaskToRefreshUpdateDateTest extend
         this.longTermtaskId = this.longTermTaskService.createLongTermTask();
         this.updateDate = ((LongTermTaskModel<?>) this.longTermTaskService.getLongTermTask(this.longTermtaskId)
                 .getBody()).getUpdateDate();
-        Thread.sleep(1000);
+        Thread.sleep(1);
     }
 
 }

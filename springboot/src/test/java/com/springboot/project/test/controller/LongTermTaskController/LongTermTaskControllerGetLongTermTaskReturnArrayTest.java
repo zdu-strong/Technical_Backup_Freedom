@@ -18,12 +18,6 @@ public class LongTermTaskControllerGetLongTermTaskReturnArrayTest extends BaseTe
     @Test
     public void test() throws URISyntaxException {
         var result = this.fromLongTermTask(() -> this.longTermTaskUtil.run(() -> {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e.getMessage(), e);
-            }
-
             var httpHeaders = new HttpHeaders();
             httpHeaders.addAll("MyCustomHeader", Lists.newArrayList("Hello, World!"));
             httpHeaders.set("MySecondCustomHeader", "Hello, World!");
