@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.ArrayDeque;
 import java.util.Calendar;
 import java.util.Date;
 import org.apache.commons.lang3.ArrayUtils;
@@ -27,7 +28,8 @@ import com.springboot.project.common.StorageResource.RangeCloudStorageUrlResourc
 import com.springboot.project.common.StorageResource.SequenceResource;
 import com.springboot.project.common.storage.BaseStorage;
 import com.springboot.project.properties.AliyunCloudStorageProperties;
-import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.BackpressureStrategy;
+import io.reactivex.rxjava3.core.Flowable;
 
 @Component
 public class AliyunCloudStorage extends BaseStorage implements CloudStorageInterface {
@@ -170,19 +172,36 @@ public class AliyunCloudStorage extends BaseStorage implements CloudStorageInter
     }
 
     @Override
-    public Observable<String> getRootList() {
+    public Flowable<String> getRootList() {
         return getList("").map(s -> this.getFileNameFromResource(new FileSystemResource(s)));
     }
 
-    private Observable<String> getList(String prefix) {
-        return Observable.create((emitter) -> {
+    private Flowable<String> getList(String prefix) {
+        return Flowable.<String>create((emitter) -> {
             try {
                 String nextContinuationToken = null;
                 ListObjectsV2Result result = null;
+                var requestedCount = 0L;
+                var deque = new ArrayDeque<String>();
                 do {
-                    if (emitter.isDisposed()) {
+                    if (emitter.isCancelled()) {
                         return;
                     }
+                    requestedCount += emitter.requested();
+                    if (requestedCount == 0) {
+                        Thread.sleep(1);
+                        continue;
+                    }
+                    if (!deque.isEmpty()) {
+                        emitter.onNext(deque.poll());
+                        requestedCount--;
+                        continue;
+                    }
+
+                    if (result != null && !result.isTruncated()) {
+                        break;
+                    }
+
                     ListObjectsV2Request listObjectsV2Request = new ListObjectsV2Request(
                             this.aliyunCloudStorageProperties.getBucketName()).withMaxKeys(200);
                     listObjectsV2Request.setPrefix(prefix);
@@ -195,28 +214,22 @@ public class AliyunCloudStorage extends BaseStorage implements CloudStorageInter
                         ossClient.shutdown();
                     }
                     for (OSSObjectSummary objectSummary : result.getObjectSummaries()) {
-                        if (emitter.isDisposed()) {
-                            return;
-                        }
-                        emitter.onNext(objectSummary.getKey());
-                        Thread.sleep(0);
+                        deque.push(objectSummary.getKey());
                     }
 
                     for (String commonPrefix : result.getCommonPrefixes()) {
-                        if (emitter.isDisposed()) {
-                            return;
-                        }
-                        emitter.onNext(commonPrefix);
-                        Thread.sleep(0);
+                        deque.push(commonPrefix);
                     }
 
                     nextContinuationToken = result.getNextContinuationToken();
-                } while (result.isTruncated());
+                } while (true);
                 emitter.onComplete();
             } catch (Throwable e) {
                 emitter.onError(e);
             }
-        });
+
+        }, BackpressureStrategy.BUFFER)
+                .onBackpressureBuffer(100);
     }
 
     private OSS getOssClientClient() {

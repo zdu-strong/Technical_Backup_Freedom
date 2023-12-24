@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -12,7 +11,7 @@ import com.springboot.project.common.storage.Storage;
 import com.springboot.project.properties.IsTestOrDevModeProperties;
 import com.springboot.project.service.DistributedExecutionService;
 import com.springboot.project.service.StorageSpaceService;
-import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Flowable;
 
 @Component
 public class StorageSpaceScheduled {
@@ -52,11 +51,11 @@ public class StorageSpaceScheduled {
 
     public void cleanDiskStorage() {
         this.storage.listRoots().concatMap(folderName -> {
-            return Observable.just("").concatMap((s) -> {
+            return Flowable.just("").concatMap((s) -> {
                 if (!this.storageSpaceService.isUsed(folderName)) {
                     this.storageSpaceService.deleteStorageSpaceEntity(folderName);
                 }
-                return Observable.empty();
+                return Flowable.empty();
             }).retry(10);
         }).blockingSubscribe();
     }
@@ -64,7 +63,7 @@ public class StorageSpaceScheduled {
     public void cleanDatabaseStorage() {
         Long pageNumOfGlobal = null;
         while (true) {
-            var pageNumOfThis = Observable.just("")
+            var pageNumOfThis = Flowable.just("")
                     .concatMap(s -> {
                         long pageNum = this.distributedExecutionService.getDistributedExecutionOfStorageSpace(pageSize)
                                 .getPageNum();
@@ -76,7 +75,7 @@ public class StorageSpaceScheduled {
                                 this.storageSpaceService.deleteStorageSpaceEntity(storageSpaceModel.getFolderName());
                             }
                         }
-                        return Observable.just(pageNum);
+                        return Flowable.just(pageNum);
                     })
                     .retry(1000)
                     .blockingLast();

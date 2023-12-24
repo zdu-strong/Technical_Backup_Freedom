@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.LongTermTaskService;
-import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Flowable;
 
 @Component
 public class LongTermTaskUtil {
@@ -31,14 +31,14 @@ public class LongTermTaskUtil {
     public ResponseEntity<String> run(Supplier<ResponseEntity<?>> supplier) {
         String idOfLongTermTask = this.longTermTaskService.createLongTermTask();
         Thread.startVirtualThread(() -> {
-            var subscription = Observable.timer(1, TimeUnit.SECONDS).concatMap((a) -> {
+            var subscription = Flowable.timer(1, TimeUnit.SECONDS).concatMap((a) -> {
                 Thread.startVirtualThread(() -> {
                     synchronized (idOfLongTermTask) {
                         this.longTermTaskService.updateLongTermTaskToRefreshUpdateDate(idOfLongTermTask);
                     }
                 }).join();
 
-                return Observable.empty();
+                return Flowable.empty();
             }).repeat().retry().subscribe();
             try {
                 var result = supplier.get();

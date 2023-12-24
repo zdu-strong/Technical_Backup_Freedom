@@ -23,7 +23,7 @@ import com.springboot.project.common.CloudStorage.CloudStorageImplement;
 import com.springboot.project.model.ResourceAccessLegalModel;
 import com.springboot.project.properties.StorageRootPathProperties;
 import com.springboot.project.service.EncryptDecryptService;
-import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Flowable;
 
 @Component
 public class BaseStorage {
@@ -42,16 +42,15 @@ public class BaseStorage {
 
     protected String storageRootPath;
 
-    public Observable<String> listRoots() {
+    public Flowable<String> listRoots() {
         var list = new File(this.getRootPath()).list();
         if (list == null) {
             list = new String[] {};
         }
         if (this.cloud.enabled()) {
-            return Observable.concat(Observable.fromArray(list),
-                    this.cloud.getRootList());
+            return Flowable.concat(Flowable.fromArray(list), this.cloud.getRootList());
         } else {
-            return Observable.fromArray(list);
+            return Flowable.fromArray(list);
         }
     }
 

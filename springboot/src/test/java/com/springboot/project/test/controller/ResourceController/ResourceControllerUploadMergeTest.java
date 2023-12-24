@@ -24,7 +24,7 @@ import com.google.common.collect.Lists;
 import com.springboot.project.common.StorageResource.RangeClassPathResource;
 import com.springboot.project.model.LongTermTaskModel;
 import com.springboot.project.test.BaseTest;
-import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Flowable;
 
 public class ResourceControllerUploadMergeTest extends BaseTest {
     private List<String> urlList;
@@ -34,7 +34,7 @@ public class ResourceControllerUploadMergeTest extends BaseTest {
         var urlOfMerge = new URIBuilder("/upload/merge").build();
         var responseOfMerge = this.testRestTemplate.postForEntity(urlOfMerge, urlList, String.class);
         assertEquals(HttpStatus.ACCEPTED, responseOfMerge.getStatusCode());
-        var urlOfResource = Observable.interval(0, 1, TimeUnit.SECONDS).concatMap((s) -> {
+        var urlOfResource = Flowable.interval(0, 1, TimeUnit.SECONDS).concatMap((s) -> {
             var urlOfLongTermTask = new URIBuilder(responseOfMerge.getBody()).build();
             var responseOfLongTermTask = this.testRestTemplate.exchange(urlOfLongTermTask, HttpMethod.GET,
                     new HttpEntity<>(null),
@@ -43,9 +43,9 @@ public class ResourceControllerUploadMergeTest extends BaseTest {
             assertTrue(Lists.newArrayList(HttpStatus.OK, HttpStatus.ACCEPTED)
                     .contains(responseOfLongTermTask.getStatusCode()));
             if (responseOfLongTermTask.getBody().getIsDone()) {
-                return Observable.just(responseOfLongTermTask.getBody().getResult());
+                return Flowable.just(responseOfLongTermTask.getBody().getResult());
             } else {
-                return Observable.empty();
+                return Flowable.empty();
             }
         }).take(1).blockingSingle();
         assertTrue(urlOfResource.startsWith("/resource/"));
@@ -67,7 +67,7 @@ public class ResourceControllerUploadMergeTest extends BaseTest {
     public void beforeEach() throws IOException {
         var imageResource = new ClassPathResource("image/default.jpg");
         var everySize = 100;
-        this.urlList = Observable
+        this.urlList = Flowable
                 .range(0,
                         new BigDecimal(imageResource.contentLength()).divide(new BigDecimal(everySize))
                                 .setScale(0, RoundingMode.CEILING).intValue())

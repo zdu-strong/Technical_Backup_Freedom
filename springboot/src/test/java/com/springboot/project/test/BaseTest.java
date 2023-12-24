@@ -66,7 +66,7 @@ import com.springboot.project.service.UserMessageService;
 import com.springboot.project.service.UserService;
 import com.springboot.project.service.VerificationCodeEmailService;
 import cn.hutool.core.collection.CollectionUtil;
-import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Flowable;
 
 /**
  * 
@@ -255,7 +255,7 @@ public class BaseTest {
 
     protected String fromLongTermTask(Supplier<String> supplier) {
         var relativeUrlList = new ArrayList<String>();
-        Observable.fromSupplier(() -> supplier.get()).concatMap((relativeUrl) -> {
+        Flowable.fromSupplier(() -> supplier.get()).concatMap((relativeUrl) -> {
             relativeUrlList.add(relativeUrl);
             while (true) {
                 var url = new URIBuilder(this.testRestTemplate.getRootUri() + relativeUrl).build();
@@ -267,7 +267,7 @@ public class BaseTest {
                 }
                 Thread.sleep(1000);
             }
-            return Observable.empty();
+            return Flowable.empty();
         }).retry(s -> {
             if (s.getMessage().contains("The task failed because it stopped")) {
                 return true;
