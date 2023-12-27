@@ -53,7 +53,7 @@ export async function signIn(userIdOrEmail: string, password: string): Promise<v
 }
 
 export async function signOut() {
-  if (isSignIn()) {
+  if (await isSignIn()) {
     try {
       await axios.post("/sign_out");
     } catch {
@@ -63,6 +63,17 @@ export async function signOut() {
   }
 }
 
-export function isSignIn() {
-  return !!getAccessToken();
+export async function isSignIn() {
+  if (!getAccessToken()) {
+    return false;
+  }
+  try {
+    await axios.get("/get_user_info");
+  } catch (e) {
+    if (e && (e as any).status === 401) {
+      await removeGlobalUserInfo();
+      return false;
+    }
+  }
+  return true;
 }

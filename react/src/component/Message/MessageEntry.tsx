@@ -46,7 +46,7 @@ export default observer(() => {
     subscription.add(timer(1).pipe(
       concatMap(() => from((async () => {
         try {
-          if (!api.Authorization.isSignIn()) {
+          if (!(await api.Authorization.isSignIn())) {
             await api.Authorization.signUp(v1(), "visitor", []);
           }
           state.readyForStart = true;
