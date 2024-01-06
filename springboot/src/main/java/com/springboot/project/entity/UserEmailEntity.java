@@ -18,7 +18,8 @@ import lombok.experimental.Accessors;
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = { "email", "deletedKey" })
 }, indexes = {
-        @Index(columnList = "email, isDeleted")
+        @Index(columnList = "email, isDeleted"),
+        @Index(columnList = "id, isDeleted")
 })
 @Getter
 @Setter
