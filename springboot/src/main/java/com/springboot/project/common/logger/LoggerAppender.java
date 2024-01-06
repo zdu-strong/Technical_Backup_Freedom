@@ -60,10 +60,10 @@ public class LoggerAppender extends AppenderBase<ILoggingEvent> {
                 .findFirst().get();
         var callerClassName = stackTraceElement.getClassName();
         var callerMethodName = stackTraceElement.getMethodName();
-        var callerLineNumber = stackTraceElement.getLineNumber();
+        var callerLineNumber = Integer.valueOf(stackTraceElement.getLineNumber()).longValue();
         loggerModel.setCallerClassName(callerClassName);
         loggerModel.setCallerMethodName(callerMethodName);
-        loggerModel.setCallerLineNumber(Integer.valueOf(callerLineNumber).longValue());
+        loggerModel.setCallerLineNumber(callerLineNumber);
         Thread.startVirtualThread(() -> {
             try {
                 loggerService.createLogger(loggerModel);
