@@ -15,7 +15,7 @@ public class StorageFileModel {
      */
     private String fileName;
 
-    private long folderSize;
+    private Long folderSize;
 
     private String relativePath;
 

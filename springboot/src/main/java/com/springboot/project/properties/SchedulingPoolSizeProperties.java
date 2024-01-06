@@ -11,6 +11,6 @@ import lombok.Setter;
 public class SchedulingPoolSizeProperties {
 
     @Value("${spring.task.scheduling.pool.size}")
-    private Integer schedulingPoolSize;
+    private Long schedulingPoolSize;
 
 }

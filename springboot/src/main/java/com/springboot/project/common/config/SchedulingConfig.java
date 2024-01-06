@@ -19,7 +19,8 @@ public class SchedulingConfig implements SchedulingConfigurer {
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         taskRegistrar.setTaskScheduler(new ConcurrentTaskScheduler(Executors.newScheduledThreadPool(
-                schedulingPoolSizeProperties.getSchedulingPoolSize(), Thread.ofVirtual().factory())));
+                Long.valueOf(schedulingPoolSizeProperties.getSchedulingPoolSize()).intValue(),
+                Thread.ofVirtual().factory())));
     }
 
 }

@@ -37,6 +37,6 @@ public class LoggerModel {
 
     private String callerMethodName;
 
-    private Integer callerLineNumber;
+    private Long callerLineNumber;
 
 }

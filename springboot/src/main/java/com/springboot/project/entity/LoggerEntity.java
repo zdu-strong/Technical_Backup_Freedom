@@ -37,7 +37,7 @@ public class LoggerEntity {
     private String callerMethodName;
 
     @Column(nullable = false)
-    private Integer callerLineNumber;
+    private Long callerLineNumber;
 
     @Column(nullable = false)
     private String gitCommitId;

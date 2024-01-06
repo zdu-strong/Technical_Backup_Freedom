@@ -52,7 +52,7 @@ public class LoggerServiceCreateLoggerTest extends BaseTest {
                 .setGitCommitDate(Date.from(this.gitProperties.getCommitTime()))
                 .setCallerClassName("com.springboot.project.controller.HelloWorldController")
                 .setCallerMethodName("helloWorld")
-                .setCallerLineNumber(15);
+                .setCallerLineNumber(15L);
     }
 
 }

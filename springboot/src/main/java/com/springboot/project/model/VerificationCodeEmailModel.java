@@ -13,7 +13,7 @@ public class VerificationCodeEmailModel {
     private String id;
     private String email;
     private String verificationCode;
-    private Integer verificationCodeLength;
+    private Long verificationCodeLength;
     private Boolean hasUsed;
     private Boolean isPassed;
     private Date createDate;

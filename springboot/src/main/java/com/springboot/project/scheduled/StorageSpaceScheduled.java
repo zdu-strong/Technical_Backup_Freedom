@@ -65,7 +65,7 @@ public class StorageSpaceScheduled {
         while (true) {
             var pageNumOfThis = Flowable.just("")
                     .concatMap(s -> {
-                        long pageNum = this.distributedExecutionService.getDistributedExecutionOfStorageSpace(pageSize)
+                        var pageNum = this.distributedExecutionService.getDistributedExecutionOfStorageSpace(pageSize)
                                 .getPageNum();
                         var list = this.storageSpaceService
                                 .getStorageSpaceListByPagination(pageNum, pageSize)
