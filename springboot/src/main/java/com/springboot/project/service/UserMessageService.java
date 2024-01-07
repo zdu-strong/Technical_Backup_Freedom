@@ -2,7 +2,6 @@ package com.springboot.project.service;
 
 import java.util.Date;
 import java.util.List;
-import com.fasterxml.uuid.Generators;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import com.springboot.project.entity.UserMessageEntity;
@@ -16,7 +15,7 @@ public class UserMessageService extends BaseService {
         var userId = userMessageModel.getUser().getId();
         var userEntity = this.UserEntity().where(s -> s.getId().equals(userId)).getOnlyValue();
         var userMessageEntity = new UserMessageEntity();
-        userMessageEntity.setId(Generators.timeBasedGenerator().generate().toString());
+        userMessageEntity.setId(newId());
         userMessageEntity.setCreateDate(new Date());
         userMessageEntity.setUpdateDate(new Date());
         userMessageEntity.setContent(userMessageModel.getContent());

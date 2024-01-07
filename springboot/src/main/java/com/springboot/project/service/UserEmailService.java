@@ -4,7 +4,6 @@ import java.util.Date;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import com.fasterxml.uuid.Generators;
 import com.springboot.project.entity.UserEmailEntity;
 
 @Service
@@ -16,7 +15,7 @@ public class UserEmailService extends BaseService {
                 .where(s -> !s.getIsDeleted())
                 .getOnlyValue();
         UserEmailEntity userEmailEntity = new UserEmailEntity();
-        userEmailEntity.setId(Generators.timeBasedGenerator().generate().toString());
+        userEmailEntity.setId(newId());
         userEmailEntity.setEmail(email);
         userEmailEntity.setUser(userEntity);
         userEmailEntity.setCreateDate(new Date());

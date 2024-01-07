@@ -1,7 +1,6 @@
 package com.springboot.project.service;
 
 import java.util.Date;
-import com.fasterxml.uuid.Generators;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,7 @@ public class UserService extends BaseService {
     public UserModel signUp(UserModel userModel) {
 
         var userEntity = new UserEntity();
-        userEntity.setId(Generators.timeBasedGenerator().generate().toString());
+        userEntity.setId(newId());
         userEntity.setUsername(userModel.getUsername());
         userEntity.setPrivateKeyOfRSA(userModel.getPrivateKeyOfRSA());
         userEntity.setPublicKeyOfRSA(userModel.getPublicKeyOfRSA());

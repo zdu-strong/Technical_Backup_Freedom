@@ -43,7 +43,7 @@ public class DistributedExecutionService extends BaseService {
     private DistributedExecutionModel createDistributedExecution(DistributedExecutionEnum distributedExecutionEnum,
             String version, Long pageNum, Long pageSize) {
         var distributedExecutionEntity = new DistributedExecutionEntity();
-        distributedExecutionEntity.setId(Generators.timeBasedGenerator().generate().toString());
+        distributedExecutionEntity.setId(newId());
         distributedExecutionEntity.setName(distributedExecutionEnum.name());
         if (StringUtils.isBlank(version)) {
             var simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

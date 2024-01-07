@@ -16,7 +16,7 @@ public class OrganizeService extends BaseService {
     public OrganizeModel create(OrganizeModel organizeModel) {
         var parentOrganize = this.getParentOrganize(organizeModel);
         var organizeEntity = new OrganizeEntity();
-        organizeEntity.setId(Generators.timeBasedGenerator().generate().toString());
+        organizeEntity.setId(newId());
         organizeEntity.setName(organizeModel.getName());
         organizeEntity.setIsDeleted(false);
         organizeEntity

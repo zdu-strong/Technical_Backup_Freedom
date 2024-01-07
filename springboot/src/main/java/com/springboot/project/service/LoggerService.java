@@ -3,7 +3,6 @@ package com.springboot.project.service;
 import java.util.Date;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.uuid.Generators;
 import com.springboot.project.entity.LoggerEntity;
 import com.springboot.project.model.LoggerModel;
 
@@ -12,7 +11,7 @@ public class LoggerService extends BaseService {
 
     public LoggerModel createLogger(LoggerModel loggerModel) {
         var loggerEntity = new LoggerEntity();
-        loggerEntity.setId(Generators.timeBasedGenerator().generate().toString());
+        loggerEntity.setId(newId());
         loggerEntity.setCreateDate(new Date());
         loggerEntity.setUpdateDate(new Date());
         loggerEntity.setMessage(loggerModel.getMessage());

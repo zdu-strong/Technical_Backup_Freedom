@@ -2,7 +2,6 @@ package com.springboot.project.service;
 
 import java.util.Date;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.uuid.Generators;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,7 @@ import com.springboot.project.entity.LongTermTaskEntity;
 public class LongTermTaskService extends BaseService {
     public String createLongTermTask() {
         LongTermTaskEntity longTermTaskEntity = new LongTermTaskEntity();
-        longTermTaskEntity.setId(Generators.timeBasedGenerator().generate().toString());
+        longTermTaskEntity.setId(newId());
         longTermTaskEntity.setCreateDate(new Date());
         longTermTaskEntity.setUpdateDate(new Date());
         longTermTaskEntity.setIsDone(false);

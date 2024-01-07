@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.TimeZoneUtil.TimeZoneUtil;
 import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.common.storage.Storage;
@@ -144,6 +145,10 @@ public abstract class BaseService {
             }
         }
         return this.jinqJPAStreamProvider.streamAll(entityManager, entity);
+    }
+
+    protected String newId(){
+        return Generators.defaultTimeBasedGenerator().generate().toString();
     }
 
 }

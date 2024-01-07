@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
-import com.fasterxml.uuid.Generators;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -68,7 +67,7 @@ public class VerificationCodeEmailService extends BaseService {
         }
 
         var verificationCodeEmailEntity = new VerificationCodeEmailEntity();
-        verificationCodeEmailEntity.setId(Generators.timeBasedGenerator().generate().toString());
+        verificationCodeEmailEntity.setId(newId());
         verificationCodeEmailEntity.setEmail(email);
         verificationCodeEmailEntity.setVerificationCode(verificationCode);
         verificationCodeEmailEntity.setHasUsed(false);

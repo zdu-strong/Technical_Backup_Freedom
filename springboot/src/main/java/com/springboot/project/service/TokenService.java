@@ -1,6 +1,5 @@
 package com.springboot.project.service;
 
-import com.fasterxml.uuid.Generators;
 import java.util.Date;
 import org.springframework.stereotype.Service;
 import com.springboot.project.entity.*;
@@ -12,7 +11,7 @@ public class TokenService extends BaseService {
         var user = this.UserEntity().where(s -> s.getId().equals(userId)).getOnlyValue();
 
         var tokenEntity = new TokenEntity();
-        tokenEntity.setId(Generators.timeBasedGenerator().generate().toString());
+        tokenEntity.setId(newId());
         tokenEntity.setJwtId(jwtId);
         tokenEntity.setUser(user);
         tokenEntity.setCreateDate(new Date());

@@ -4,7 +4,6 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Calendar;
 import java.util.Date;
-import com.fasterxml.uuid.Generators;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import com.springboot.project.entity.StorageSpaceEntity;
@@ -72,7 +71,7 @@ public class StorageSpaceService extends BaseService {
             return this.storageSpaceFormatter.format(storageSpaceEntity);
         } else {
             StorageSpaceEntity storageSpaceEntity = new StorageSpaceEntity();
-            storageSpaceEntity.setId(Generators.timeBasedGenerator().generate().toString());
+            storageSpaceEntity.setId(newId());
             storageSpaceEntity.setFolderName(folderName);
             storageSpaceEntity.setCreateDate(new Date());
             storageSpaceEntity.setUpdateDate(new Date());

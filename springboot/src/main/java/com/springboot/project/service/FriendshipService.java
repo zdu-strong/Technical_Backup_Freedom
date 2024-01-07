@@ -3,7 +3,6 @@ package com.springboot.project.service;
 import java.util.Date;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.stereotype.Service;
-import com.fasterxml.uuid.Generators;
 import com.springboot.project.entity.FriendshipEntity;
 import com.springboot.project.model.FriendshipModel;
 import com.springboot.project.model.PaginationModel;
@@ -42,7 +41,7 @@ public class FriendshipService extends BaseService {
                     .getOnlyValue();
 
             var friendshipEntity = new FriendshipEntity();
-            friendshipEntity.setId(Generators.timeBasedGenerator().generate().toString());
+            friendshipEntity.setId(newId());
             friendshipEntity.setIsFriend(false);
             friendshipEntity.setIsInBlacklist(false);
             friendshipEntity.setCreateDate(new Date());
@@ -66,7 +65,7 @@ public class FriendshipService extends BaseService {
                         .getOnlyValue();
 
                 var friendshipEntity = new FriendshipEntity();
-                friendshipEntity.setId(Generators.timeBasedGenerator().generate().toString());
+                friendshipEntity.setId(newId());
                 friendshipEntity.setIsFriend(false);
                 friendshipEntity.setIsInBlacklist(false);
                 friendshipEntity.setCreateDate(new Date());
