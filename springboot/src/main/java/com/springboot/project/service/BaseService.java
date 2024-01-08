@@ -1,10 +1,14 @@
 package com.springboot.project.service;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceContext;
+import org.hibernate.exception.GenericJDBCException;
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.jpa.JinqJPAStreamProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +30,8 @@ import com.springboot.project.format.VerificationCodeEmailFormatter;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
+@Retryable(retryFor = { CannotAcquireLockException.class, GenericJDBCException.class,
+        OptimisticLockException.class }, maxAttempts = 1000)
 public abstract class BaseService {
 
     private JinqJPAStreamProvider jinqJPAStreamProvider;
@@ -147,8 +153,8 @@ public abstract class BaseService {
         return this.jinqJPAStreamProvider.streamAll(entityManager, entity);
     }
 
-    protected String newId(){
-        return Generators.timeBasedReorderedGenerator().generate().toString();
+    protected String newId() {
+        return new StringBuilder(Generators.timeBasedReorderedGenerator().generate().toString()).reverse().toString();
     }
 
 }

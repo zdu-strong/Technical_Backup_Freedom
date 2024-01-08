@@ -39,10 +39,10 @@ public class SpringbootProjectApplication {
         while (true) {
             var newDatabaseName = getANewDatabaseName();
             var oldDatabaseName = getANewDatabaseName();
+            createDatabase(oldDatabaseName);
+            createDatabase(newDatabaseName);
             buildNewDatabase(newDatabaseName);
             var isCreateChangeLogFileOfThis = diffDatabase(newDatabaseName, oldDatabaseName);
-            deleteDatabase(oldDatabaseName);
-            deleteDatabase(newDatabaseName);
 
             if (!isCreateChangeLogFileOfThis) {
                 break;
@@ -70,7 +70,7 @@ public class SpringbootProjectApplication {
             command.add("/bin/bash");
             command.add("-c");
         }
-        command.add("mvn clean compile spring-boot:run --define database.mysql.name=" + newDatabaseName);
+        command.add("mvn clean compile spring-boot:run --define database.cockroachdb.name=" + newDatabaseName);
         var processBuilder = new ProcessBuilder(command)
                 .inheritIO()
                 .directory(new File(getBaseFolderPath()));
@@ -114,7 +114,7 @@ public class SpringbootProjectApplication {
         var filePathOfDiffChangeLogFile = Paths
                 .get(getBaseFolderPath(), "src/main/resources", "liquibase/changelog",
                         simpleDateFormat.format(today).substring(0, 10),
-                        simpleDateFormat.format(today) + "_changelog.mysql.sql")
+                        simpleDateFormat.format(today) + "_changelog.cockroachdb.sql")
                 .normalize().toString().replaceAll(Pattern.quote("\\"), "/");
         var isCreateFolder = !existFolder(Paths.get(filePathOfDiffChangeLogFile, "..").normalize().toString());
 
@@ -131,7 +131,7 @@ public class SpringbootProjectApplication {
             command.add("-c");
         }
         command.add(
-                "mvn clean compile liquibase:update liquibase:diff --define database.mysql.name=" + oldDatabaseName);
+                "mvn clean compile liquibase:update liquibase:diff --define database.cockroachdb.name=" + oldDatabaseName);
         var processBuilder = new ProcessBuilder(command)
                 .inheritIO()
                 .directory(new File(getBaseFolderPath()));
@@ -200,7 +200,7 @@ public class SpringbootProjectApplication {
         }
     }
 
-    public static void deleteDatabase(String databaseName) throws IOException, InterruptedException {
+    public static void createDatabase(String databaseName) throws IOException, InterruptedException {
         var command = new ArrayList<String>();
         if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
             command.add("cmd");
@@ -209,7 +209,7 @@ public class SpringbootProjectApplication {
             command.add("/bin/bash");
             command.add("-c");
         }
-        command.add("mvn clean compile sql:execute --define database.mysql.name=" + databaseName);
+        command.add("mvn clean compile sql:execute --define database.cockroachdb.name=" + databaseName);
         var processBuilder = new ProcessBuilder(command)
                 .inheritIO()
                 .directory(new File(getBaseFolderPath()));

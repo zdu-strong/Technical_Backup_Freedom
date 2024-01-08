@@ -20,14 +20,15 @@
         <storage.root.path>default</storage.root.path>
         <is.test.or.dev.mode>true</is.test.or.dev.mode>
         <resource.delimiter>${}</resource.delimiter>
-        <database.mysql.jdbc.url>localhost:3306</database.mysql.jdbc.url>
-        <database.mysql.name>springboot_dev</database.mysql.name>
-        <database.mysql.username>root</database.mysql.username>
-        <database.mysql.password>123456</database.mysql.password>
-        <database.mysql.driver>com.mysql.cj.jdbc.Driver
-        </database.mysql.driver>
-        <database.mysql.platform>com.springboot.project.common.database.CustomMySQLDialect
-        </database.mysql.platform>
+        <database.cockroachdb.jdbc.url>localhost:26257</database.cockroachdb.jdbc.url>
+        <database.cockroachdb.name>defaultdb</database.cockroachdb.name>
+        <database.cockroachdb.username>root</database.cockroachdb.username>
+        <database.cockroachdb.password>123456</database.cockroachdb.password>
+        <database.cockroachdb.driver>org.postgresql.Driver
+        </database.cockroachdb.driver>
+        <database.cockroachdb.platform>
+            com.springboot.project.common.database.CustomCockroachdbDialect
+        </database.cockroachdb.platform>
         <storage.cloud.aliyun.enabled>false</storage.cloud.aliyun.enabled>
         <storage.cloud.aliyun.endpoint></storage.cloud.aliyun.endpoint>
         <storage.cloud.aliyun.bucketName></storage.cloud.aliyun.bucketName>
@@ -84,12 +85,16 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
             <artifactId>httpclient5</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
         </dependency>
         <dependency>
             <groupId>io.reactivex.rxjava3</groupId>
@@ -191,26 +196,26 @@
                         liquibase/index.xml
                     </changeLogFile>
                     <url>
-                        jdbc:mysql://${database.mysql.jdbc.url}/${database.mysql.name}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true
+                        jdbc:postgresql://${database.cockroachdb.jdbc.url}/${database.cockroachdb.name}
                     </url>
                     <driver>
-                        ${database.mysql.driver}</driver>
-                    <username>${database.mysql.username}</username>
+                        ${database.cockroachdb.driver}</driver>
+                    <username>${database.cockroachdb.username}</username>
                     <password>
-                        ${database.mysql.password}</password>
+                        ${database.cockroachdb.password}</password>
                     <referenceUrl>
-                        jdbc:mysql://${database.mysql.jdbc.url}/${env.LIQUIBASE_REFERENCE_DATABASE_NAME}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true</referenceUrl>
+                        jdbc:postgresql://${database.cockroachdb.jdbc.url}/${env.LIQUIBASE_REFERENCE_DATABASE_NAME}</referenceUrl>
                     <referenceDriver>
-                        ${database.mysql.driver}</referenceDriver>
-                    <referenceUsername>${database.mysql.username}</referenceUsername>
+                        ${database.cockroachdb.driver}</referenceDriver>
+                    <referenceUsername>${database.cockroachdb.username}</referenceUsername>
                     <referencePassword>
-                        ${database.mysql.password}</referencePassword>
+                        ${database.cockroachdb.password}</referencePassword>
                 </configuration>
                 <dependencies>
                     <dependency>
-                        <groupId>com.mysql</groupId>
-                        <artifactId>mysql-connector-j</artifactId>
-                        <version>${mysql.version}</version>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>${postgresql.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -224,21 +229,23 @@
                 <version>1.5</version>
                 <dependencies>
                     <dependency>
-                        <groupId>com.mysql</groupId>
-                        <artifactId>mysql-connector-j</artifactId>
-                        <version>${mysql.version}</version>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>${postgresql.version}</version>
                     </dependency>
                 </dependencies>
                 <configuration>
                     <driver>
-                        ${database.mysql.driver}</driver>
+                        ${database.cockroachdb.driver}</driver>
                     <url>
-                        jdbc:mysql://${database.mysql.jdbc.url}/${database.mysql.name}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true</url>
+                        jdbc:postgresql://${database.cockroachdb.jdbc.url}/system</url>
                     <username>
-                        ${database.mysql.username}</username>
-                    <password>${database.mysql.password}</password>
+                        ${database.cockroachdb.username}</username>
+                    <password>${database.cockroachdb.password}</password>
                     <sqlCommand>DROP
-                        DATABASE ${database.mysql.name};</sqlCommand>
+                        DATABASE IF EXISTS ${database.cockroachdb.name};
+                        CREATE
+                        DATABASE ${database.cockroachdb.name};</sqlCommand>
                 </configuration>
             </plugin>
         </plugins>
