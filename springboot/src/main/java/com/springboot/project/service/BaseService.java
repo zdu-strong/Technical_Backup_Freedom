@@ -148,7 +148,7 @@ public abstract class BaseService {
     }
 
     protected String newId(){
-        return Generators.timeBasedEpochGenerator().generate().toString();
+        return Generators.timeBasedReorderedGenerator().generate().toString();
     }
 
 }

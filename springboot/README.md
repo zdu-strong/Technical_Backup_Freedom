@@ -244,7 +244,7 @@ java:
 
     import com.fasterxml.uuid.Generators;
 
-    Generators.timeBasedEpochGenerator().generate().toString()
+    Generators.timeBasedReorderedGenerator().generate().toString()
 
 ## Notes - Accept timezone from javascript, then convert to Time Zone from UTC. Time Zone from UTC can be passed as a parameter to database methods.
 
