@@ -21,7 +21,7 @@ public class JPQLFunction {
      * @param defaultValue
      * @return
      */
-    public static Long ifnull(Long value, int defaultValue) {
+    public static BigDecimal ifnull(Long value, int defaultValue) {
         throw new RuntimeException();
     }
 
@@ -34,7 +34,7 @@ public class JPQLFunction {
      * @param defaultValue
      * @return
      */
-    public static Long ifnull(Integer value, int defaultValue) {
+    public static BigDecimal ifnull(Integer value, int defaultValue) {
         throw new RuntimeException();
     }
 
@@ -47,7 +47,7 @@ public class JPQLFunction {
      * @param defaultValue
      * @return
      */
-    public static Long ifnull(BigDecimal value, int defaultValue) {
+    public static BigDecimal ifnull(BigDecimal value, int defaultValue) {
         throw new RuntimeException();
     }
 

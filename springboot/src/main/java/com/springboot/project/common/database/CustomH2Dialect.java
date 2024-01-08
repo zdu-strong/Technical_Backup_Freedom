@@ -22,7 +22,7 @@ public class CustomH2Dialect extends H2Dialect {
         super.initializeFunctionRegistry(functionContributions);
         BasicTypeRegistry basicTypeRegistry = functionContributions.getTypeConfiguration().getBasicTypeRegistry();
         SqmFunctionRegistry functionRegistry = functionContributions.getFunctionRegistry();
-        functionRegistry.register("IFNULL", new StandardSQLFunction("IFNULL", StandardBasicTypes.LONG));
+        functionRegistry.register("IFNULL", new StandardSQLFunction("IFNULL", StandardBasicTypes.BIG_DECIMAL));
         functionRegistry.registerPattern("FOUND_ROWS", "COUNT(*) OVER()",
                 basicTypeRegistry.resolve(StandardBasicTypes.LONG));
         functionRegistry.registerPattern("IS_SORT_AT_BEFORE", "?1 < ?2",

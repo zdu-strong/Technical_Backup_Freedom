@@ -1,7 +1,6 @@
 package com.springboot.project.common.database;
 
 import org.hibernate.boot.model.FunctionContributions;
-import org.hibernate.dialect.function.StandardSQLFunction;
 import org.hibernate.engine.jdbc.dialect.spi.DialectResolutionInfo;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 import org.hibernate.type.BasicTypeRegistry;
@@ -17,12 +16,13 @@ public class CustomCockroachdbDialect extends CockroachDialect {
         super.initializeFunctionRegistry(functionContributions);
         BasicTypeRegistry basicTypeRegistry = functionContributions.getTypeConfiguration().getBasicTypeRegistry();
         SqmFunctionRegistry functionRegistry = functionContributions.getFunctionRegistry();
-        functionRegistry.register("IFNULL", new StandardSQLFunction("COALESCE", StandardBasicTypes.LONG));
+        functionRegistry.registerPattern("IFNULL", "COALESCE(CAST(CAST(?1 AS TEXT) AS DECIMAL), ?2)",
+                basicTypeRegistry.resolve(StandardBasicTypes.BIG_DECIMAL));
         functionRegistry.registerPattern("FOUND_ROWS", "COUNT(*) OVER()",
                 basicTypeRegistry.resolve(StandardBasicTypes.LONG));
         functionRegistry.registerPattern("IS_SORT_AT_BEFORE", "?1 < ?2",
                 basicTypeRegistry.resolve(StandardBasicTypes.BOOLEAN));
-        functionRegistry.registerPattern("LOCATE", "POSITION(?2 IN ?1)",
+        functionRegistry.registerPattern("LOCATE", "POSITION(?1 in ?2)",
                 basicTypeRegistry.resolve(StandardBasicTypes.LONG));
         functionRegistry.registerPattern("FORMAT_DATE_AS_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND_MILLISECOND",
                 "to_char(?1 AT TIME ZONE ?2, 'YYYY-MM-DD HH24:MI:SS.MS')",
@@ -44,7 +44,7 @@ public class CustomCockroachdbDialect extends CockroachDialect {
                 basicTypeRegistry.resolve(StandardBasicTypes.STRING));
         functionRegistry.registerPattern("FORMAT_DATE_AS_YEAR", "to_char(?1 AT TIME ZONE ?2, 'YYYY')",
                 basicTypeRegistry.resolve(StandardBasicTypes.STRING));
-        functionRegistry.registerPattern("CONVERT_TO_BIG_DECIMAL", "CAST(?1 AS DECIMAL)",
+        functionRegistry.registerPattern("CONVERT_TO_BIG_DECIMAL", "CAST(CAST(?1 AS TEXT) AS DECIMAL)",
                 basicTypeRegistry.resolve(StandardBasicTypes.BIG_DECIMAL));
         functionRegistry.registerPattern("CONVERT_TO_STRING", "CAST(?1 AS TEXT)",
                 basicTypeRegistry.resolve(StandardBasicTypes.STRING));
