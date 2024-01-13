@@ -8,7 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
-import com.springboot.project.test.BaseTest;
+
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class StorageCopyFolderTest extends BaseTest {
     private File tempFolder;

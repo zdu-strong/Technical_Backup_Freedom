@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import com.springboot.project.model.UserModel;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class PermissionUtilGetUserIdFromRequestTest extends BaseTest {
     private UserModel user;

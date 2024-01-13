@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import com.google.common.net.HttpHeaders;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class ResourceUtilGetResourceFromRequestByRangeTest extends BaseTest {
     private Resource resource;

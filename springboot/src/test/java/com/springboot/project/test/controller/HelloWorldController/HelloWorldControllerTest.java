@@ -7,7 +7,8 @@ import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import com.springboot.project.test.BaseTest;
+
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class HelloWorldControllerTest extends BaseTest {
     @Test

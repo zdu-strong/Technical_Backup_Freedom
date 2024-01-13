@@ -2,7 +2,9 @@ package com.springboot.project.test.common.PermissionUtil;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
-import com.springboot.project.test.BaseTest;
+
+import com.springboot.project.test.common.BaseTest.BaseTest;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 

@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import com.springboot.project.test.BaseTest;
+
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class ResourceUtilSetContentTypeTest extends BaseTest {
     private HttpHeaders httpHeaders;

@@ -12,7 +12,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.collect.Lists;
 import com.springboot.project.model.LoggerModel;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
+
 import ch.qos.logback.classic.Level;
 
 public class LoggerServiceCreateLoggerTest extends BaseTest {

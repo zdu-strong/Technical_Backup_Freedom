@@ -1,4 +1,4 @@
-package com.springboot.project.test;
+package com.springboot.project.test.common.BaseTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;

@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.springboot.project.model.OrganizeModel;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class OrganizeServiceGetByIdTest extends BaseTest {
 

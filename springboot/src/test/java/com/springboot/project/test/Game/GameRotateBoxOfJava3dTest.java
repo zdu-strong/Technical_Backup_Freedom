@@ -6,7 +6,9 @@ import javax.vecmath.AxisAngle4d;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
 import org.junit.jupiter.api.Test;
-import com.springboot.project.test.BaseTest;
+
+import com.springboot.project.test.common.BaseTest.BaseTest;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GameRotateBoxOfJava3dTest extends BaseTest {

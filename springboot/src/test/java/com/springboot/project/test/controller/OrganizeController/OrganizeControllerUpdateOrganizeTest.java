@@ -12,7 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
 import com.springboot.project.model.OrganizeModel;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class OrganizeControllerUpdateOrganizeTest extends BaseTest {
 

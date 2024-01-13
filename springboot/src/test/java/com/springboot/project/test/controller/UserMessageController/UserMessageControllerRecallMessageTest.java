@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserModel;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class UserMessageControllerRecallMessageTest extends BaseTest {
     private String id;

@@ -6,7 +6,7 @@ import java.security.spec.InvalidKeySpecException;
 import org.junit.jupiter.api.Test;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
 import com.badlogic.gdx.math.Matrix4;
 
 public class GameRotateBoxOfGdxTest extends BaseTest {

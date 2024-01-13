@@ -19,7 +19,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserMessageWebSocketSendModel;
 import com.springboot.project.model.UserModel;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
+
 import io.reactivex.rxjava3.subjects.ReplaySubject;
 import jakarta.websocket.CloseReason.CloseCodes;
 

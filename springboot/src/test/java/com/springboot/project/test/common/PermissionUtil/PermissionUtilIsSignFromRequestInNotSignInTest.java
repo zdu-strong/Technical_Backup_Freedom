@@ -2,7 +2,8 @@ package com.springboot.project.test.common.PermissionUtil;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.Test;
-import com.springboot.project.test.BaseTest;
+
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class PermissionUtilIsSignFromRequestInNotSignInTest extends BaseTest {
     @Test

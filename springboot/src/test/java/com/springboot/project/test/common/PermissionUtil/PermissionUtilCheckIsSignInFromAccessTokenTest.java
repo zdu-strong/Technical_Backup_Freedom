@@ -2,7 +2,8 @@ package com.springboot.project.test.common.PermissionUtil;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.springboot.project.test.BaseTest;
+
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class PermissionUtilCheckIsSignInFromAccessTokenTest extends BaseTest {
     private String accessToken;

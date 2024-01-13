@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 
 import com.springboot.project.common.database.JPQLFunction;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class JPQLFunctionIfnullTest extends BaseTest {
 

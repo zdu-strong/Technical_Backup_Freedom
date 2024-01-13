@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 
 import com.springboot.project.model.LongTermTaskModel;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class LongTermTaskServiceUpdateLongTermTaskToRefreshUpdateDateTest extends BaseTest {
 

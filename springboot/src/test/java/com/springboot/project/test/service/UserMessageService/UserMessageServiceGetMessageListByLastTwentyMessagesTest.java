@@ -13,7 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserModel;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class UserMessageServiceGetMessageListByLastTwentyMessagesTest extends BaseTest {
     private UserMessageModel userMessage;

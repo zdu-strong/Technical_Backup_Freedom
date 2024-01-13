@@ -18,7 +18,7 @@ import org.springframework.http.HttpRange;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import com.google.common.collect.Lists;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class ResourceControllerDownloadResourceIncorrectETagTest extends BaseTest {
 

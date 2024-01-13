@@ -14,7 +14,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.VerificationCodeEmailModel;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class AuthorizationControllerSendVerificationCodeTest extends BaseTest {
     private String email;

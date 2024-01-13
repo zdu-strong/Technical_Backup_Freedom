@@ -19,7 +19,8 @@ import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import com.springboot.project.common.StorageResource.RangeClassPathResource;
 import com.springboot.project.model.LongTermTaskModel;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
+
 import io.reactivex.rxjava3.core.Flowable;
 
 public class ResourceControllerUploadMergeTest extends BaseTest {

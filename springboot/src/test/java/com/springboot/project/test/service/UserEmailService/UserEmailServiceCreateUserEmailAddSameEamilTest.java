@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataIntegrityViolationException;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.model.UserModel;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class UserEmailServiceCreateUserEmailAddSameEamilTest extends BaseTest {
     private UserModel user;

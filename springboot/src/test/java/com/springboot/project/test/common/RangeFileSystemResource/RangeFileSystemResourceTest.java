@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import com.springboot.project.common.StorageResource.RangeFileSystemResource;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class RangeFileSystemResourceTest extends BaseTest {
     private File tempFile;

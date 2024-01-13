@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import com.google.common.collect.Lists;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class ResourceControllerGetClassPathResourceTest extends BaseTest {
 

@@ -2,7 +2,8 @@ package com.springboot.project.test.service.LongTermTaskService;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
-import com.springboot.project.test.BaseTest;
+
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class LongTermTaskServiceCreateLongTermTaskTest extends BaseTest {
 

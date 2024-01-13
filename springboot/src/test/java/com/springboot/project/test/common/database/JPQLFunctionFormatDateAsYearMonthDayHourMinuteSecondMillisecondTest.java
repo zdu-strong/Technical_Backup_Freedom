@@ -5,7 +5,7 @@ import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.springboot.project.common.database.JPQLFunction;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class JPQLFunctionFormatDateAsYearMonthDayHourMinuteSecondMillisecondTest extends BaseTest {
     private String timeZone;

@@ -5,7 +5,8 @@ import javax.media.j3d.BoundingBox;
 import javax.media.j3d.BoundingSphere;
 import javax.vecmath.Point3d;
 import org.junit.jupiter.api.Test;
-import com.springboot.project.test.BaseTest;
+
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class GameIntersectSphereBoxTest extends BaseTest {
 

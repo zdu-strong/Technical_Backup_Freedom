@@ -3,7 +3,8 @@ package com.springboot.project.test.common.PermissionUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
-import com.springboot.project.test.BaseTest;
+
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class PermissionUtilCheckIsSignInFromRequestTest extends BaseTest {
     @Test

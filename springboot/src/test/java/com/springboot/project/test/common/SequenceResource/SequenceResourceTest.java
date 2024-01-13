@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.StorageResource.RangeClassPathResource;
 import com.springboot.project.common.StorageResource.SequenceResource;
-import com.springboot.project.test.BaseTest;
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class SequenceResourceTest extends BaseTest {
 

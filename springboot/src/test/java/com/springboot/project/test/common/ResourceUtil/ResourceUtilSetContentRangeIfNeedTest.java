@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import com.springboot.project.test.BaseTest;
+
+import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class ResourceUtilSetContentRangeIfNeedTest extends BaseTest {
     private HttpHeaders httpHeaders;
