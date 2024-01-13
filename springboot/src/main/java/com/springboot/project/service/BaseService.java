@@ -132,6 +132,10 @@ public abstract class BaseService {
         return this.streamAll(DistributedExecutionEntity.class);
     }
 
+    protected JPAJinqStream<OrganizeClosureEntity> OrganizeClosureEntity() {
+        return this.streamAll(OrganizeClosureEntity.class);
+    }
+
     private <U> JPAJinqStream<U> streamAll(Class<U> entity) {
         if (this.jinqJPAStreamProvider == null) {
             synchronized (getClass()) {
@@ -147,7 +151,7 @@ public abstract class BaseService {
         return this.jinqJPAStreamProvider.streamAll(entityManager, entity);
     }
 
-    protected String newId(){
+    protected String newId() {
         return Generators.timeBasedReorderedGenerator().generate().toString();
     }
 

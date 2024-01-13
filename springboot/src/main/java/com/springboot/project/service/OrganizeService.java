@@ -2,6 +2,7 @@ package com.springboot.project.service;
 
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,6 +13,9 @@ import com.springboot.project.entity.OrganizeEntity;
 
 @Service
 public class OrganizeService extends BaseService {
+
+    @Autowired
+    private OrganizeClosureService organizeClosureService;
 
     public OrganizeModel create(OrganizeModel organizeModel) {
         var parentOrganize = this.getParentOrganize(organizeModel);
@@ -25,6 +29,8 @@ public class OrganizeService extends BaseService {
         organizeEntity.setUpdateDate(new Date());
         organizeEntity.setParent(parentOrganize);
         this.persist(organizeEntity);
+
+        this.organizeClosureService.create(organizeEntity.getId());
 
         return this.organizeFormatter.format(organizeEntity);
     }
