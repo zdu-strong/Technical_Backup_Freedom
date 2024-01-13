@@ -54,6 +54,7 @@ import com.springboot.project.model.VerificationCodeEmailModel;
 import com.springboot.project.properties.AuthorizationEmailProperties;
 import com.springboot.project.properties.StorageRootPathProperties;
 import com.springboot.project.scheduled.MessageScheduled;
+import com.springboot.project.scheduled.OrganizeClosureRefreshScheduled;
 import com.springboot.project.scheduled.StorageSpaceScheduled;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.FriendshipService;
@@ -154,10 +155,14 @@ public class BaseTest {
     @Autowired
     protected StorageSpaceScheduled storageSpaceScheduled;
 
+    @SpyBean
+    protected OrganizeClosureRefreshScheduled organizeClosureRefreshScheduled;
+
     @BeforeEach
     public void beforeEachOfBaseTest() {
         Mockito.doNothing().when(this.authorizationEmailUtil).sendVerificationCode(Mockito.anyString(),
                 Mockito.anyString());
+        Mockito.doNothing().when(this.organizeClosureRefreshScheduled).scheduled();
     }
 
     protected UserModel createAccount(String email) {

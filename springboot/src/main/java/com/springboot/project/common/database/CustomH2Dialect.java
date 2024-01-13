@@ -27,7 +27,7 @@ public class CustomH2Dialect extends H2Dialect {
                 basicTypeRegistry.resolve(StandardBasicTypes.LONG));
         functionRegistry.registerPattern("IS_SORT_AT_BEFORE", "?1 < ?2",
                 basicTypeRegistry.resolve(StandardBasicTypes.BOOLEAN));
-        functionRegistry.registerPattern("LOCATE", "LOCATE(?2, ?1)",
+        functionRegistry.registerPattern("LOCATE", "LOCATE(?1, ?2)",
                 basicTypeRegistry.resolve(StandardBasicTypes.LONG));
         functionRegistry.registerPattern("FORMAT_DATE_AS_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND_MILLISECOND",
                 "TO_CHAR(DATEADD(MINUTE, CAST(CONCAT( SUBSTRING(?2, 1, 1), SUBSTRING(?2, 5, 2))  AS INT), DATEADD(HOUR, CAST(SUBSTRING(?2, 1, 3) AS INT), ?1)), 'YYYY-MM-DD HH24:mi:ss.ff3')",

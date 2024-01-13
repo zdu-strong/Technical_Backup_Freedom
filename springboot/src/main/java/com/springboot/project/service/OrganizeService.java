@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import com.springboot.project.model.OrganizeModel;
+import com.springboot.project.model.PaginationModel;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.common.database.JPQLFunction;
@@ -68,6 +69,20 @@ public class OrganizeService extends BaseService {
         if (!exists) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Organize does not exist");
         }
+    }
+
+    public PaginationModel<OrganizeModel> searchByName(Long pageNum, Long pageSize, String name, String organizeId) {
+        var trait = this.OrganizeEntity()
+                .where(s -> s.getId().equals(organizeId))
+                .where(s -> JPQLFunction.isNotDeletedOfOrganize(s.getId()))
+                .select(s -> s.getOrganizeClosure().getTrait())
+                .getOnlyValue();
+        var stream = this.OrganizeClosureEntity()
+                .where(s -> s.getTrait().contains(trait))
+                .where(s -> !s.getIsDeleted())
+                .where(s -> s.getOrganize().getName().contains(name))
+                .select(s -> s.getOrganize());
+        return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.organizeFormatter.format(s));
     }
 
     public void move(String id, String parentId) {
