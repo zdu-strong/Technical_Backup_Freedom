@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
+import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.UserMessageEntity;
 import com.springboot.project.model.PaginationModel;
 import com.springboot.project.model.UserMessageModel;

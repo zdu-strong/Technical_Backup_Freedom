@@ -3,10 +3,11 @@ package com.springboot.project.format;
 import java.nio.file.Paths;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
+import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.entity.UserMessageEntity;
 import com.springboot.project.model.UserMessageModel;
-import com.springboot.project.service.BaseService;
 
 @Service
 public class UserMessageFormatter extends BaseService {

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.model.LongTermTaskModel;
 
 @RestController

@@ -15,9 +15,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.collect.Lists;
+import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.LongTermTaskEntity;
 import com.springboot.project.model.LongTermTaskModel;
-import com.springboot.project.service.BaseService;
+
 import ch.qos.logback.classic.spi.ThrowableProxy;
 
 @Service

@@ -1,4 +1,4 @@
-package com.springboot.project.service;
+package com.springboot.project.common.baseService;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

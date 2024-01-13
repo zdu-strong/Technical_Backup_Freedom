@@ -3,9 +3,9 @@ package com.springboot.project.format;
 import org.springframework.stereotype.Service;
 
 import com.beust.jcommander.internal.Lists;
+import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.UserEntity;
 import com.springboot.project.model.UserModel;
-import com.springboot.project.service.BaseService;
 
 @Service
 public class UserFormatter extends BaseService {

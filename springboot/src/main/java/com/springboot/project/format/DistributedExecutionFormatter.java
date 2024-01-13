@@ -1,9 +1,10 @@
 package com.springboot.project.format;
 
 import org.springframework.stereotype.Service;
+
+import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.DistributedExecutionEntity;
 import com.springboot.project.model.DistributedExecutionModel;
-import com.springboot.project.service.BaseService;
 
 @Service
 public class DistributedExecutionFormatter extends BaseService {

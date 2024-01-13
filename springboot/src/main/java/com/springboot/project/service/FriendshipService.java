@@ -3,6 +3,8 @@ package com.springboot.project.service;
 import java.util.Date;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.stereotype.Service;
+
+import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.FriendshipEntity;
 import com.springboot.project.model.FriendshipModel;
 import com.springboot.project.model.PaginationModel;

@@ -1,4 +1,4 @@
-package com.springboot.project.controller;
+package com.springboot.project.common.baseController;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

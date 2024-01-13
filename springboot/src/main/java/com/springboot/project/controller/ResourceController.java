@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.StorageResource.SequenceResource;
+import com.springboot.project.common.baseController.BaseController;
 
 @RestController
 public class ResourceController extends BaseController {

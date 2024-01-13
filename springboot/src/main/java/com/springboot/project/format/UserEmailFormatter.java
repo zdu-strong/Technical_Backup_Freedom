@@ -1,10 +1,11 @@
 package com.springboot.project.format;
 
 import org.springframework.stereotype.Service;
+
+import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.UserEmailEntity;
 import com.springboot.project.model.UserEmailModel;
 import com.springboot.project.model.UserModel;
-import com.springboot.project.service.BaseService;
 
 @Service
 public class UserEmailFormatter extends BaseService {

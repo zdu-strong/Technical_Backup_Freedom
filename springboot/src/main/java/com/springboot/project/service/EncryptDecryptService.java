@@ -19,6 +19,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
 import com.fasterxml.uuid.Generators;
+import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.EncryptDecryptEntity;
 import com.springboot.project.model.EncryptDecryptModel;
 import cn.hutool.crypto.Mode;

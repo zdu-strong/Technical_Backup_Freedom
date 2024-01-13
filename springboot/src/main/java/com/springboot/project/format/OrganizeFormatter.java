@@ -2,10 +2,10 @@ package com.springboot.project.format;
 
 import org.springframework.stereotype.Service;
 import com.google.common.collect.Lists;
+import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.entity.OrganizeEntity;
 import com.springboot.project.model.OrganizeModel;
-import com.springboot.project.service.BaseService;
 
 @Service
 public class OrganizeFormatter extends BaseService {

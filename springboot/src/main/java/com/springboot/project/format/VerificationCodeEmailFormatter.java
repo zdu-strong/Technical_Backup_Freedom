@@ -2,10 +2,11 @@ package com.springboot.project.format;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.*;
 import com.springboot.project.model.VerificationCodeEmailModel;
 import com.springboot.project.properties.IsTestOrDevModeProperties;
-import com.springboot.project.service.BaseService;
 
 @Service
 public class VerificationCodeEmailFormatter extends BaseService {

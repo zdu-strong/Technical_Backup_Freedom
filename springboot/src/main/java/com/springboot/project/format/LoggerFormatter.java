@@ -4,9 +4,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.*;
 import com.springboot.project.model.LoggerModel;
-import com.springboot.project.service.BaseService;
+
 import ch.qos.logback.classic.Level;
 
 @Service

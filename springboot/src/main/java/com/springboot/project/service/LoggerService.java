@@ -3,6 +3,7 @@ package com.springboot.project.service;
 import java.util.Date;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.LoggerEntity;
 import com.springboot.project.model.LoggerModel;
 

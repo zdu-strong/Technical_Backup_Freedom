@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserModel;
 
