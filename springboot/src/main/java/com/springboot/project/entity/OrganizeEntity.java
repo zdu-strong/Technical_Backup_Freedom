@@ -55,4 +55,10 @@ public class OrganizeEntity {
     @OneToOne(mappedBy = "organize", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, optional = true)
     private OrganizeClosureEntity organizeClosure;
 
+    @OneToMany(mappedBy = "organize", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<UserBlackOrganizeEntity> userBlackOrganizeList;
+
+    @OneToMany(mappedBy = "organize", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<UserBlackOrganizeClosureEntity> userBlackOrganizeClosureList;
+
 }
