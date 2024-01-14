@@ -19,6 +19,7 @@ import com.springboot.project.format.LoggerFormatter;
 import com.springboot.project.format.LongTermTaskFormatter;
 import com.springboot.project.format.OrganizeFormatter;
 import com.springboot.project.format.StorageSpaceFormatter;
+import com.springboot.project.format.UserBlackOrganizeFormatter;
 import com.springboot.project.format.UserEmailFormatter;
 import com.springboot.project.format.UserFormatter;
 import com.springboot.project.format.UserMessageFormatter;
@@ -71,6 +72,9 @@ public abstract class BaseService {
 
     @Autowired
     protected DistributedExecutionFormatter distributedExecutionFormatter;
+
+    @Autowired
+    protected UserBlackOrganizeFormatter userBlackOrganizeFormatter;
 
     protected void persist(Object entity) {
         this.entityManager.persist(entity);
@@ -134,6 +138,14 @@ public abstract class BaseService {
 
     protected JPAJinqStream<OrganizeClosureEntity> OrganizeClosureEntity() {
         return this.streamAll(OrganizeClosureEntity.class);
+    }
+
+    protected JPAJinqStream<UserBlackOrganizeEntity> UserBlackOrganizeEntity() {
+        return this.streamAll(UserBlackOrganizeEntity.class);
+    }
+
+    protected JPAJinqStream<UserBlackOrganizeClosureEntity> UserBlackOrganizeClosureEntity() {
+        return this.streamAll(UserBlackOrganizeClosureEntity.class);
     }
 
     private <U> JPAJinqStream<U> streamAll(Class<U> entity) {

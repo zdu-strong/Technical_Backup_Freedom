@@ -192,8 +192,8 @@ public class BaseTest {
 
     private VerificationCodeEmailModel sendVerificationCode(String email) throws URISyntaxException {
         List<String> verificationCodeList = Lists.newArrayList();
-        Mockito.doAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) {
+        Mockito.doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
                 var verificationCode = String.valueOf(args[1]);
                 verificationCodeList.add(verificationCode);
