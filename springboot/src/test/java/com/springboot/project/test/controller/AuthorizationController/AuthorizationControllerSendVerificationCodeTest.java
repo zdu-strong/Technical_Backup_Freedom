@@ -31,8 +31,8 @@ public class AuthorizationControllerSendVerificationCodeTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() {
-        Mockito.doAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) {
+        Mockito.doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
                 Object[] args = invocation.getArguments();
                 verificationCode = String.valueOf(args[1]);
                 return null;
