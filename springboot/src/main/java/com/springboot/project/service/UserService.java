@@ -16,7 +16,6 @@ public class UserService extends BaseService {
     private UserEmailService userEmailService;
 
     public UserModel signUp(UserModel userModel) {
-
         var userEntity = new UserEntity();
         userEntity.setId(newId());
         userEntity.setUsername(userModel.getUsername());
