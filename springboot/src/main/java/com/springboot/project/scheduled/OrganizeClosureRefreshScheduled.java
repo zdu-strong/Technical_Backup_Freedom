@@ -11,7 +11,7 @@ public class OrganizeClosureRefreshScheduled {
     @Autowired
     private OrganizeClosureService organizeClosureService;
 
-    @Scheduled(initialDelay = 1000, fixedDelay = 1000)
+    @Scheduled(initialDelay = 1000 * 60, fixedDelay = 1000)
     public void scheduled() {
         this.refresh();
     }
