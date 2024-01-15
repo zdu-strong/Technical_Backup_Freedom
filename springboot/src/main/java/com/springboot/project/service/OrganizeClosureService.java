@@ -78,9 +78,10 @@ public class OrganizeClosureService extends BaseService {
         if (organizeClosureEntity == null) {
             organizeClosureEntity = this.OrganizeClosureEntity()
                     .where(s -> s.getOrganize().getParent() != null)
-                    .where(s -> !s.getTrait().equals(","
-                            + s.getOrganize().getParent().getOrganizeClosure().getTrait()
-                            + s.getOrganize().getId()))
+                    .where(s -> !s.getTrait().equals(
+                            s.getOrganize().getParent().getOrganizeClosure().getTrait()
+                                    + s.getOrganize().getId()
+                                    + ","))
                     .findFirst()
                     .orElse(null);
         }
