@@ -228,7 +228,7 @@ async function getDeviceList(isRunAndroid: boolean) {
       .select(item => linq.from(item.split(new RegExp("\\s\\s+")))
         .select(item => item.trim()).toArray()
       )
-      .where(s => s.some(m => m.trim() === "API 33"))
+      .where(s => s.some(m => m.trim() === "API 34"))
       .groupBy(() => "")
       .selectMany(s => {
         if (s.count() > 1) {
