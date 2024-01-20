@@ -20,7 +20,7 @@ public class OrganizeControllerUpdateOrganizeTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        var url = new URIBuilder("/organize").build();
+        var url = new URIBuilder("/organize/update").build();
         var response = this.testRestTemplate.exchange(url, HttpMethod.PUT, new HttpEntity<>(organizeModel),
                 Object.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());

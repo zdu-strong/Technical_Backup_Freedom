@@ -41,5 +41,5 @@ export function getUserMessageWebsocket(websocketInput$: Subject<{
 }
 
 export function recallMessage(id: string) {
-  return axios.post<void>("/user_message/recall", null, { params: { id } })
+  return axios.put<void>("/user_message/recall", null, { params: { id } })
 }

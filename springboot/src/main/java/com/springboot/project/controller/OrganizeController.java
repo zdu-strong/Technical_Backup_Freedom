@@ -15,7 +15,7 @@ import com.springboot.project.model.OrganizeModel;
 @RestController
 public class OrganizeController extends BaseController {
 
-    @PostMapping("/organize")
+    @PostMapping("/organize/create")
     public ResponseEntity<?> create(@RequestBody OrganizeModel organizeModel) {
 
         if (organizeModel.getParent() != null) {
@@ -29,7 +29,7 @@ public class OrganizeController extends BaseController {
         return ResponseEntity.ok(organize);
     }
 
-    @PutMapping("/organize")
+    @PutMapping("/organize/update")
     public ResponseEntity<?> update(@RequestBody OrganizeModel organizeModel) {
         this.organizeService.checkExistOrganize(organizeModel.getId());
 
@@ -37,7 +37,7 @@ public class OrganizeController extends BaseController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/organize")
+    @DeleteMapping("/organize/delete")
     public ResponseEntity<?> delete(@RequestParam String id) {
         this.organizeService.checkExistOrganize(id);
 
@@ -47,7 +47,7 @@ public class OrganizeController extends BaseController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/organize/move")
+    @PutMapping("/organize/move")
     public ResponseEntity<?> move(@RequestParam String organizeId, @RequestParam(required = false) String parentId) {
         this.organizeService.checkExistOrganize(organizeId);
         this.organizeService.checkExistOrganizeAllowEmpty(parentId);

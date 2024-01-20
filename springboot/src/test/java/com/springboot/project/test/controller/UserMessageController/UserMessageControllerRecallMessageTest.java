@@ -6,6 +6,8 @@ import java.net.URISyntaxException;
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserModel;
@@ -18,7 +20,7 @@ public class UserMessageControllerRecallMessageTest extends BaseTest {
     @Test
     public void test() throws URISyntaxException {
         var url = new URIBuilder("/user_message/recall").setParameter("id", id).build();
-        var response = this.testRestTemplate.postForEntity(url, null, Void.class);
+        var response = this.testRestTemplate.exchange(url, HttpMethod.PUT, new HttpEntity<>(null), Void.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         var userMessage = this.userMessageService.getUserMessageById(id, userId);
         assertTrue(userMessage.getIsRecall());
