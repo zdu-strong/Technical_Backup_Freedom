@@ -2,6 +2,14 @@ package com.springboot.project.enumeration;
 
 public enum DistributedExecutionEnum {
 
-    STORAGE_SPACE_CLEAN_DATABASE_STORAGE;
+    /**
+     * Storage space cleans up the stored data in the database
+     */
+    STORAGE_SPACE_CLEAN_DATABASE_STORAGE,
+
+    /**
+     * The OrganizeEntity refreshes the data of the OrganizeClosureEntity.
+     */
+    ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY;
 
 }

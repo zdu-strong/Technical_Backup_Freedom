@@ -18,6 +18,9 @@ public class DistributedExecutionService extends BaseService {
     @Autowired
     private StorageSpaceService storageSpaceService;
 
+    @Autowired
+    private OrganizeService organizeService;
+
     public DistributedExecutionModel getDistributedExecutionOfStorageSpace(Long pageSize) {
         var name = DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE.name();
         var distributedExecutionEntityOptional = this.DistributedExecutionEntity()
@@ -31,13 +34,36 @@ public class DistributedExecutionService extends BaseService {
         if (pageNum > 1) {
             pageNum--;
         } else {
-            var totalPage = storageSpaceService.getStorageSpaceListByPagination(1L, pageSize).getTotalPage();
+            var totalPage = this.storageSpaceService.getStorageSpaceListByPagination(1L, pageSize).getTotalPage();
             if (totalPage > 0) {
                 pageNum = totalPage;
             }
         }
 
         return this.createDistributedExecution(DistributedExecutionEnum.STORAGE_SPACE_CLEAN_DATABASE_STORAGE, version,
+                pageNum, pageSize);
+    }
+
+    public DistributedExecutionModel getDistributedExecutionOfOrganize(Long pageSize) {
+        var name = DistributedExecutionEnum.ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY.name();
+        var distributedExecutionEntityOptional = this.DistributedExecutionEntity()
+                .where(s -> s.getName().equals(name))
+                .where(s -> s.getPageSize() == pageSize)
+                .sortedBy(s -> s.getPageNum())
+                .sortedDescendingBy(s -> s.getVersion())
+                .findFirst();
+        var pageNum = distributedExecutionEntityOptional.map(s -> s.getPageNum()).orElse(1L);
+        var version = pageNum > 1 ? distributedExecutionEntityOptional.map(s -> s.getVersion()).get() : null;
+        if (pageNum > 1) {
+            pageNum--;
+        } else {
+            var totalPage = this.organizeService.getAllOrganize(1L, pageSize).getTotalPage();
+            if (totalPage > 0) {
+                pageNum = totalPage;
+            }
+        }
+
+        return this.createDistributedExecution(DistributedExecutionEnum.ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY, version,
                 pageNum, pageSize);
     }
 
