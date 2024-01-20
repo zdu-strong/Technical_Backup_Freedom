@@ -41,9 +41,8 @@ public class OrganizeController extends BaseController {
     public ResponseEntity<?> delete(@RequestParam String id) {
         this.organizeService.checkExistOrganize(id);
 
-        var deadline = this.organizeUtil.getDeadline();
         this.organizeService.delete(id);
-        this.organizeUtil.refresh(id, deadline);
+        this.organizeUtil.refresh(id);
         return ResponseEntity.ok().build();
     }
 
@@ -52,9 +51,8 @@ public class OrganizeController extends BaseController {
         this.organizeService.checkExistOrganize(organizeId);
         this.organizeService.checkExistOrganizeAllowEmpty(parentId);
 
-        var deadline = this.organizeUtil.getDeadline();
         this.organizeService.move(organizeId, parentId);
-        this.organizeUtil.refresh(organizeId, deadline);
+        this.organizeUtil.refresh(organizeId);
         return ResponseEntity.ok().build();
     }
 

@@ -18,14 +18,17 @@ public class OrganizeUtil {
 
     private Long pageSize = 1L;
 
-    public Date getDeadline() {
-        var calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, 10);
-        return calendar.getTime();
+    public void refresh(String organizeId) {
+        var deadline = this.getDeadline();
+        var maxDeep = 1000L;
+        this.refresh(organizeId, deadline, maxDeep);
     }
 
-    public void refresh(String organizeId, Date deadline) {
+    public void refresh(String organizeId, Date deadline, Long maxDeep) {
         if (!deadline.before(new Date())) {
+            return;
+        }
+        if (maxDeep <= 0) {
             return;
         }
 
@@ -41,10 +44,16 @@ public class OrganizeUtil {
                 var list = this.organizeService.getChildOrganizeListThatContainsDeleted(1L, pageSize, organizeId)
                         .getList();
                 for (var organize : list) {
-                    this.refresh(organize.getId(), deadline);
+                    this.refresh(organize.getId(), deadline, maxDeep - 1);
                 }
             }
         }
+    }
+
+    private Date getDeadline() {
+        var calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, 10);
+        return calendar.getTime();
     }
 
 }
