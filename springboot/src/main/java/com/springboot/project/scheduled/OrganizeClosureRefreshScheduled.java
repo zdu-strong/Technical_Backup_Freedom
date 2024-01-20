@@ -35,7 +35,7 @@ public class OrganizeClosureRefreshScheduled {
                         var pageNum = this.distributedExecutionService.getDistributedExecutionOfOrganize(pageSize)
                                 .getPageNum();
                         var list = this.organizeService
-                                .getAllOrganize(pageNum, pageSize)
+                                .getOrganizeListThatContainsDeleted(pageNum, pageSize)
                                 .getList();
                         for (var organizeModel : list) {
                             this.organizeClosureService.update(organizeModel.getId());

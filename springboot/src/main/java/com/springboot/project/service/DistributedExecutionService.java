@@ -57,7 +57,7 @@ public class DistributedExecutionService extends BaseService {
         if (pageNum > 1) {
             pageNum--;
         } else {
-            var totalPage = this.organizeService.getAllOrganize(1L, pageSize).getTotalPage();
+            var totalPage = this.organizeService.getOrganizeListThatContainsDeleted(1L, pageSize).getTotalPage();
             if (totalPage > 0) {
                 pageNum = totalPage;
             }

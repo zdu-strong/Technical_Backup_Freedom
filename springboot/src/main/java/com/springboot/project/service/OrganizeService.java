@@ -95,7 +95,7 @@ public class OrganizeService extends BaseService {
         this.merge(organizeEntity);
     }
 
-    public PaginationModel<OrganizeModel> getAllOrganize(Long pageNum, Long pageSize) {
+    public PaginationModel<OrganizeModel> getOrganizeListThatContainsDeleted(Long pageNum, Long pageSize) {
         var stream = this.OrganizeEntity().sortedDescendingBy(s -> s.getId())
                 .sortedDescendingBy(s -> s.getCreateDate());
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.organizeFormatter.format(s));
