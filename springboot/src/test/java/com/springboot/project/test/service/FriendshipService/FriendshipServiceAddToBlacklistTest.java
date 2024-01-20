@@ -15,10 +15,12 @@ import com.springboot.project.test.common.BaseTest.BaseTest;
 public class FriendshipServiceAddToBlacklistTest extends BaseTest {
     private UserModel user;
     private UserModel friend;
+    private String aesOfUser;
+    private String aesOfFriend;
 
     @Test
     public void test() throws NoSuchAlgorithmException, InvalidKeySpecException {
-        this.friendshipService.addToBlacklist(this.user.getId(), this.friend.getId());
+        this.friendshipService.addToBlacklist(this.user.getId(), this.friend.getId(), aesOfUser, aesOfFriend);
         var friendshipModel = this.friendshipService.getFriendship(this.user.getId(),
                 this.friend.getId());
         assertEquals(this.user.getId(), friendshipModel.getUser().getId());
@@ -46,13 +48,12 @@ public class FriendshipServiceAddToBlacklistTest extends BaseTest {
         this.user = this.createAccount(userEmail);
         this.friend = this.createAccount(friendEmail);
         var keyOfAES = this.encryptDecryptService.generateSecretKeyOfAES();
-        var aesOfUser = this.encryptDecryptService.encryptByPublicKeyOfRSA(
+        this.aesOfUser = this.encryptDecryptService.encryptByPublicKeyOfRSA(
                 this.encryptDecryptService.encryptByPrivateKeyOfRSA(keyOfAES, this.user.getPrivateKeyOfRSA()),
                 this.user.getPublicKeyOfRSA());
-        var aesOfFriend = this.encryptDecryptService.encryptByPublicKeyOfRSA(
+        this.aesOfFriend = this.encryptDecryptService.encryptByPublicKeyOfRSA(
                 this.encryptDecryptService.encryptByPrivateKeyOfRSA(keyOfAES, this.user.getPrivateKeyOfRSA()),
                 this.friend.getPublicKeyOfRSA());
-        this.friendshipService.createFriendship(this.user.getId(), this.friend.getId(), aesOfUser, aesOfFriend);
     }
 
 }

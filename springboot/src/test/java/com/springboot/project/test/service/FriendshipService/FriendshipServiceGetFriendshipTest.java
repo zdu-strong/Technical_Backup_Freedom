@@ -51,7 +51,8 @@ public class FriendshipServiceGetFriendshipTest extends BaseTest {
         var aesOfFriend = this.encryptDecryptService.encryptByPublicKeyOfRSA(
                 this.encryptDecryptService.encryptByPrivateKeyOfRSA(keyOfAES, this.user.getPrivateKeyOfRSA()),
                 this.friend.getPublicKeyOfRSA());
-        this.friendshipService.createFriendship(this.user.getId(), this.friend.getId(), aesOfUser, aesOfFriend);
+        this.friendshipService.addToFriendList(this.user.getId(), this.friend.getId(), aesOfUser, aesOfFriend);
+        this.friendshipService.delete(this.user.getId(), this.friend.getId());
     }
 
 }

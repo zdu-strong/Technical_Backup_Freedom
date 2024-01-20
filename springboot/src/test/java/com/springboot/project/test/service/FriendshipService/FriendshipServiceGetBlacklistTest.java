@@ -40,8 +40,7 @@ public class FriendshipServiceGetBlacklistTest extends BaseTest {
         var aesOfFriend = this.encryptDecryptService.encryptByPublicKeyOfRSA(
                 this.encryptDecryptService.encryptByPrivateKeyOfRSA(keyOfAES, this.user.getPrivateKeyOfRSA()),
                 this.friend.getPublicKeyOfRSA());
-        this.friendshipService.createFriendship(this.user.getId(), this.friend.getId(), aesOfUser, aesOfFriend);
-        this.friendshipService.addToBlacklist(this.user.getId(), this.friend.getId());
+        this.friendshipService.addToBlacklist(this.user.getId(), this.friend.getId(), aesOfUser, aesOfFriend);
     }
 
 }

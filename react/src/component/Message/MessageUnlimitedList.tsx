@@ -26,7 +26,8 @@ const css = stylesheet({
 export default observer((props: {
   userId: string,
   username: string,
-  setReadyForMessageList: (readyForMessageList: boolean) => Promise<void>,
+  setReadyForMessageEntry: (readyForMessageList: boolean) => Promise<void>,
+  setErrorForMessageEntry: (error: boolean) => Promise<void>,
   variableSizeListRef: React.MutableRefObject<{
     scrollToItemByLast: () => Promise<void>;
   } | undefined>
@@ -117,7 +118,8 @@ export default observer((props: {
         }
         state.ready = true;
         state.error = null;
-        await state.setReadyForMessageList(true);
+        await state.setReadyForMessageEntry(true);
+        await state.setErrorForMessageEntry(false);
       })())),
       tap(() => {
         cleanMessageMap();
@@ -125,7 +127,8 @@ export default observer((props: {
       repeat({ delay: 2000 }),
       catchError((error, caught) => {
         if (!state.ready) {
-          state.error = true;
+          state.error = error;
+          state.setErrorForMessageEntry(error);
         }
         return timer(2000).pipe(
           switchMap(() => caught),

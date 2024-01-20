@@ -15,16 +15,13 @@ export default observer((props: { friendship: FriendshipModel, refreshFriendship
     ...props,
   });
 
-  async function addFriend() {
+  async function addToFriendList() {
     if (state.loading) {
       return;
     }
     try {
       state.loading = true;
-      if (!state.friendship.aesOfUser) {
-        await api.Friendship.createFriendship(state.friendship.friend?.id!);
-      }
-      await api.Friendship.addFriend(state.friendship.friend?.id!);
+      await api.Friendship.addToFriendList(state.friendship.friend?.id!);
       await state.refreshFriendshipList();
     } catch (error) {
       MessageService.error(error);
@@ -44,7 +41,7 @@ export default observer((props: { friendship: FriendshipModel, refreshFriendship
         textTransform: "none"
       }}
       startIcon={<FontAwesomeIcon icon={state.loading ? faSpinner : faPlus} spin={state.loading} />}
-      onClick={addFriend}
+      onClick={addToFriendList}
     >
       <FormattedMessage id="AddToFriends" defaultMessage="Add to friends" />
     </Button>

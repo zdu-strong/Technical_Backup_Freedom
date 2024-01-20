@@ -30,9 +30,12 @@ export default observer(() => {
 
   const state = useMobxState({
     readyForStart: false,
-    readyForMessageList: false,
-    async setReadyForMessageList(readyForMessageList: boolean) {
-      state.readyForMessageList = readyForMessageList;
+    readyForMessageEntry: false,
+    async setReadyForMessageEntry(readyForMessageEntry: boolean) {
+      state.readyForMessageEntry = readyForMessageEntry;
+    },
+    async setErrorForMessageEntry(error: any) {
+      state.error = error;
     },
     error: null as any,
   }, {
@@ -58,14 +61,15 @@ export default observer(() => {
   })
 
   return <>
-    <LoadingOrErrorComponent ready={state.readyForStart && state.readyForMessageList} error={state.error} />
+    <LoadingOrErrorComponent ready={state.readyForStart && state.readyForMessageEntry} error={state.error} />
     {
-      state.readyForStart && <div className={css.container} style={state.readyForMessageList ? {} : { position: "absolute", visibility: "hidden" }} >
+      state.readyForStart && <div className={css.container} style={state.readyForMessageEntry ? {} : { position: "absolute", visibility: "hidden" }} >
         <MessageMenu userId={GlobalUserInfo.id} username={GlobalUserInfo.username} />
         <MessageUnlimitedList
           userId={GlobalUserInfo.id!}
           username={GlobalUserInfo.username!}
-          setReadyForMessageList={state.setReadyForMessageList}
+          setReadyForMessageEntry={state.setReadyForMessageEntry}
+          setErrorForMessageEntry={state.setErrorForMessageEntry}
           variableSizeListRef={state.variableSizeListRef}
           key={GlobalUserInfo.id}
         />
