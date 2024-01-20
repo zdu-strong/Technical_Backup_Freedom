@@ -138,7 +138,13 @@ public class UserMessageWebSocketController {
 
     public synchronized void sendMessage() {
         try {
-            _permissionUtil.checkIsSignIn(accessToken);
+            if (!_permissionUtil.isSignIn(accessToken)) {
+                this.session
+                        .close(new CloseReason(CloseCodes.UNEXPECTED_CONDITION,
+                                CloseCodes.UNEXPECTED_CONDITION.name()));
+                return;
+            }
+
             var messageList = _userMessageService.getMessageListByLastTwentyMessages(userId);
             {
                 var newMessageList = JinqStream.from(messageList)
