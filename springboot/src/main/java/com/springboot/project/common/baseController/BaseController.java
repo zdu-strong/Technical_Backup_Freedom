@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.GitProperties;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.springboot.project.common.OrganizeUtil.OrganizeUtil;
 import com.springboot.project.common.ResourceHttpHeadersUtil.ResourceHttpHeadersUtil;
 import com.springboot.project.common.TimeZoneUtil.TimeZoneUtil;
 import com.springboot.project.common.longtermtask.LongTermTaskUtil;
@@ -92,6 +93,9 @@ public class BaseController {
 
     @Autowired
     protected LongTermTaskUtil longTermTaskUtil;
+
+    @Autowired
+    protected OrganizeUtil organizeUtil;
 
     @Autowired
     protected ObjectMapper objectMapper;

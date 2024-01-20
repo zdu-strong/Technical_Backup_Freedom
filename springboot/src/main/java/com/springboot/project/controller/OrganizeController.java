@@ -38,11 +38,23 @@ public class OrganizeController extends BaseController {
     }
 
     @DeleteMapping("/organize")
-    public ResponseEntity<?> deleteOrganize(@RequestParam String id) {
-
+    public ResponseEntity<?> delete(@RequestParam String id) {
         this.organizeService.checkExistOrganize(id);
 
+        var deadline = this.organizeUtil.getDeadline();
         this.organizeService.delete(id);
+        this.organizeUtil.refresh(id, deadline);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/organize/move")
+    public ResponseEntity<?> move(@RequestParam String organizeId, @RequestParam(required = false) String parentId) {
+        this.organizeService.checkExistOrganize(organizeId);
+        this.organizeService.checkExistOrganizeAllowEmpty(parentId);
+
+        var deadline = this.organizeUtil.getDeadline();
+        this.organizeService.move(organizeId, parentId);
+        this.organizeUtil.refresh(organizeId, deadline);
         return ResponseEntity.ok().build();
     }
 

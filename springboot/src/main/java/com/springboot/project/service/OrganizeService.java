@@ -71,6 +71,17 @@ public class OrganizeService extends BaseService {
         }
     }
 
+    public void checkExistOrganizeAllowEmpty(String id) {
+        if (StringUtils.isBlank(id)) {
+            return;
+        }
+        var exists = this.OrganizeEntity().where(s -> s.getId().equals(id))
+                .where(s -> JPQLFunction.isNotDeletedOfOrganize(id)).exists();
+        if (!exists) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Organize does not exist");
+        }
+    }
+
     public PaginationModel<OrganizeModel> searchByName(Long pageNum, Long pageSize, String name, String organizeId) {
         var trait = this.OrganizeEntity()
                 .where(s -> s.getId().equals(organizeId))
@@ -97,6 +108,14 @@ public class OrganizeService extends BaseService {
 
     public PaginationModel<OrganizeModel> getOrganizeListThatContainsDeleted(Long pageNum, Long pageSize) {
         var stream = this.OrganizeEntity().sortedDescendingBy(s -> s.getId())
+                .sortedDescendingBy(s -> s.getCreateDate());
+        return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.organizeFormatter.format(s));
+    }
+
+    public PaginationModel<OrganizeModel> getChildOrganizeListThatContainsDeleted(Long pageNum, Long pageSize,
+            String organizeId) {
+        var stream = this.OrganizeEntity().where(s -> s.getParent().getId().equals(organizeId))
+                .sortedDescendingBy(s -> s.getId())
                 .sortedDescendingBy(s -> s.getCreateDate());
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.organizeFormatter.format(s));
     }
