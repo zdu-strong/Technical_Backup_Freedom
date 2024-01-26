@@ -3,6 +3,7 @@ package com.springboot.project.common.storage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -128,9 +129,11 @@ public class BaseStorage {
             } else {
                 throw new RuntimeException("Unsupported resource path");
             }
-            var encryptModelString = Base64.getEncoder()
-                    .encodeToString(Base64.getUrlDecoder().decode(JinqStream.from(pathSegmentList).findFirst().get()));
-            var jsonString = this.encryptDecryptService.decryptByAES(encryptModelString);
+
+            var encryptJsonString = new String(
+                    Base64.getUrlDecoder().decode(JinqStream.from(pathSegmentList).findFirst().get()),
+                    StandardCharsets.UTF_8);
+            var jsonString = this.encryptDecryptService.decryptByAES(encryptJsonString);
             ResourceAccessLegalModel resourceAccessLegalModel = this.objectMapper.readValue(jsonString,
                     ResourceAccessLegalModel.class);
             return this.getRelativePathFromResourcePath(
@@ -151,9 +154,9 @@ public class BaseStorage {
             var pathSegmentList = new ArrayList<String>();
             pathSegmentList.add("resource");
             var jsonString = this.objectMapper.writeValueAsString(resourceAccessLegalModel);
-            var encryptString = this.encryptDecryptService.encryptByAES(jsonString);
+            var encryptJsonString = this.encryptDecryptService.encryptByAES(jsonString);
             pathSegmentList
-                    .add(Base64.getUrlEncoder().encodeToString(Base64.getDecoder().decode(encryptString)));
+                    .add(Base64.getUrlEncoder().encodeToString(encryptJsonString.getBytes(StandardCharsets.UTF_8)));
             var pathList = JinqStream.from(Lists.newArrayList(StringUtils.split(relativePath, "/"))).toList();
             if (pathList.size() > 1) {
                 pathSegmentList
