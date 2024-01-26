@@ -1,7 +1,5 @@
 package com.springboot.project.common.permission;
 
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Date;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -33,8 +31,8 @@ public class TokenUtil {
         var accessToken = JWT.create().withSubject(userId)
                 .withIssuedAt(new Date())
                 .withJWTId(jwtId)
-                .sign(Algorithm.RSA512((RSAPublicKey) this.encryptDecryptService.getRSA().getPublicKey(),
-                        (RSAPrivateKey) this.encryptDecryptService.getRSA().getPrivateKey()));
+                .sign(Algorithm.RSA512(this.encryptDecryptService.getKeyOfRSAPublicKey(),
+                        this.encryptDecryptService.getKeyOfRSAPrivateKey()));
 
         this.tokenService.createTokenEntity(jwtId, userId);
 
@@ -51,8 +49,8 @@ public class TokenUtil {
         String accessTokenOfNew = JWT.create().withSubject(userId)
                 .withIssuedAt(new Date())
                 .withJWTId(jwtId)
-                .sign(Algorithm.RSA512((RSAPublicKey) this.encryptDecryptService.getRSA().getPublicKey(),
-                        (RSAPrivateKey) this.encryptDecryptService.getRSA().getPrivateKey()));
+                .sign(Algorithm.RSA512(this.encryptDecryptService.getKeyOfRSAPublicKey(),
+                        this.encryptDecryptService.getKeyOfRSAPrivateKey()));
 
         this.tokenService.createTokenEntity(jwtId, userId);
 
@@ -72,8 +70,8 @@ public class TokenUtil {
 
     public DecodedJWT getDecodedJWTOfAccessToken(String accessToken) {
         var decodedJWT = JWT
-                .require(Algorithm.RSA512((RSAPublicKey) this.encryptDecryptService.getRSA().getPublicKey(),
-                        (RSAPrivateKey) this.encryptDecryptService.getRSA().getPrivateKey()))
+                .require(Algorithm.RSA512(this.encryptDecryptService.getKeyOfRSAPublicKey(),
+                        this.encryptDecryptService.getKeyOfRSAPrivateKey()))
                 .build().verify(accessToken);
         if (!this.tokenService.isExistTokenEntity(decodedJWT.getId())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Please login first and then visit");

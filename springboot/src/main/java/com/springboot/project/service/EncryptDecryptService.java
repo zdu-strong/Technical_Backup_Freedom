@@ -38,46 +38,39 @@ public class EncryptDecryptService extends BaseService {
     private Boolean ready = false;
 
     public String encryptByAES(String text) {
-        var aes = this.getAES();
-        return aes.encryptBase64(text);
+        var salt = Base64.getEncoder()
+                .encodeToString(
+                        DigestUtils.md5((Base64.getEncoder().encodeToString(this.getKeyOfAESSecretKey().getEncoded())
+                                + Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8)))
+                                .getBytes(StandardCharsets.UTF_8)));
+        var aes = new AES(Mode.CBC, Padding.PKCS5Padding, this.getKeyOfAESSecretKey(),
+                Base64.getDecoder().decode(salt));
+        return salt + aes.encryptBase64(text);
     }
 
     public String decryptByAES(String text) {
-        var aes = this.getAES();
-        return aes.decryptStr(text);
+        var secretKeyOfAES = Base64.getEncoder().encodeToString(this.getKeyOfAESSecretKey().getEncoded());
+        return this.decryptByAES(text, secretKeyOfAES);
     }
 
     public String encryptByPrivateKeyOfRSA(String text) {
-        var rsa = this.getRSA();
+        var rsa = new RSA(this.getKeyOfRSAPrivateKey(), this.getKeyOfRSAPublicKey());
         return rsa.encryptBase64(text, KeyType.PrivateKey);
     }
 
     public String encryptByPublicKeyOfRSA(String text) {
-        var rsa = this.getRSA();
+        var rsa = new RSA(this.getKeyOfRSAPrivateKey(), this.getKeyOfRSAPublicKey());
         return rsa.encryptBase64(text, KeyType.PublicKey);
     }
 
     public String decryptByByPublicKeyOfRSA(String text) {
-        var rsa = this.getRSA();
+        var rsa = new RSA(this.getKeyOfRSAPrivateKey(), this.getKeyOfRSAPublicKey());
         return rsa.decryptStr(text, KeyType.PublicKey);
     }
 
     public String decryptByByPrivateKeyOfRSA(String text) {
-        var rsa = this.getRSA();
+        var rsa = new RSA(this.getKeyOfRSAPrivateKey(), this.getKeyOfRSAPublicKey());
         return rsa.decryptStr(text, KeyType.PrivateKey);
-    }
-
-    public AES getAES() {
-        this.generateKey();
-        var aes = new AES(Mode.CBC, Padding.PKCS5Padding, this.keyOfAESSecretKey,
-                DigestUtils.md5(this.keyOfAESSecretKey.getEncoded()));
-        return aes;
-    }
-
-    public RSA getRSA() {
-        this.generateKey();
-        var rsa = new RSA(this.keyOfRSAPrivateKey, this.keyOfRSAPublicKey);
-        return rsa;
     }
 
     public String encryptByAES(String text, String secretKeyOfAES) {
@@ -184,7 +177,22 @@ public class EncryptDecryptService extends BaseService {
         }
     }
 
-    private void generateKey() {
+    public RSAPrivateKey getKeyOfRSAPrivateKey() {
+        this.initKey();
+        return this.keyOfRSAPrivateKey;
+    }
+
+    public RSAPublicKey getKeyOfRSAPublicKey() {
+        this.initKey();
+        return this.keyOfRSAPublicKey;
+    }
+
+    public SecretKey getKeyOfAESSecretKey() {
+        this.initKey();
+        return this.keyOfAESSecretKey;
+    }
+
+    private void initKey() {
         try {
             if (!this.ready) {
                 synchronized (getClass()) {

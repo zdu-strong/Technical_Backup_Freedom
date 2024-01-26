@@ -128,9 +128,10 @@ public class BaseStorage {
             } else {
                 throw new RuntimeException("Unsupported resource path");
             }
-            ResourceAccessLegalModel resourceAccessLegalModel = this.objectMapper.readValue(
-                    this.encryptDecryptService.getAES().decryptStr(
-                            Base64.getUrlDecoder().decode(JinqStream.from(pathSegmentList).findFirst().get())),
+            var encryptModelString = Base64.getEncoder()
+                    .encodeToString(Base64.getUrlDecoder().decode(JinqStream.from(pathSegmentList).findFirst().get()));
+            var jsonString = this.encryptDecryptService.decryptByAES(encryptModelString);
+            ResourceAccessLegalModel resourceAccessLegalModel = this.objectMapper.readValue(jsonString,
                     ResourceAccessLegalModel.class);
             return this.getRelativePathFromResourcePath(
                     String.join("/", Lists.asList(resourceAccessLegalModel.getRootFolderName(),
@@ -149,9 +150,10 @@ public class BaseStorage {
             resourceAccessLegalModel.setRootFolderName(rootFolderName);
             var pathSegmentList = new ArrayList<String>();
             pathSegmentList.add("resource");
+            var jsonString = this.objectMapper.writeValueAsString(resourceAccessLegalModel);
+            var encryptString = this.encryptDecryptService.encryptByAES(jsonString);
             pathSegmentList
-                    .add(Base64.getUrlEncoder().encodeToString(this.encryptDecryptService.getAES().encrypt(
-                            this.objectMapper.writeValueAsString(resourceAccessLegalModel))));
+                    .add(Base64.getUrlEncoder().encodeToString(Base64.getDecoder().decode(encryptString)));
             var pathList = JinqStream.from(Lists.newArrayList(StringUtils.split(relativePath, "/"))).toList();
             if (pathList.size() > 1) {
                 pathSegmentList
