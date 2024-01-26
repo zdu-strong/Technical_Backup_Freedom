@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.EncryptDecryptEntity;
+import com.springboot.project.enumeration.EncryptDecryptEnum;
 import com.springboot.project.model.EncryptDecryptModel;
 import cn.hutool.crypto.Mode;
 import cn.hutool.crypto.Padding;
@@ -34,7 +35,6 @@ public class EncryptDecryptService extends BaseService {
     private RSAPublicKey keyOfRSAPublicKey;
     private RSAPrivateKey keyOfRSAPrivateKey;
     private SecretKey keyOfAESSecretKey;
-    private final String keyId = "a6348051-646d-4f37-a68a-75a5a28a1d67";
     private Boolean ready = false;
 
     public String encryptByAES(String text) {
@@ -189,7 +189,7 @@ public class EncryptDecryptService extends BaseService {
             if (!this.ready) {
                 synchronized (getClass()) {
                     if (!this.ready) {
-                        String id = this.keyId;
+                        String id = EncryptDecryptEnum.KEY_ID;
                         if (!this.EncryptDecryptEntity().where(s -> s.getId().equals(id)).exists()) {
 
                             EncryptDecryptEntity encryptDecryptEntity = new EncryptDecryptEntity();

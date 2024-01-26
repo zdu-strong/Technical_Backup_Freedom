@@ -13,18 +13,15 @@ import org.springframework.web.server.ResponseStatusException;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.entity.VerificationCodeEmailEntity;
+import com.springboot.project.enumeration.VerificationCodeEmailEnum;
 import com.springboot.project.model.VerificationCodeEmailModel;
 
 @Service
 public class VerificationCodeEmailService extends BaseService {
 
-    private int minVerificationCodeLength = 6;
-    private int moderateVerificationCodeLength = 9;
-    private int maxVerificationCodeLength = 12;
-
     public VerificationCodeEmailModel createVerificationCodeEmail(String email) {
 
-        var verificationCodeLength = this.minVerificationCodeLength;
+        var verificationCodeLength = VerificationCodeEmailEnum.MIN_VERIFICATION_CODE_LENGTH;
 
         {
             var beforeCalendar = Calendar.getInstance();
@@ -37,8 +34,8 @@ public class VerificationCodeEmailService extends BaseService {
                     .where(s -> beforeDate.before(s.getCreateDate()))
                     .where(s -> !s.getHasUsed() || !s.getIsPassed())
                     .count();
-            if (retryCount > 1000 && verificationCodeLength < this.maxVerificationCodeLength) {
-                verificationCodeLength = this.maxVerificationCodeLength;
+            if (retryCount > 1000 && verificationCodeLength < VerificationCodeEmailEnum.MAX_VERIFICATION_CODE_LENGTH) {
+                verificationCodeLength = VerificationCodeEmailEnum.MAX_VERIFICATION_CODE_LENGTH;
             }
         }
 
@@ -54,10 +51,11 @@ public class VerificationCodeEmailService extends BaseService {
                     .where(s -> !s.getHasUsed() || !s.getIsPassed())
                     .count();
 
-            if (retryCount > 0 && verificationCodeLength < this.moderateVerificationCodeLength) {
-                verificationCodeLength = this.moderateVerificationCodeLength;
+            if (retryCount > 0
+                    && verificationCodeLength < VerificationCodeEmailEnum.MODERATE_VERIFICATION_CODE_LENGTH) {
+                verificationCodeLength = VerificationCodeEmailEnum.MODERATE_VERIFICATION_CODE_LENGTH;
             } else if (retryCount == 0) {
-                verificationCodeLength = this.minVerificationCodeLength;
+                verificationCodeLength = VerificationCodeEmailEnum.MIN_VERIFICATION_CODE_LENGTH;
             }
         }
 
@@ -123,7 +121,8 @@ public class VerificationCodeEmailService extends BaseService {
         }
 
         if (isFirstOnTheSecond) {
-            if (verificationCodeEmailEntity.getVerificationCode().length() == this.minVerificationCodeLength) {
+            if (verificationCodeEmailEntity.getVerificationCode()
+                    .length() == VerificationCodeEmailEnum.MIN_VERIFICATION_CODE_LENGTH) {
                 var email = verificationCodeEmailEntity.getEmail();
                 var createDate = verificationCodeEmailEntity.getCreateDate();
 
@@ -137,7 +136,7 @@ public class VerificationCodeEmailService extends BaseService {
                 beforeCalendar.add(Calendar.DAY_OF_YEAR, -1);
                 Date beforeDate = beforeCalendar.getTime();
 
-                var minVerificationCodeLength = this.minVerificationCodeLength;
+                var minVerificationCodeLength = VerificationCodeEmailEnum.MIN_VERIFICATION_CODE_LENGTH;
                 isFirstOnTheSecond = this.VerificationCodeEmailEntity()
                         .where(s -> s.getEmail().equals(email))
                         .where(s -> beforeDate.before(s.getCreateDate()))

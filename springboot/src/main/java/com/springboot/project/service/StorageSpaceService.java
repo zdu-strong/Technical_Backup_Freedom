@@ -1,21 +1,18 @@
 package com.springboot.project.service;
 
 import java.nio.file.Paths;
-import java.time.Duration;
 import java.util.Calendar;
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.StorageSpaceEntity;
+import com.springboot.project.enumeration.StorageSpaceEnum;
 import com.springboot.project.model.PaginationModel;
 import com.springboot.project.model.StorageSpaceModel;
 
 @Service
 public class StorageSpaceService extends BaseService {
-
-    private Duration tempFileSurvivalDuration = Duration.ofDays(1);
 
     public PaginationModel<StorageSpaceModel> getStorageSpaceListByPagination(Long pageNum, Long pageSize) {
         var stream = this.StorageSpaceEntity().sortedBy(s -> s.getId()).sortedBy(s -> s.getCreateDate());
@@ -41,7 +38,7 @@ public class StorageSpaceService extends BaseService {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        calendar.add(Calendar.MILLISECOND, Long.valueOf(0 - this.tempFileSurvivalDuration.toMillis()).intValue());
+        calendar.add(Calendar.MILLISECOND, Long.valueOf(0 - StorageSpaceEnum.TEMP_FILE_SURVIVAL_DURATION.toMillis()).intValue());
         Date expireDate = calendar.getTime();
         var isUsed = !this.StorageSpaceEntity().where(s -> s.getFolderName().equals(folderName))
                 .where((s, t) -> !t.stream(StorageSpaceEntity.class).where(m -> m.getFolderName().equals(folderName))
