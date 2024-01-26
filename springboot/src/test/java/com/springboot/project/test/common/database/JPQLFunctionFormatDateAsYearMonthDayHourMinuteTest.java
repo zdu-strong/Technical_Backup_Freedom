@@ -19,7 +19,7 @@ public class JPQLFunctionFormatDateAsYearMonthDayHourMinuteTest extends BaseTest
 
     @BeforeEach
     public void beforeEach() {
-        this.timeZone = this.timeZoneUtil.getTimeZone("Asia/Shanghai");
+        this.timeZone = this.timeZoneUtil.getTimeZoneString("Asia/Shanghai");
     }
 
 }

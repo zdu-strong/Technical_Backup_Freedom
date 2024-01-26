@@ -7,7 +7,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Calendar;
-import java.util.TimeZone;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
@@ -153,13 +152,12 @@ public class AuthorizationController extends BaseController {
         for (var i = 10; i > 0; i--) {
             var verificationCodeEmailModelTwo = this.verificationCodeEmailService.createVerificationCodeEmail(email);
 
-            var timeZone = TimeZone.getTimeZone(this.timeZoneUtil.getTimeZoneFromUTC());
             var calendar = Calendar.getInstance();
-            calendar.setTimeZone(timeZone);
+            calendar.setTimeZone(this.timeZoneUtil.UTC());
             calendar.setTime(verificationCodeEmailModelTwo.getCreateDate());
             calendar.add(Calendar.SECOND, 1);
             var simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            simpleDateFormat.setTimeZone(timeZone);
+            simpleDateFormat.setTimeZone(this.timeZoneUtil.UTC());
             var createDate = simpleDateFormat.parse(simpleDateFormat.format(calendar.getTime()));
             Thread.sleep(createDate.getTime() - verificationCodeEmailModelTwo.getCreateDate().getTime());
 

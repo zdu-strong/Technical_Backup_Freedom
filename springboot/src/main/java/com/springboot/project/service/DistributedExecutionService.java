@@ -2,7 +2,6 @@ package com.springboot.project.service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,7 +73,7 @@ public class DistributedExecutionService extends BaseService {
         distributedExecutionEntity.setName(distributedExecutionEnum.name());
         if (StringUtils.isBlank(version)) {
             var simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            simpleDateFormat.setTimeZone(TimeZone.getTimeZone(this.timeZoneUtil.getTimeZoneFromUTC()));
+            simpleDateFormat.setTimeZone(this.timeZoneUtil.UTC());
             distributedExecutionEntity.setVersion(
                     simpleDateFormat.format(new Date()) + " " + Generators.timeBasedGenerator().generate().toString());
         } else {

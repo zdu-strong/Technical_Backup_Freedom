@@ -5,11 +5,9 @@ import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.entity.VerificationCodeEmailEntity;
@@ -88,9 +86,9 @@ public class VerificationCodeEmailService extends BaseService {
             var email = verificationCodeEmailEntity.getEmail();
             var createDate = verificationCodeEmailEntity.getCreateDate();
 
-            var timeZone = this.timeZoneUtil.getTimeZoneFromUTC();
+            var timeZone = this.timeZoneUtil.UTCString();
             var simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            simpleDateFormat.setTimeZone(TimeZone.getTimeZone(timeZone));
+            simpleDateFormat.setTimeZone(this.timeZoneUtil.UTC());
             var createDateString = simpleDateFormat.format(createDate);
 
             var beforeCalendar = Calendar.getInstance();
@@ -126,9 +124,9 @@ public class VerificationCodeEmailService extends BaseService {
                 var email = verificationCodeEmailEntity.getEmail();
                 var createDate = verificationCodeEmailEntity.getCreateDate();
 
-                var timeZone = this.timeZoneUtil.getTimeZoneFromUTC();
+                var timeZone = this.timeZoneUtil.UTCString();
                 var simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                simpleDateFormat.setTimeZone(TimeZone.getTimeZone(timeZone));
+                simpleDateFormat.setTimeZone(this.timeZoneUtil.UTC());
                 var createDateString = simpleDateFormat.format(createDate);
 
                 var beforeCalendar = Calendar.getInstance();
