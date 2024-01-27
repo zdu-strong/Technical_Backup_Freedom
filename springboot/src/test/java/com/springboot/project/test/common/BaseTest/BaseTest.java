@@ -60,6 +60,7 @@ import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.FriendshipService;
 import com.springboot.project.service.LoggerService;
 import com.springboot.project.service.LongTermTaskService;
+import com.springboot.project.service.OrganizeClosureService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.StorageSpaceService;
 import com.springboot.project.service.TokenService;
@@ -130,6 +131,9 @@ public class BaseTest {
 
     @Autowired
     protected VerificationCodeEmailService verificationCodeEmailService;
+
+    @Autowired
+    protected OrganizeClosureService organizeClosureService;
 
     @Autowired
     protected PermissionUtil permissionUtil;
