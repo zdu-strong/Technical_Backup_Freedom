@@ -1,7 +1,6 @@
 package com.springboot.project.format;
 
 import org.springframework.stereotype.Service;
-
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.*;
 import com.springboot.project.model.FriendshipModel;
@@ -34,8 +33,14 @@ public class FriendshipFormatter extends BaseService {
         if (friendshipEntity != null) {
             return this.format(friendshipEntity);
         }
-        var friendshipModel = new FriendshipModel().setIsInBlacklist(false)
-                .setIsFriend(false).setUser(new UserModel().setId(userEntity.getId()))
+        var friendshipModel = new FriendshipModel()
+                .setId(newId())
+                .setHasInitiative(false)
+                .setIsFriend(false)
+                .setIsInBlacklist(false)
+                .setIsFriendOfFriend(false)
+                .setIsInBlacklistOfFriend(false)
+                .setUser(new UserModel().setId(userEntity.getId()))
                 .setFriend(this.userFormatter.format(friendEntity));
         return friendshipModel;
     }
