@@ -8,12 +8,14 @@ import org.jinq.jpa.JPAJinqStream;
 import org.jinq.orm.stream.JinqStream;
 import com.springboot.project.common.database.JPQLFunction;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Getter
 @Setter
 @Accessors(chain = true)
+@NoArgsConstructor
 public class PaginationModel<T> {
     private Long pageNum;
     private Long pageSize;
