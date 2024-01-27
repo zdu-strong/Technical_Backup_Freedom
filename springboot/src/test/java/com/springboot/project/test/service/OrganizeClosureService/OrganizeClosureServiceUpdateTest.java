@@ -1,6 +1,7 @@
 package com.springboot.project.test.service.OrganizeClosureService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +24,18 @@ public class OrganizeClosureServiceUpdateTest extends BaseTest {
                 JinqStream.from(result.getList()).select(s -> s.getParent().getId()).getOnlyValue());
         assertEquals("Son Gohan",
                 JinqStream.from(result.getList()).select(s -> s.getName()).getOnlyValue());
+        assertEquals(1,
+                JinqStream.from(result.getList()).select(s -> s.getLevel()).getOnlyValue());
+        assertEquals(0,
+                JinqStream.from(result.getList()).select(s -> s.getChildCount()).getOnlyValue());
+        assertEquals(0,
+                JinqStream.from(result.getList()).select(s -> s.getDescendantCount()).getOnlyValue());
+        assertEquals(0,
+                JinqStream.from(result.getList()).select(s -> s.getChildList().size()).getOnlyValue());
+        assertNotNull(
+                JinqStream.from(result.getList()).select(s -> s.getCreateDate()).getOnlyValue());
+        assertNotNull(
+                JinqStream.from(result.getList()).select(s -> s.getUpdateDate()).getOnlyValue());
     }
 
     @BeforeEach
