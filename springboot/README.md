@@ -154,22 +154,22 @@ get model array
 
 ## Notes - jinq - inner join
 
-    this.UserEmailEntity().where(s -> s.getUser().getUsername().equals("tom"));
-
-    this.UserEntity().joinList(t -> t.getUserEmailList());
+    this.UserEntity().join((s, t) -> t.stream(UserEmailEntity.class));
 
     this.UserEmailEntity().join(s -> JinqStream.of(s.getUser()));
 
-    this.UserEntity().join((s, t) -> t.stream(UserEmailEntity.class));
+    this.UserEntity().joinList(t -> t.getUserEmailList());
+
+    this.UserEmailEntity().where(s -> s.getUser().getUsername().equals("tom"));
 
 ## Notes - jinq - left join
+
+    this.UserEntity().leftOuterJoin((s, t) -> t.stream(UserEmailEntity.class),
+        (s, t) -> s.getId().equals(t.getId()));
 
     this.UserEmailEntity().leftOuterJoin(s -> JinqStream.of(s.getUser()));
 
     this.UserEntity().leftOuterJoinList((s) -> s.getUserEmailList());
-
-    this.UserEntity().leftOuterJoin((s, t) -> t.stream(UserEmailEntity.class),
-        (s, t) -> s.getId().equals(t.getId()));
 
 ## Notes - jinq - group by
 
