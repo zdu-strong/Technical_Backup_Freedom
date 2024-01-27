@@ -3,6 +3,8 @@ package com.springboot.project.test.service.OrganizeService;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.jinq.orm.stream.JinqStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +26,7 @@ public class OrganizeServiceGetOrganizeListThatContainsDeletedTest extends BaseT
         assertEquals(0, result.getChildCount());
         assertNull(result.getParent());
         assertEquals(0, result.getLevel());
+        assertTrue(result.getIsDeleted());
     }
 
     @BeforeEach

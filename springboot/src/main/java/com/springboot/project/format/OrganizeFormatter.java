@@ -36,6 +36,7 @@ public class OrganizeFormatter extends BaseService {
                 .where(s -> s.getId().equals(id))
                 .select(s -> JPQLFunction.isNotDeletedOfOrganize(s.getId()))
                 .getOnlyValue();
+        organizeModel.setIsDeleted(isDeleted);
         if (!isDeleted) {
             var childOrganizeCount = this.OrganizeEntity()
                     .where(s -> s.getParent().getId().equals(id))
