@@ -12,7 +12,7 @@ import com.springboot.project.model.PaginationModel;
 @Service
 public class FriendshipService extends BaseService {
 
-    public void addToFriendList(String userId, String friendId, String aesOfUser, String aesOfFriend) {
+    public FriendshipModel addToFriendList(String userId, String friendId, String aesOfUser, String aesOfFriend) {
         this.createFriendship(userId, friendId, aesOfUser, aesOfFriend);
 
         var friendshipEntity = this.FriendshipEntity()
@@ -25,6 +25,8 @@ public class FriendshipService extends BaseService {
         friendshipEntity.setIsFriend(true);
         friendshipEntity.setUpdateDate(new Date());
         this.merge(friendshipEntity);
+
+        return this.friendshipFormatter.format(friendshipEntity);
     }
 
     public void addToBlacklist(String userId, String friendId, String aesOfUser, String aesOfFriend) {

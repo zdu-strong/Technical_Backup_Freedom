@@ -19,8 +19,8 @@ public class FriendshipController extends BaseController {
 
         var userId = this.permissionUtil.getUserId(request);
 
-        this.friendshipService.addToFriendList(userId, friendId, aesOfUser, aesOfFriend);
-        return ResponseEntity.ok().build();
+        var friendshipModel = this.friendshipService.addToFriendList(userId, friendId, aesOfUser, aesOfFriend);
+        return ResponseEntity.ok(friendshipModel);
     }
 
     @PostMapping("/friendship/add_to_blacklist")
