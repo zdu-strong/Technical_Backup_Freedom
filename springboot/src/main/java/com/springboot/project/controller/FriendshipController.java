@@ -30,8 +30,8 @@ public class FriendshipController extends BaseController {
 
         var userId = this.permissionUtil.getUserId(request);
 
-        this.friendshipService.addToBlacklist(userId, friendId, aesOfUser, aesOfFriend);
-        return ResponseEntity.ok().build();
+        var friendshipModel = this.friendshipService.addToBlacklist(userId, friendId, aesOfUser, aesOfFriend);
+        return ResponseEntity.ok(friendshipModel);
     }
 
     @DeleteMapping("/friendship/delete_from_friend_list")
