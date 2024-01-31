@@ -51,7 +51,10 @@ import com.springboot.project.model.LongTermTaskModel;
 import com.springboot.project.model.UserEmailModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.model.VerificationCodeEmailModel;
+import com.springboot.project.properties.AliyunCloudStorageProperties;
 import com.springboot.project.properties.AuthorizationEmailProperties;
+import com.springboot.project.properties.IsTestOrDevModeProperties;
+import com.springboot.project.properties.SchedulingPoolSizeProperties;
 import com.springboot.project.properties.StorageRootPathProperties;
 import com.springboot.project.scheduled.MessageScheduled;
 import com.springboot.project.scheduled.OrganizeClosureRefreshScheduled;
@@ -98,6 +101,15 @@ public class BaseTest {
 
     @Autowired
     protected StorageRootPathProperties storageRootPathProperties;
+
+    @Autowired
+    protected SchedulingPoolSizeProperties schedulingPoolSizeProperties;
+
+    @Autowired
+    protected IsTestOrDevModeProperties isTestOrDevModeProperties;
+
+    @Autowired
+    protected AliyunCloudStorageProperties aliyunCloudStorageProperties;
 
     @Autowired
     protected ObjectMapper objectMapper;
