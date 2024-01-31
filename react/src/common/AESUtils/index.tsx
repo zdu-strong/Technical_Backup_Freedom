@@ -8,20 +8,20 @@ export async function generateSecretKeyOfAES(password?: string): Promise<string>
   );
 }
 
-export async function encryptByAES(secretKeyOfAES: string, data: string): Promise<string> {
+export async function encryptByAES(data: string, secretKeyOfAES: string): Promise<string> {
   return await runWoker(new Worker(new URL('../../common/WebWorker/AESUtils/encryptByAES.worker', import.meta.url), { type: "module" }),
     {
+      data,
       secretKeyOfAES,
-      data
     }
   );
 }
 
-export async function decryptByAES(secretKeyOfAES: string, data: string): Promise<string> {
+export async function decryptByAES(data: string, secretKeyOfAES: string): Promise<string> {
   return await runWoker(new Worker(new URL('../../common/WebWorker/AESUtils/decryptByAES.worker', import.meta.url), { type: "module" }),
     {
+      data,
       secretKeyOfAES,
-      data
     }
   );
 }

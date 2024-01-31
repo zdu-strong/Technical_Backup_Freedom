@@ -4,38 +4,38 @@ export async function generateKeyPairOfRSA(): Promise<{ privateKey: string, publ
   return await runWoker(new Worker(new URL('../../common/WebWorker/RSAUtils/generateKeyPairOfRSA.worker', import.meta.url), { type: "module" }));
 }
 
-export async function encryptByPublicKeyOfRSA(publicKeyOfRSA: string, data: string): Promise<string> {
+export async function encryptByPublicKeyOfRSA(data: string, publicKeyOfRSA: string): Promise<string> {
   return await runWoker(new Worker(new URL('../../common/WebWorker/RSAUtils/encryptByPublicKeyOfRSA.worker', import.meta.url), { type: "module" }),
     {
+      data,
       publicKeyOfRSA,
-      data
     }
   );
 }
 
-export async function decryptByPrivateKeyOfRSA(privateKeyOfRSA: string, data: string): Promise<string> {
+export async function decryptByPrivateKeyOfRSA(data: string, privateKeyOfRSA: string): Promise<string> {
   return await runWoker(new Worker(new URL('../../common/WebWorker/RSAUtils/decryptByPrivateKeyOfRSA.worker', import.meta.url), { type: "module" }),
     {
+      data,
       privateKeyOfRSA,
-      data
     }
   );
 }
 
-export async function encryptByPrivateKeyOfRSA(privateKeyOfRSA: string, data: string): Promise<string> {
+export async function encryptByPrivateKeyOfRSA(data: string, privateKeyOfRSA: string): Promise<string> {
   return await runWoker(new Worker(new URL('../../common/WebWorker/RSAUtils/encryptByPrivateKeyOfRSA.worker', import.meta.url), { type: "module" }),
     {
+      data,
       privateKeyOfRSA,
-      data
     }
   );
 }
 
-export async function decryptByPublicKeyOfRSA(publicKeyOfRSA: string, data: string): Promise<string> {
+export async function decryptByPublicKeyOfRSA(data: string, publicKeyOfRSA: string): Promise<string> {
   return await runWoker(new Worker(new URL('../../common/WebWorker/RSAUtils/decryptByPublicKeyOfRSA.worker', import.meta.url), { type: "module" }),
     {
+      data,
       publicKeyOfRSA,
-      data
     }
   );
 }

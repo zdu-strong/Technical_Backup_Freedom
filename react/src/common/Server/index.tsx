@@ -92,16 +92,16 @@ export async function setGlobalUserInfo(user?: UserModel): Promise<void> {
   GlobalUserInfo.privateKeyOfRSA = user!.privateKeyOfRSA;
   GlobalUserInfo.userEmailList = user!.userEmailList;
   GlobalUserInfo.encryptByPublicKeyOfRSA = async (data: string) => {
-    return await encryptByPublicKeyOfRSA(GlobalUserInfo.publicKeyOfRSA, data);
+    return await encryptByPublicKeyOfRSA(data, GlobalUserInfo.publicKeyOfRSA);
   };
   GlobalUserInfo.decryptByPrivateKeyOfRSA = async (data: string) => {
-    return await decryptByPrivateKeyOfRSA(GlobalUserInfo.privateKeyOfRSA, data);
+    return await decryptByPrivateKeyOfRSA(data, GlobalUserInfo.privateKeyOfRSA);
   };
   GlobalUserInfo.encryptByPrivateKeyOfRSA = async (data: string) => {
-    return await encryptByPrivateKeyOfRSA(GlobalUserInfo.privateKeyOfRSA, data);
+    return await encryptByPrivateKeyOfRSA(data, GlobalUserInfo.privateKeyOfRSA);
   };
   GlobalUserInfo.decryptByPublicKeyOfRSA = async (data: string) => {
-    return await decryptByPublicKeyOfRSA(GlobalUserInfo.publicKeyOfRSA!, data);
+    return await decryptByPublicKeyOfRSA(data, GlobalUserInfo.publicKeyOfRSA!);
   };
   if (hasParam) {
     window.localStorage.setItem(keyOfGlobalUserInfoOfLocalStorage, JSON.stringify(GlobalUserInfo));

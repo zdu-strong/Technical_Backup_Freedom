@@ -16,7 +16,7 @@ export async function signUp(password: string, nickname: string, userEmailList: 
   const { privateKey, publicKey } = await keyPairPromise;
   const secretKeyOfAES = await secretKeyOfAESPromise;
   const secretKeyOfAESOfPassword = await secretKeyOfAESOfPasswordPromise;
-  const privateKeyOfRSAPromise = encryptByAES(secretKeyOfAES, privateKey);
+  const privateKeyOfRSAPromise = encryptByAES(privateKey, secretKeyOfAES);
   const passwordParamPromise = encryptByAES(secretKeyOfAESOfPassword, secretKeyOfAESOfPassword);
   await Promise.all([privateKeyOfRSAPromise, passwordParamPromise]);
   let { data: user } = await axios.post<UserModel>(`/sign_up`, {
@@ -48,7 +48,7 @@ export async function signIn(userIdOrEmail: string, password: string): Promise<v
     }
   });
   user = new TypedJSON(UserModel).parse(user)!;
-  user.privateKeyOfRSA = await decryptByAES(await secretKeyOfAESPromise, user.privateKeyOfRSA);
+  user.privateKeyOfRSA = await decryptByAES(user.privateKeyOfRSA, await secretKeyOfAESPromise);
   await setGlobalUserInfo(user);
 }
 
