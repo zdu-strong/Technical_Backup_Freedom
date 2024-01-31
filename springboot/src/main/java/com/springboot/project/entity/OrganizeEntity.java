@@ -7,7 +7,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -23,8 +22,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = { "parentId", "name", "deletedKey" })
-}, indexes = {
-        @Index(columnList = "id, isDeleted", unique = true)
 })
 public class OrganizeEntity {
 
