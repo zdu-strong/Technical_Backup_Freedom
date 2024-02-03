@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.DistributedExecutionEntity;
-import com.springboot.project.enumeration.DistributedExecutionEnum;
+import com.springboot.project.enumerate.DistributedExecutionEnum;
 import com.springboot.project.model.DistributedExecutionModel;
 
 @Service

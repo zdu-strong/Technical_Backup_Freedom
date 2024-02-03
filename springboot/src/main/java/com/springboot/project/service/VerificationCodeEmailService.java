@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.entity.VerificationCodeEmailEntity;
-import com.springboot.project.enumeration.VerificationCodeEmailEnum;
+import com.springboot.project.enumerate.VerificationCodeEmailEnum;
 import com.springboot.project.model.VerificationCodeEmailModel;
 
 @Service

@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.EncryptDecryptEntity;
-import com.springboot.project.enumeration.EncryptDecryptEnum;
+import com.springboot.project.enumerate.EncryptDecryptEnum;
 import com.springboot.project.model.EncryptDecryptModel;
 import cn.hutool.crypto.Mode;
 import cn.hutool.crypto.Padding;

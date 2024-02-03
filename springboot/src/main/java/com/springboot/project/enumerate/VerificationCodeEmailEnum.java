@@ -1,4 +1,4 @@
-package com.springboot.project.enumeration;
+package com.springboot.project.enumerate;
 
 public class VerificationCodeEmailEnum {
 
