@@ -39,6 +39,8 @@ public class SpringbootProjectApplication {
         while (true) {
             var newDatabaseName = getANewDatabaseName();
             var oldDatabaseName = getANewDatabaseName();
+            createDatabase(oldDatabaseName);
+            createDatabase(newDatabaseName);
             buildNewDatabase(newDatabaseName);
             var isCreateChangeLogFileOfThis = diffDatabase(newDatabaseName, oldDatabaseName);
             deleteDatabase(oldDatabaseName);
@@ -70,7 +72,8 @@ public class SpringbootProjectApplication {
             command.add("/bin/bash");
             command.add("-c");
         }
-        command.add("mvn clean compile spring-boot:run --define database.mysql.name=" + newDatabaseName);
+        command.add("mvn clean compile spring-boot:run --define database." + getDatabaseType() + ".name="
+                + newDatabaseName);
         var processBuilder = new ProcessBuilder(command)
                 .inheritIO()
                 .directory(new File(getBaseFolderPath()));
@@ -114,7 +117,7 @@ public class SpringbootProjectApplication {
         var filePathOfDiffChangeLogFile = Paths
                 .get(getBaseFolderPath(), "src/main/resources", "liquibase/changelog",
                         simpleDateFormat.format(today).substring(0, 10),
-                        simpleDateFormat.format(today) + "_changelog.mysql.sql")
+                        simpleDateFormat.format(today) + "_changelog." + getDatabaseType() + ".sql")
                 .normalize().toString().replaceAll(Pattern.quote("\\"), "/");
         var isCreateFolder = !existFolder(Paths.get(filePathOfDiffChangeLogFile, "..").normalize().toString());
 
@@ -131,7 +134,8 @@ public class SpringbootProjectApplication {
             command.add("-c");
         }
         command.add(
-                "mvn clean compile liquibase:update liquibase:diff --define database.mysql.name=" + oldDatabaseName);
+                "mvn clean compile liquibase:update liquibase:diff --define database." + getDatabaseType() + ".name="
+                        + oldDatabaseName);
         var processBuilder = new ProcessBuilder(command)
                 .inheritIO()
                 .directory(new File(getBaseFolderPath()));
@@ -204,6 +208,9 @@ public class SpringbootProjectApplication {
     }
 
     public static void deleteDatabase(String databaseName) throws IOException, InterruptedException {
+        if (!isMysqlDatabase()) {
+            return;
+        }
         var command = new ArrayList<String>();
         if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
             command.add("cmd");
@@ -212,7 +219,36 @@ public class SpringbootProjectApplication {
             command.add("/bin/bash");
             command.add("-c");
         }
-        command.add("mvn clean compile sql:execute --define database.mysql.name=" + databaseName);
+        command.add("mvn clean compile sql:execute --define database." + getDatabaseType() + ".name=" + databaseName);
+        var processBuilder = new ProcessBuilder(command)
+                .inheritIO()
+                .directory(new File(getBaseFolderPath()));
+        if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
+            processBuilder.environment().put("Path", System.getenv("Path") + ";" + getBaseFolderPath());
+        } else {
+            processBuilder.environment().put("PATH", System.getenv("PATH") + ":" + getBaseFolderPath());
+        }
+        var process = processBuilder.start();
+        var exitValue = process.waitFor();
+        destroy(process.toHandle());
+        if (exitValue != 0) {
+            throw new RuntimeException("Failed!");
+        }
+    }
+
+    public static void createDatabase(String databaseName) throws IOException, InterruptedException {
+        if (!isCockroachdbDatabase()) {
+            return;
+        }
+        var command = new ArrayList<String>();
+        if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
+            command.add("cmd");
+            command.add("/c");
+        } else {
+            command.add("/bin/bash");
+            command.add("-c");
+        }
+        command.add("mvn clean compile sql:execute --define database." + getDatabaseType() + ".name=" + databaseName);
         var processBuilder = new ProcessBuilder(command)
                 .inheritIO()
                 .directory(new File(getBaseFolderPath()));
@@ -272,12 +308,36 @@ public class SpringbootProjectApplication {
     }
 
     private static void replaceDatetimeColumnType(File file) throws IOException {
-        if (!file.getName().endsWith("_changelog.mysql.sql")) {
+        if (!isMysqlDatabase()) {
             return;
         }
         var textList = FileUtils.readLines(file, StandardCharsets.UTF_8);
         textList = textList.stream().map(s -> s.replaceAll(Pattern.quote(" datetime "), " datetime(6) ")).toList();
         FileUtils.writeLines(file, StandardCharsets.UTF_8.name(), textList);
+    }
+
+    private static String getDatabaseType() throws IOException {
+        if (isMysqlDatabase()) {
+            return "mysql";
+        }
+        if (isCockroachdbDatabase()) {
+            return "cockroachdb";
+        }
+        throw new RuntimeException("Not Implemented");
+    }
+
+    private static boolean isMysqlDatabase() throws IOException {
+        var pomXmlFile = new File(getBaseFolderPath(), "pom.xml");
+        var isMysqlDatabase = FileUtils.readFileToString(pomXmlFile, StandardCharsets.UTF_8)
+                .contains("database.mysql.jdbc.url");
+        return isMysqlDatabase;
+    }
+
+    private static boolean isCockroachdbDatabase() throws IOException {
+        var pomXmlFile = new File(getBaseFolderPath(), "pom.xml");
+        var isMysqlDatabase = FileUtils.readFileToString(pomXmlFile, StandardCharsets.UTF_8)
+                .contains("database.cockroachdb.jdbc.url");
+        return isMysqlDatabase;
     }
 
 }
