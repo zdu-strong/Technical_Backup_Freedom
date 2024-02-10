@@ -166,6 +166,9 @@ public class SpringbootProjectApplication {
         var fileOfDerbyLog = new File(getBaseFolderPath(), "derby.log");
         FileUtils.deleteQuietly(fileOfDerbyLog);
         var isCreateChangeLogFile = !isEmptyOfDiffChangeLogFile;
+        if (isCreateChangeLogFile) {
+            replaceDatetimeColumnType(new File(filePathOfDiffChangeLogFile));
+        }
         return isCreateChangeLogFile;
     }
 
@@ -266,6 +269,15 @@ public class SpringbootProjectApplication {
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+    private static void replaceDatetimeColumnType(File file) throws IOException {
+        if (!file.getName().endsWith("_changelog.mysql.sql")) {
+            return;
+        }
+        var textList = FileUtils.readLines(file, StandardCharsets.UTF_8);
+        textList = textList.stream().map(s -> s.replaceAll(Pattern.quote(" datetime "), " datetime(6) ")).toList();
+        FileUtils.writeLines(file, StandardCharsets.UTF_8.name(), textList);
     }
 
 }
