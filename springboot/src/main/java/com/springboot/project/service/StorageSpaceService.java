@@ -21,6 +21,7 @@ public class StorageSpaceService extends BaseService {
         return storageSpacePaginationModel;
     }
 
+    @SuppressWarnings("resource")
     public boolean isUsed(String folderName) {
         this.checkIsValidFolderName(folderName);
 

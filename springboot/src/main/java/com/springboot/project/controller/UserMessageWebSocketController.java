@@ -136,6 +136,7 @@ public class UserMessageWebSocketController {
         }
     }
 
+    @SuppressWarnings("resource")
     public synchronized void sendMessage() {
         try {
             if (!_permissionUtil.isSignIn(accessToken)) {
