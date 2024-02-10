@@ -29,7 +29,7 @@ public class CustomMySQLDialect extends MySQLDialect {
                 basicTypeRegistry.resolve(StandardBasicTypes.LONG));
         functionRegistry.registerPattern("IS_SORT_AT_BEFORE", "?1 < ?2",
                 basicTypeRegistry.resolve(StandardBasicTypes.BOOLEAN));
-        functionRegistry.registerPattern("LOCATE", "LOCATE(?2, ?1)",
+        functionRegistry.registerPattern("LOCATE", "LOCATE(?1, ?2)",
                 basicTypeRegistry.resolve(StandardBasicTypes.LONG));
         functionRegistry.registerPattern("FORMAT_DATE_AS_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND_MILLISECOND",
                 "SUBSTRING(DATE_FORMAT(CONVERT_TZ(?1, '+00:00', ?2), '%Y-%m-%d %H:%i:%s.%f'), 1, 23)",
