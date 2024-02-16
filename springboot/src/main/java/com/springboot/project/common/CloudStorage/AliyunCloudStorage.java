@@ -119,7 +119,7 @@ public class AliyunCloudStorage extends BaseStorage implements CloudStorageInter
             }
         }
 
-        Date expireDate = DateUtils.addMilliseconds(new Date(),
+        var expireDate = DateUtils.addMilliseconds(new Date(),
                 Long.valueOf(this.tempUrlSurvivalDuration.toMillis()).intValue());
 
         var ossClient = this.getOssClientClient();
@@ -154,7 +154,7 @@ public class AliyunCloudStorage extends BaseStorage implements CloudStorageInter
             }
         }
 
-        Date expireDate = DateUtils.addMilliseconds(new Date(),
+        var expireDate = DateUtils.addMilliseconds(new Date(),
                 Long.valueOf(this.tempUrlSurvivalDuration.toMillis()).intValue());
 
         var ossClient = this.getOssClientClient();

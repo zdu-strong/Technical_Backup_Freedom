@@ -1,7 +1,7 @@
 package com.springboot.project.common.OrganizeUtil;
 
-import java.util.Calendar;
 import java.util.Date;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.springboot.project.service.OrganizeClosureService;
@@ -51,9 +51,7 @@ public class OrganizeUtil {
     }
 
     private Date getDeadline() {
-        var calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, 10);
-        return calendar.getTime();
+        return DateUtils.addSeconds(new Date(), 10);
     }
 
 }

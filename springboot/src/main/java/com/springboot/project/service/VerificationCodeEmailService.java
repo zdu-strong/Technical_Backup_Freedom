@@ -2,7 +2,6 @@ package com.springboot.project.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 import org.apache.commons.lang3.time.DateUtils;
@@ -24,10 +23,7 @@ public class VerificationCodeEmailService extends BaseService {
         var verificationCodeLength = VerificationCodeEmailEnum.MIN_VERIFICATION_CODE_LENGTH;
 
         {
-            var beforeCalendar = Calendar.getInstance();
-            beforeCalendar.setTime(new Date());
-            beforeCalendar.add(Calendar.MONTH, -1);
-            Date beforeDate = beforeCalendar.getTime();
+            var beforeDate = DateUtils.addMonths(new Date(), -1);
 
             var retryCount = this.VerificationCodeEmailEntity()
                     .where(s -> s.getEmail().equals(email))
@@ -40,10 +36,7 @@ public class VerificationCodeEmailService extends BaseService {
         }
 
         {
-            var beforeCalendar = Calendar.getInstance();
-            beforeCalendar.setTime(new Date());
-            beforeCalendar.add(Calendar.DAY_OF_YEAR, -1);
-            Date beforeDate = beforeCalendar.getTime();
+            var beforeDate = DateUtils.addDays(new Date(), -1);
 
             var retryCount = this.VerificationCodeEmailEntity()
                     .where(s -> s.getEmail().equals(email))
@@ -92,7 +85,7 @@ public class VerificationCodeEmailService extends BaseService {
             var timeZone = this.timeZoneUtil.getTimeZoneString("UTC");
             var createDateString = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))
                     .format(createDate);
-            Date beforeDate = DateUtils.addSeconds(verificationCodeEmailEntity.getCreateDate(), -1);
+            var beforeDate = DateUtils.addSeconds(verificationCodeEmailEntity.getCreateDate(), -1);
 
             isFirstOnTheSecond = this.VerificationCodeEmailEntity()
                     .where(s -> s.getEmail().equals(email))
@@ -125,7 +118,7 @@ public class VerificationCodeEmailService extends BaseService {
                 var timeZone = this.timeZoneUtil.getTimeZoneString("UTC");
                 var createDateString = FastDateFormat.getInstance("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
                         .format(createDate);
-                Date beforeDate = DateUtils.addDays(verificationCodeEmailEntity.getCreateDate(), -1);
+                var beforeDate = DateUtils.addDays(verificationCodeEmailEntity.getCreateDate(), -1);
 
                 var minVerificationCodeLength = VerificationCodeEmailEnum.MIN_VERIFICATION_CODE_LENGTH;
                 isFirstOnTheSecond = this.VerificationCodeEmailEntity()
@@ -185,10 +178,7 @@ public class VerificationCodeEmailService extends BaseService {
         }
 
         {
-            var calendar = Calendar.getInstance();
-            calendar.setTime(verificationCodeEmailEntity.getCreateDate());
-            calendar.add(Calendar.MINUTE, 5);
-            Date expiredDate = calendar.getTime();
+            var expiredDate = DateUtils.addMinutes(new Date(), 5);
 
             if (!verificationCodeEmailEntity.getCreateDate().before(expiredDate)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,

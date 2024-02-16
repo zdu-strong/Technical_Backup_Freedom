@@ -1,9 +1,9 @@
 package com.springboot.project.service;
 
 import java.nio.file.Paths;
-import java.util.Calendar;
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.StorageSpaceEntity;
@@ -37,10 +37,8 @@ public class StorageSpaceService extends BaseService {
             this.createStorageSpaceEntity(folderName);
         }
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.MILLISECOND, Long.valueOf(0 - StorageSpaceEnum.TEMP_FILE_SURVIVAL_DURATION.toMillis()).intValue());
-        Date expireDate = calendar.getTime();
+        var expireDate = DateUtils.addMilliseconds(new Date(),
+                Long.valueOf(0 - StorageSpaceEnum.TEMP_FILE_SURVIVAL_DURATION.toMillis()).intValue());
         var isUsed = !this.StorageSpaceEntity().where(s -> s.getFolderName().equals(folderName))
                 .where((s, t) -> !t.stream(StorageSpaceEntity.class).where(m -> m.getFolderName().equals(folderName))
                         .where(m -> expireDate.before(m.getUpdateDate())).exists())

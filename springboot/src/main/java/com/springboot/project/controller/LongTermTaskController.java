@@ -1,7 +1,7 @@
 package com.springboot.project.controller;
 
-import java.util.Calendar;
 import java.util.Date;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,11 +40,8 @@ public class LongTermTaskController extends BaseController {
         this.longTermTaskService
                 .checkIsExistLongTermTaskById(this.encryptDecryptService.decryptByAES(id));
 
-        Calendar calendarOfWait = Calendar.getInstance();
-        calendarOfWait.setTime(new Date());
-        calendarOfWait.add(Calendar.MILLISECOND,
+        var expireDate = DateUtils.addMilliseconds(new Date(),
                 Long.valueOf(LongTermTaskTempWaitDurationEnum.TEMP_WAIT_DURATION.toMillis()).intValue());
-        Date expireDate = calendarOfWait.getTime();
 
         while (true) {
             var response = this.longTermTaskService

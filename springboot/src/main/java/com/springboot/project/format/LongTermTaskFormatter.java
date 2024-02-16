@@ -1,10 +1,10 @@
 package com.springboot.project.format;
 
 import java.time.Duration;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import org.apache.commons.lang3.time.DateUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -54,10 +54,8 @@ public class LongTermTaskFormatter extends BaseService {
 
     public ResponseEntity<?> format(LongTermTaskEntity longTermTaskEntity) {
         try {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-            calendar.add(Calendar.MILLISECOND, Long.valueOf(0 - this.tempTaskSurvivalDuration.toMillis()).intValue());
-            Date expireDate = calendar.getTime();
+            var expireDate = DateUtils.addMilliseconds(new Date(),
+                    Long.valueOf(0 - this.tempTaskSurvivalDuration.toMillis()).intValue());
             if (!longTermTaskEntity.getIsDone() && longTermTaskEntity.getUpdateDate().before(expireDate)) {
                 throw new RuntimeException("The task failed because it stopped");
             }
