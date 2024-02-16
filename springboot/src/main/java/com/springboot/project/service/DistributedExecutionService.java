@@ -1,8 +1,9 @@
 package com.springboot.project.service;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.fasterxml.uuid.Generators;
@@ -62,7 +63,8 @@ public class DistributedExecutionService extends BaseService {
             }
         }
 
-        return this.createDistributedExecution(DistributedExecutionEnum.ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY, version,
+        return this.createDistributedExecution(DistributedExecutionEnum.ORGANIZE_REFRESH_ORGANIZE_CLOSURE_ENTITY,
+                version,
                 pageNum, pageSize);
     }
 
@@ -72,10 +74,10 @@ public class DistributedExecutionService extends BaseService {
         distributedExecutionEntity.setId(newId());
         distributedExecutionEntity.setName(distributedExecutionEnum.name());
         if (StringUtils.isBlank(version)) {
-            var simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            simpleDateFormat.setTimeZone(this.timeZoneUtil.UTC());
             distributedExecutionEntity.setVersion(
-                    simpleDateFormat.format(new Date()) + " " + Generators.timeBasedGenerator().generate().toString());
+                    FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC")).format(new Date())
+                            + " "
+                            + Generators.timeBasedGenerator().generate().toString());
         } else {
             distributedExecutionEntity.setVersion(version);
         }

@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayDeque;
-import java.util.Calendar;
 import java.util.Date;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -119,10 +119,8 @@ public class AliyunCloudStorage extends BaseStorage implements CloudStorageInter
             }
         }
 
-        var calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.MILLISECOND, Long.valueOf(this.tempUrlSurvivalDuration.toMillis()).intValue());
-        Date expireDate = calendar.getTime();
+        Date expireDate = DateUtils.addMilliseconds(new Date(),
+                Long.valueOf(this.tempUrlSurvivalDuration.toMillis()).intValue());
 
         var ossClient = this.getOssClientClient();
         try {
@@ -156,10 +154,8 @@ public class AliyunCloudStorage extends BaseStorage implements CloudStorageInter
             }
         }
 
-        var calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.MILLISECOND, Long.valueOf(this.tempUrlSurvivalDuration.toMillis()).intValue());
-        Date expireDate = calendar.getTime();
+        Date expireDate = DateUtils.addMilliseconds(new Date(),
+                Long.valueOf(this.tempUrlSurvivalDuration.toMillis()).intValue());
 
         var ossClient = this.getOssClientClient();
         try {

@@ -4,11 +4,12 @@ import java.io.ByteArrayOutputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Base64;
-import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.http.client.utils.URIBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,6 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.model.VerificationCodeEmailModel;
-
 import cn.hutool.crypto.CryptoException;
 
 @RestController
@@ -152,13 +152,9 @@ public class AuthorizationController extends BaseController {
         for (var i = 10; i > 0; i--) {
             var verificationCodeEmailModelTwo = this.verificationCodeEmailService.createVerificationCodeEmail(email);
 
-            var calendar = Calendar.getInstance();
-            calendar.setTimeZone(this.timeZoneUtil.UTC());
-            calendar.setTime(verificationCodeEmailModelTwo.getCreateDate());
-            calendar.add(Calendar.SECOND, 1);
-            var simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            simpleDateFormat.setTimeZone(this.timeZoneUtil.UTC());
-            var createDate = simpleDateFormat.parse(simpleDateFormat.format(calendar.getTime()));
+            var fastDateFormat = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"));
+            var createDate = fastDateFormat.parse(
+                    fastDateFormat.format(DateUtils.addSeconds(verificationCodeEmailModelTwo.getCreateDate(), 1)));
             Thread.sleep(createDate.getTime() - verificationCodeEmailModelTwo.getCreateDate().getTime());
 
             if (this.verificationCodeEmailService

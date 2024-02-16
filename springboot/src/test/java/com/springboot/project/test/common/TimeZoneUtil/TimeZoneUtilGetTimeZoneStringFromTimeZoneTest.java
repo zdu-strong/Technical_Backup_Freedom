@@ -1,6 +1,7 @@
 package com.springboot.project.test.common.TimeZoneUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.time.ZoneId;
 import java.util.TimeZone;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ public class TimeZoneUtilGetTimeZoneStringFromTimeZoneTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() {
-        this.timeZone = this.timeZoneUtil.getTimeZone("Asia/Shanghai");
+        this.timeZone = TimeZone.getTimeZone(ZoneId.of("Asia/Shanghai"));
     }
 
 }

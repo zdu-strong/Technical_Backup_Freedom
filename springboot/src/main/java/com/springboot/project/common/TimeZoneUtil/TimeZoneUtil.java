@@ -45,29 +45,4 @@ public class TimeZoneUtil {
         return this.getTimeZoneString(zoneId.getId());
     }
 
-    public TimeZone getTimeZone(String timeZone) {
-        var zoneId = ZoneId.of(this.getTimeZoneString(timeZone));
-        return TimeZone.getTimeZone(zoneId);
-    }
-
-    /**
-     * return value like +00:00
-     * 
-     * @param timeZone
-     * @return
-     */
-    public TimeZone UTC() {
-        return this.getTimeZone("UTC");
-    }
-
-    /**
-     * return value like +00:00
-     * 
-     * @param timeZone
-     * @return
-     */
-    public String UTCString() {
-        return this.getTimeZoneString("UTC");
-    }
-
 }

@@ -2,9 +2,11 @@ package com.springboot.project.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -87,15 +89,10 @@ public class VerificationCodeEmailService extends BaseService {
             var email = verificationCodeEmailEntity.getEmail();
             var createDate = verificationCodeEmailEntity.getCreateDate();
 
-            var timeZone = this.timeZoneUtil.UTCString();
-            var simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            simpleDateFormat.setTimeZone(this.timeZoneUtil.UTC());
-            var createDateString = simpleDateFormat.format(createDate);
-
-            var beforeCalendar = Calendar.getInstance();
-            beforeCalendar.setTime(verificationCodeEmailEntity.getCreateDate());
-            beforeCalendar.add(Calendar.SECOND, -1);
-            Date beforeDate = beforeCalendar.getTime();
+            var timeZone = this.timeZoneUtil.getTimeZoneString("UTC");
+            var createDateString = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))
+                    .format(createDate);
+            Date beforeDate = DateUtils.addSeconds(verificationCodeEmailEntity.getCreateDate(), -1);
 
             isFirstOnTheSecond = this.VerificationCodeEmailEntity()
                     .where(s -> s.getEmail().equals(email))
@@ -125,15 +122,10 @@ public class VerificationCodeEmailService extends BaseService {
                 var email = verificationCodeEmailEntity.getEmail();
                 var createDate = verificationCodeEmailEntity.getCreateDate();
 
-                var timeZone = this.timeZoneUtil.UTCString();
-                var simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                simpleDateFormat.setTimeZone(this.timeZoneUtil.UTC());
-                var createDateString = simpleDateFormat.format(createDate);
-
-                var beforeCalendar = Calendar.getInstance();
-                beforeCalendar.setTime(verificationCodeEmailEntity.getCreateDate());
-                beforeCalendar.add(Calendar.DAY_OF_YEAR, -1);
-                Date beforeDate = beforeCalendar.getTime();
+                var timeZone = this.timeZoneUtil.getTimeZoneString("UTC");
+                var createDateString = FastDateFormat.getInstance("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+                        .format(createDate);
+                Date beforeDate = DateUtils.addDays(verificationCodeEmailEntity.getCreateDate(), -1);
 
                 var minVerificationCodeLength = VerificationCodeEmailEnum.MIN_VERIFICATION_CODE_LENGTH;
                 isFirstOnTheSecond = this.VerificationCodeEmailEntity()
