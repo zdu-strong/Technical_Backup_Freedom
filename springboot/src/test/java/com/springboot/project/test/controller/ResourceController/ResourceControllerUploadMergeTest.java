@@ -60,7 +60,8 @@ public class ResourceControllerUploadMergeTest extends BaseTest {
         var everySize = 100;
         this.urlList = Flowable
                 .range(0,
-                        new BigDecimal(imageResource.contentLength()).divide(new BigDecimal(everySize))
+                        new BigDecimal(imageResource.contentLength())
+                                .divide(new BigDecimal(everySize), 100, RoundingMode.FLOOR)
                                 .setScale(0, RoundingMode.CEILING).intValue())
                 .map(startIndex -> {
                     var url = new URIBuilder("/upload/resource").build();
