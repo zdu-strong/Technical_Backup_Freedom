@@ -12,6 +12,7 @@ import org.jinq.orm.stream.JinqStream;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.StorageResource.SequenceResource;
@@ -76,7 +77,7 @@ public class ResourceController extends BaseController {
     }
 
     @PostMapping("/upload/resource")
-    public ResponseEntity<?> uploadResource(MultipartFile file) throws IOException {
+    public ResponseEntity<?> uploadResource(@RequestParam MultipartFile file) throws IOException {
         var storageFileModel = this.storage.storageResource(file);
         return ResponseEntity.ok(storageFileModel.getRelativeUrl());
     }
