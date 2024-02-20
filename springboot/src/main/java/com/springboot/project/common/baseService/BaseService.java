@@ -24,6 +24,7 @@ import com.springboot.project.format.UserEmailFormatter;
 import com.springboot.project.format.UserFormatter;
 import com.springboot.project.format.UserMessageFormatter;
 import com.springboot.project.format.VerificationCodeEmailFormatter;
+import com.springboot.project.properties.DateFormatProperties;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
@@ -39,6 +40,9 @@ public abstract class BaseService {
 
     @Autowired
     protected TimeZoneUtil timeZoneUtil;
+
+    @Autowired
+    protected DateFormatProperties dateFormatProperties;
 
     @Autowired
     protected ObjectMapper objectMapper;

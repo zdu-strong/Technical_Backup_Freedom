@@ -53,6 +53,7 @@ import com.springboot.project.model.UserModel;
 import com.springboot.project.model.VerificationCodeEmailModel;
 import com.springboot.project.properties.AliyunCloudStorageProperties;
 import com.springboot.project.properties.AuthorizationEmailProperties;
+import com.springboot.project.properties.DateFormatProperties;
 import com.springboot.project.properties.IsTestOrDevModeProperties;
 import com.springboot.project.properties.SchedulingPoolSizeProperties;
 import com.springboot.project.properties.StorageRootPathProperties;
@@ -110,6 +111,9 @@ public class BaseTest {
 
     @Autowired
     protected AliyunCloudStorageProperties aliyunCloudStorageProperties;
+
+    @Autowired
+    protected DateFormatProperties dateFormatProperties;
 
     @Autowired
     protected ObjectMapper objectMapper;

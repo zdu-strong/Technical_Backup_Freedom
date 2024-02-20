@@ -251,7 +251,7 @@ java:
         return ResponseEntity.ok().build();
     }
 
-    URI url = new URIBuilder("/abc").setParameter("date", FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", TimeZone.getTimeZone("UTC")).format(new Date())).build();
+    URI url = new URIBuilder("/abc").setParameter("date", FastDateFormat.getInstance(dateFormatProperties.getUTC()).format(new Date())).build();
     ResponseEntity<Object> response = this.testRestTemplate.getForEntity(url, Object.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
 

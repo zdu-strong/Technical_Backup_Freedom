@@ -152,7 +152,7 @@ public class AuthorizationController extends BaseController {
         for (var i = 10; i > 0; i--) {
             var verificationCodeEmailModelTwo = this.verificationCodeEmailService.createVerificationCodeEmail(email);
 
-            var fastDateFormat = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"));
+            var fastDateFormat = FastDateFormat.getInstance(dateFormatProperties.getYearMonthDayHourMinuteSecond(), TimeZone.getTimeZone("UTC"));
             var createDate = fastDateFormat.parse(
                     fastDateFormat.format(DateUtils.addSeconds(verificationCodeEmailModelTwo.getCreateDate(), 1)));
             Thread.sleep(createDate.getTime() - verificationCodeEmailModelTwo.getCreateDate().getTime());

@@ -15,6 +15,7 @@ import com.springboot.project.common.permission.PermissionUtil;
 import com.springboot.project.common.permission.TokenUtil;
 import com.springboot.project.common.storage.Storage;
 import com.springboot.project.properties.AuthorizationEmailProperties;
+import com.springboot.project.properties.DateFormatProperties;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.FriendshipService;
 import com.springboot.project.service.LongTermTaskService;
@@ -99,5 +100,8 @@ public class BaseController {
 
     @Autowired
     protected ObjectMapper objectMapper;
+
+    @Autowired
+    protected DateFormatProperties dateFormatProperties;
 
 }
