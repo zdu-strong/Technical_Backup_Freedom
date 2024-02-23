@@ -1,7 +1,6 @@
 package com.springboot.project.test.scheduled.MessageScheduled;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
@@ -20,7 +19,6 @@ import com.springboot.project.model.UserMessageModel;
 import com.springboot.project.model.UserMessageWebSocketSendModel;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
-
 import io.reactivex.rxjava3.subjects.ReplaySubject;
 import jakarta.websocket.CloseReason.CloseCodes;
 
@@ -35,8 +33,8 @@ public class MessageScheduledTest extends BaseTest {
         this.messageScheduled.scheduled();
         var result = this.subject.take(1).toList().toFuture().get(10, TimeUnit.SECONDS);
         assertEquals(1, result.size());
-        assertTrue(JinqStream.from(result).selectAllList(s -> s.getList()).count() > 0);
-        assertTrue(JinqStream.from(result).select(s -> s.getTotalPage()).findFirst().get() > 0);
+        assertEquals(1, JinqStream.from(result).selectAllList(s -> s.getList()).count());
+        assertEquals(1, JinqStream.from(result).select(s -> s.getTotalPage()).findFirst().get());
         assertEquals("Hello, World!", JinqStream.from(result).selectAllList(s -> s.getList())
                 .where(s -> s.getUser().getId().equals(this.user.getId())).select(s -> s.getContent())
                 .limit(1)

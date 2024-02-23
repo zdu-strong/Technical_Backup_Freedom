@@ -56,7 +56,7 @@ public class LongTermTaskUtil {
         try {
             var url = new URIBuilder("/long_term_task").setParameter("id",
                     this.encryptDecryptService.encryptByAES(idOfLongTermTask)).build();
-            return ResponseEntity.accepted().body(url.toString());
+            return ResponseEntity.ok(url.toString());
         } catch (URISyntaxException e) {
             throw new RuntimeException(e.getMessage(), e);
         }

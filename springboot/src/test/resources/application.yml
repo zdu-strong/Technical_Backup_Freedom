@@ -6,7 +6,7 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     database-platform: com.springboot.project.common.database.CustomH2Dialect
     open-in-view: false
     properties:

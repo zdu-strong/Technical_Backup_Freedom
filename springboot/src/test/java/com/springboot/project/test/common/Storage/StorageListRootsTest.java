@@ -1,5 +1,6 @@
 package com.springboot.project.test.common.Storage;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -7,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
-
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
 public class StorageListRootsTest extends BaseTest {
@@ -16,7 +16,7 @@ public class StorageListRootsTest extends BaseTest {
     @Test
     public void test() throws IOException, URISyntaxException {
         var list = this.storage.listRoots().filter(s -> s.equals(folderNameOfResource)).toList().blockingGet();
-        assertTrue(list.size() > 0);
+        assertEquals(1, list.size());
         assertTrue(list.contains(folderNameOfResource));
         for (var folderName : list) {
             assertTrue(StringUtils.isNotBlank(folderName));

@@ -34,6 +34,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -81,6 +82,7 @@ import io.reactivex.rxjava3.core.Flowable;
  *
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext
 public class BaseTest {
 
     @Autowired
@@ -180,6 +182,10 @@ public class BaseTest {
 
     @BeforeEach
     public void beforeEachOfBaseTest() {
+        this.storage.listRoots().map((folderName) -> {
+            this.storage.delete(folderName);
+            return "";
+        }).blockingSubscribe();
         Mockito.doNothing().when(this.authorizationEmailUtil).sendVerificationCode(Mockito.anyString(),
                 Mockito.anyString());
         Mockito.doNothing().when(this.organizeClosureRefreshScheduled).scheduled();
@@ -283,7 +289,7 @@ public class BaseTest {
             ParameterizedTypeReference<LongTermTaskModel<T>> responseType) {
         var relativeUrlList = new ArrayList<String>();
         Flowable.fromSupplier(() -> supplier.get()).concatMap((relativeUrlResponse) -> {
-            assertEquals(HttpStatus.ACCEPTED, relativeUrlResponse.getStatusCode());
+            assertEquals(HttpStatus.OK, relativeUrlResponse.getStatusCode());
             relativeUrlList.add(relativeUrlResponse.getBody());
             while (true) {
                 var url = new URIBuilder(this.testRestTemplate.getRootUri() + relativeUrlResponse.getBody()).build();

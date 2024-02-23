@@ -44,7 +44,7 @@ public class ResourceController extends BaseController {
             return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).headers(httpHeaders)
                     .body(this.resourceHttpHeadersUtil.getResourceFromRequest(totalContentLength, request));
         } else {
-            return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(resource);
+            return ResponseEntity.ok().headers(httpHeaders).body(resource);
         }
     }
 
@@ -72,7 +72,7 @@ public class ResourceController extends BaseController {
             return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).headers(httpHeaders)
                     .body(this.resourceHttpHeadersUtil.getResourceFromRequest(totalContentLength, request));
         } else {
-            return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(resource);
+            return ResponseEntity.ok().headers(httpHeaders).body(resource);
         }
     }
 
