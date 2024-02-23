@@ -38,7 +38,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.2</version>
+        <version>3.2.3</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
@@ -138,12 +138,12 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-crypto</artifactId>
-            <version>5.8.25</version>
+            <version>5.8.26</version>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-extra</artifactId>
-            <version>5.8.25</version>
+            <version>5.8.26</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.uuid</groupId>

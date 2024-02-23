@@ -44,11 +44,6 @@ Check that a new version of the dependency is available<br/>
 The following dependencies are currently unable to continue to be upgraded:<br/>
 
     <dependency>
-        <groupId>com.mysql</groupId>
-        <artifactId>mysql-connector-j</artifactId>
-    </dependency>
-
-    <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
     </dependency>
