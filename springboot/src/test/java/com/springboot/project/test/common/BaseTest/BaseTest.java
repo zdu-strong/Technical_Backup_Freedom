@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.function.Supplier;
@@ -73,7 +72,6 @@ import com.springboot.project.service.UserEmailService;
 import com.springboot.project.service.UserMessageService;
 import com.springboot.project.service.UserService;
 import com.springboot.project.service.VerificationCodeEmailService;
-import cn.hutool.core.collection.CollectionUtil;
 import io.reactivex.rxjava3.core.Flowable;
 
 /**
@@ -287,10 +285,8 @@ public class BaseTest {
 
     protected <T> ResponseEntity<LongTermTaskModel<T>> fromLongTermTask(Supplier<ResponseEntity<String>> supplier,
             ParameterizedTypeReference<LongTermTaskModel<T>> responseType) {
-        var relativeUrlList = new ArrayList<String>();
-        Flowable.fromSupplier(() -> supplier.get()).concatMap((relativeUrlResponse) -> {
+        var relativeUrl = Flowable.fromSupplier(() -> supplier.get()).concatMap((relativeUrlResponse) -> {
             assertEquals(HttpStatus.OK, relativeUrlResponse.getStatusCode());
-            relativeUrlList.add(relativeUrlResponse.getBody());
             while (true) {
                 var url = new URIBuilder(this.testRestTemplate.getRootUri() + relativeUrlResponse.getBody()).build();
                 var result = new RestTemplate().exchange(url, HttpMethod.GET, new HttpEntity<>(null),
@@ -301,7 +297,7 @@ public class BaseTest {
                 }
                 Thread.sleep(1);
             }
-            return Flowable.empty();
+            return Flowable.just(relativeUrlResponse.getBody());
         }).retry(s -> {
             if (s.getMessage().contains("The task failed because it stopped")) {
                 return true;
@@ -310,8 +306,7 @@ public class BaseTest {
             } else {
                 return false;
             }
-        }).blockingSubscribe();
-        var relativeUrl = JinqStream.from(CollectionUtil.reverseNew(relativeUrlList)).findFirst().get();
+        }).blockingSingle();
         try {
             var url = new URIBuilder(this.testRestTemplate.getRootUri() + relativeUrl).build();
             var response = new RestTemplate().exchange(url, HttpMethod.GET, new HttpEntity<>(null),

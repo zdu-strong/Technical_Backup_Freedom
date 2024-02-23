@@ -31,9 +31,7 @@ public class ResourceControllerUploadMergeTest extends BaseTest {
         var urlOfResource = this.fromLongTermTask(() -> {
             try {
                 var urlOfMerge = new URIBuilder("/upload/merge").build();
-                var responseOfMerge = this.testRestTemplate.postForEntity(urlOfMerge, urlList, String.class);
-                assertEquals(HttpStatus.OK, responseOfMerge.getStatusCode());
-                return responseOfMerge;
+                return this.testRestTemplate.postForEntity(urlOfMerge, urlList, String.class);
             } catch (URISyntaxException e) {
                 throw new RuntimeException(e.getMessage(), e);
             }
