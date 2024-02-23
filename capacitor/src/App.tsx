@@ -8,7 +8,7 @@ import Router from '@/router';
 import I18nComponent from '@/common/i18n/I18nComponent';
 import GlobalMessageComponent from '@/common/MessageService/GlobalMessageComponent';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import '@/common/ScreenOrentation';
 import { observer, useMobxState } from 'mobx-react-use-autorun';
 import { useI18nLocale, I18nEnum } from './common/i18n';
