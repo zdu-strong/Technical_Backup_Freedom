@@ -127,6 +127,9 @@ export default observer((props: {
       repeat({ delay: 2000 }),
       catchError((error, caught) => {
         if (!state.ready) {
+          if (!error || !error.message) {
+            error = new Error("Network Error");
+          }
           state.error = error;
           state.setErrorForMessageEntry(error);
         }
