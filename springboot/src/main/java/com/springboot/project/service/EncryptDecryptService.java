@@ -40,8 +40,10 @@ public class EncryptDecryptService extends BaseService {
     public String encryptByAES(String text) {
         var salt = Base64.getEncoder()
                 .encodeToString(
-                        DigestUtils.md5((Base64.getEncoder().encodeToString(this.getKeyOfAESSecretKey().getEncoded())
-                                + Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8)))
+                        DigestUtils.md5(this
+                                .generateSecretKeyOfAES(Base64.getEncoder()
+                                        .encodeToString(this.getKeyOfAESSecretKey().getEncoded())
+                                        + text)
                                 .getBytes(StandardCharsets.UTF_8)));
         var aes = new AES(Mode.CBC, Padding.PKCS5Padding, this.getKeyOfAESSecretKey(),
                 Base64.getDecoder().decode(salt));
