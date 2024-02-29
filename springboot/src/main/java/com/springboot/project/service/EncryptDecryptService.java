@@ -43,7 +43,7 @@ public class EncryptDecryptService extends BaseService {
                         DigestUtils.md5(this
                                 .generateSecretKeyOfAES(Base64.getEncoder()
                                         .encodeToString(this.getKeyOfAESSecretKey().getEncoded())
-                                        + text)
+                                        + Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8)))
                                 .getBytes(StandardCharsets.UTF_8)));
         var aes = new AES(Mode.CBC, Padding.PKCS5Padding, this.getKeyOfAESSecretKey(),
                 Base64.getDecoder().decode(salt));
