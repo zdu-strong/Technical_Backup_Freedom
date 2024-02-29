@@ -30,8 +30,6 @@ import com.springboot.project.properties.DateFormatProperties;
 @Transactional(rollbackFor = Throwable.class)
 public abstract class BaseService {
 
-    private JinqJPAStreamProvider jinqJPAStreamProvider;
-
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -153,18 +151,11 @@ public abstract class BaseService {
     }
 
     private <U> JPAJinqStream<U> streamAll(Class<U> entity) {
-        if (this.jinqJPAStreamProvider == null) {
-            synchronized (getClass()) {
-                if (this.jinqJPAStreamProvider == null) {
-                    JinqJPAStreamProvider jinqJPAStreamProvider = new JinqJPAStreamProvider(
-                            entityManager.getMetamodel());
-                    JPQLFunction.registerCustomSqlFunction(jinqJPAStreamProvider);
-                    jinqJPAStreamProvider.setHint("exceptionOnTranslationFail", true);
-                    this.jinqJPAStreamProvider = jinqJPAStreamProvider;
-                }
-            }
-        }
-        return this.jinqJPAStreamProvider.streamAll(entityManager, entity);
+        var jinqJPAStreamProvider = new JinqJPAStreamProvider(
+                entityManager.getMetamodel());
+        JPQLFunction.registerCustomSqlFunction(jinqJPAStreamProvider);
+        jinqJPAStreamProvider.setHint("exceptionOnTranslationFail", true);
+        return jinqJPAStreamProvider.streamAll(entityManager, entity);
     }
 
     protected String newId() {
