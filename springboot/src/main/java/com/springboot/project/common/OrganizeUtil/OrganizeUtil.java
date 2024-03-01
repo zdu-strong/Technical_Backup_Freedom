@@ -32,7 +32,15 @@ public class OrganizeUtil {
             return;
         }
 
-        this.organizeClosureService.update(organizeId);
+        while (true) {
+            if (!deadline.before(new Date())) {
+                return;
+            }
+            var hasNext = this.organizeClosureService.refresh(organizeId);
+            if (!hasNext) {
+                break;
+            }
+        }
 
         while (true) {
             if (!deadline.before(new Date())) {

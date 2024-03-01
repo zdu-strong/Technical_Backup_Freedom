@@ -37,6 +37,7 @@ public class OrganizeServiceSearchByNameTest extends BaseTest {
         var childOrganizeModel = new OrganizeModel().setName("Son Gohan").setParent(parentOrganize);
         this.organizeService.create(childOrganizeModel);
         this.organizeId = parentOrganize.getId();
+        this.organizeClosureRefreshScheduled.refresh();
     }
 
 }

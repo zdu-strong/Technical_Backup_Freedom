@@ -38,7 +38,12 @@ public class OrganizeClosureRefreshScheduled {
                                 .getOrganizeListThatContainsDeleted(pageNum, pageSize)
                                 .getList();
                         for (var organizeModel : list) {
-                            this.organizeClosureService.update(organizeModel.getId());
+                            while (true) {
+                                var hasNext = this.organizeClosureService.refresh(organizeModel.getId());
+                                if (!hasNext) {
+                                    break;
+                                }
+                            }
                         }
                         return Flowable.just(pageNum);
                     })

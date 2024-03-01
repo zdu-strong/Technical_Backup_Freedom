@@ -73,12 +73,13 @@ public class CustomH2Dialect extends H2Dialect {
 
     private String getAncestorCount(String tableName, String... conditions) {
         var tmpTableNameAlias = tableName + "_tmp_alias";
+        var tmpColumnNameAlias = tmpTableNameAlias + "_level";
         var getAncestorCountBuilder = new StringBuilder();
         getAncestorCountBuilder.append("(");
         getAncestorCountBuilder.append(" ");
-        getAncestorCountBuilder.append("WITH RECURSIVE `cte`(`id`, `" + tmpTableNameAlias + "_level`) AS (");
+        getAncestorCountBuilder.append("WITH RECURSIVE `cte`(`id`, `" + tmpColumnNameAlias + "`) AS (");
         getAncestorCountBuilder.append(" ");
-        getAncestorCountBuilder.append("SELECT `id`, 0 as `" + tmpTableNameAlias + "_level`");
+        getAncestorCountBuilder.append("SELECT `id`, 0 as `" + tmpColumnNameAlias + "`");
         getAncestorCountBuilder.append(" ");
         getAncestorCountBuilder.append("FROM `" + tableName + "`");
         getAncestorCountBuilder.append(" ");
@@ -90,7 +91,7 @@ public class CustomH2Dialect extends H2Dialect {
         getAncestorCountBuilder.append(",");
         getAncestorCountBuilder.append(" ");
         getAncestorCountBuilder
-                .append("(`cte`.`" + tmpTableNameAlias + "_level` + 1) as `" + tmpTableNameAlias + "_level`");
+                .append("(`cte`.`" + tmpColumnNameAlias + "` + 1) as `" + tmpColumnNameAlias + "`");
         getAncestorCountBuilder.append(" ");
         getAncestorCountBuilder.append("FROM `cte` INNER JOIN `" + tableName + "` `" + tmpTableNameAlias + "`");
         getAncestorCountBuilder.append(" ");
@@ -115,12 +116,14 @@ public class CustomH2Dialect extends H2Dialect {
 
     private String getDescendantCount(String tableName, String... conditions) {
         var tmpTableNameAlias = tableName + "_tmp_alias";
+        var tmpColumnNameAlias = tmpTableNameAlias + "_concat_id";
         var getDescendantCountBuilder = new StringBuilder();
         getDescendantCountBuilder.append("(");
         getDescendantCountBuilder.append(" ");
-        getDescendantCountBuilder.append("WITH RECURSIVE `cte`(`id`, `" + tmpTableNameAlias + "_concat_id`) AS (");
+        getDescendantCountBuilder.append("WITH RECURSIVE `cte`(`id`, `" + tmpColumnNameAlias + "`) AS (");
         getDescendantCountBuilder.append(" ");
-        getDescendantCountBuilder.append("SELECT `id`, CONCAT(',', CONCAT(`id`, ',')) as `" + tmpTableNameAlias + "_concat_id`");
+        getDescendantCountBuilder
+                .append("SELECT `id`, CONCAT(',', CONCAT(`id`, ',')) as `" + tmpColumnNameAlias + "`");
         getDescendantCountBuilder.append(" ");
         getDescendantCountBuilder.append("FROM `" + tableName + "`");
         getDescendantCountBuilder.append(" ");
@@ -128,10 +131,10 @@ public class CustomH2Dialect extends H2Dialect {
         getDescendantCountBuilder.append(" ");
         getDescendantCountBuilder.append("UNION ALL");
         getDescendantCountBuilder.append(" ");
-        getDescendantCountBuilder.append("SELECT `" + tmpTableNameAlias + "`.`id`, CONCAT(`cte`.`" + tmpTableNameAlias
-                + "_concat_id`, " + "`" + tmpTableNameAlias + "`.`id`" + ", ',') as `"
-                + tmpTableNameAlias
-                + "_concat_id`");
+        getDescendantCountBuilder.append("SELECT `" + tmpTableNameAlias + "`.`id`, CONCAT(`cte`.`" + tmpColumnNameAlias
+                + "`, " + "`" + tmpTableNameAlias + "`.`id`" + ", ',') as `"
+                + tmpColumnNameAlias
+                + "`");
         getDescendantCountBuilder.append(" ");
         getDescendantCountBuilder.append("FROM `cte` INNER JOIN `" + tableName + "` `" + tmpTableNameAlias + "`");
         getDescendantCountBuilder.append(" ");
@@ -150,7 +153,7 @@ public class CustomH2Dialect extends H2Dialect {
         getDescendantCountBuilder.append(" ");
         getDescendantCountBuilder
                 .append("SELECT COUNT(*) as total_record FROM `cte` WHERE LOCATE( CONCAT(',', CONCAT(?1, ',')), `cte`.`"
-                        + tmpTableNameAlias + "_concat_id`) > 0 AND ?1 != `cte`.`id`");
+                        + tmpColumnNameAlias + "`) > 0 AND ?1 != `cte`.`id`");
         getDescendantCountBuilder.append(" ");
         getDescendantCountBuilder.append(")");
         return getDescendantCountBuilder.toString();
@@ -158,12 +161,13 @@ public class CustomH2Dialect extends H2Dialect {
 
     private String isChild(String tableName) {
         var tmpTableNameAlias = tableName + "_tmp_alias";
+        var tmpColumnNameAlias = tmpTableNameAlias + "_concat_id";
         var isChildBuilder = new StringBuilder();
         isChildBuilder.append("EXISTS (");
         isChildBuilder.append(" ");
-        isChildBuilder.append("WITH RECURSIVE `cte`(`id`, `" + tmpTableNameAlias + "_concat_id`) AS (");
+        isChildBuilder.append("WITH RECURSIVE `cte`(`id`, `" + tmpColumnNameAlias + "`) AS (");
         isChildBuilder.append(" ");
-        isChildBuilder.append("SELECT `id`, CONCAT(',', CONCAT(`id`, ',')) as `" + tmpTableNameAlias + "_concat_id`");
+        isChildBuilder.append("SELECT `id`, CONCAT(',', CONCAT(`id`, ',')) as `" + tmpColumnNameAlias + "`");
         isChildBuilder.append(" ");
         isChildBuilder.append("FROM `" + tableName + "`");
         isChildBuilder.append(" ");
@@ -171,10 +175,10 @@ public class CustomH2Dialect extends H2Dialect {
         isChildBuilder.append(" ");
         isChildBuilder.append("UNION ALL");
         isChildBuilder.append(" ");
-        isChildBuilder.append("SELECT `" + tmpTableNameAlias + "`.`id`, CONCAT(`cte`.`" + tmpTableNameAlias
-                + "_concat_id`, " + "`" + tmpTableNameAlias + "`.`id`" + ", ',') as `"
-                + tmpTableNameAlias
-                + "_concat_id`");
+        isChildBuilder.append("SELECT `" + tmpTableNameAlias + "`.`id`, CONCAT(`cte`.`" + tmpColumnNameAlias
+                + "`, CONCAT(" + "`" + tmpTableNameAlias + "`.`id`" + ", ',')) as `"
+                + tmpColumnNameAlias
+                + "`");
         isChildBuilder.append(" ");
         isChildBuilder.append("FROM `cte` INNER JOIN `" + tableName + "` `" + tmpTableNameAlias + "`");
         isChildBuilder.append(" ");
@@ -183,10 +187,18 @@ public class CustomH2Dialect extends H2Dialect {
         isChildBuilder.append(")");
         isChildBuilder.append(" ");
         isChildBuilder
-                .append("SELECT * FROM `cte` WHERE LOCATE( CONCAT(',' CONCAT(?2, ',')), `cte`.`"
-                        + tmpTableNameAlias + "_concat_id`) > 0 AND LOCATE( CONCAT(',', CONCAT(?1, ',')), `cte`.`"
-                        + tmpTableNameAlias + "_concat_id`) > LOCATE( CONCAT(',', CONCAT(?2, ',')), `cte`.`" + tmpTableNameAlias
-                        + "_concat_id`)");
+                .append("SELECT * FROM `cte`");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("WHERE");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("`cte`.`id` = ?1");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("AND");
+        isChildBuilder.append(" ");
+        isChildBuilder.append("LOCATE( CONCAT(',', CONCAT(?2, ',')), `cte`.`"
+                + tmpColumnNameAlias
+                + "`) > 0");
+        isChildBuilder.append(" ");
         isChildBuilder.append(" ");
         isChildBuilder.append(")");
         return isChildBuilder.toString();
@@ -194,12 +206,13 @@ public class CustomH2Dialect extends H2Dialect {
 
     private String isNotDeleted(String tableName) {
         var tmpTableNameAlias = tableName + "_tmp_alias";
+        var tmpColumnNameAlias = tmpTableNameAlias + "_concat_id";
         var isChildBuilder = new StringBuilder();
         isChildBuilder.append("EXISTS (");
         isChildBuilder.append(" ");
-        isChildBuilder.append("WITH RECURSIVE `cte`(`id`, `" + tmpTableNameAlias + "_concat_id`) AS (");
+        isChildBuilder.append("WITH RECURSIVE `cte`(`id`, `" + tmpColumnNameAlias + "`) AS (");
         isChildBuilder.append(" ");
-        isChildBuilder.append("SELECT `id`, CONCAT(',' , CONCAT(`id`, ',')) as `" + tmpTableNameAlias + "_concat_id`");
+        isChildBuilder.append("SELECT `id`, CONCAT(',' , CONCAT(`id`, ',')) as `" + tmpColumnNameAlias + "`");
         isChildBuilder.append(" ");
         isChildBuilder.append("FROM `" + tableName + "`");
         isChildBuilder.append(" ");
@@ -209,10 +222,10 @@ public class CustomH2Dialect extends H2Dialect {
         isChildBuilder.append(" ");
         isChildBuilder.append("UNION ALL");
         isChildBuilder.append(" ");
-        isChildBuilder.append("SELECT `" + tmpTableNameAlias + "`.`id`, CONCAT(`cte`.`" + tmpTableNameAlias
-                + "_concat_id`, " + "`" + tmpTableNameAlias + "`.`id`" + ", ',') as `"
-                + tmpTableNameAlias
-                + "_concat_id`");
+        isChildBuilder.append("SELECT `" + tmpTableNameAlias + "`.`id`, CONCAT(`cte`.`" + tmpColumnNameAlias
+                + "`, CONCAT(" + "`" + tmpTableNameAlias + "`.`id`" + ", ',')) as `"
+                + tmpColumnNameAlias
+                + "`");
         isChildBuilder.append(" ");
         isChildBuilder.append("FROM `cte` INNER JOIN `" + tableName + "` `" + tmpTableNameAlias + "`");
         isChildBuilder.append(" ");
@@ -224,7 +237,7 @@ public class CustomH2Dialect extends H2Dialect {
         isChildBuilder.append(" ");
         isChildBuilder
                 .append("SELECT * FROM `cte` WHERE LOCATE( CONCAT(',', CONCAT(?1, ',')), `cte`.`"
-                        + tmpTableNameAlias + "_concat_id`) > 0");
+                        + tmpColumnNameAlias + "`) > 0");
         isChildBuilder.append(" ");
         isChildBuilder.append(")");
         return isChildBuilder.toString();

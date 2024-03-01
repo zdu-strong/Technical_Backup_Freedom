@@ -9,7 +9,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
@@ -49,8 +48,11 @@ public class OrganizeEntity {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<OrganizeEntity> childList;
 
-    @OneToOne(mappedBy = "organize", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, optional = true)
-    private OrganizeClosureEntity organizeClosure;
+    @OneToMany(mappedBy = "ancestor", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<OrganizeClosureEntity> descendantList;
+
+    @OneToMany(mappedBy = "descendant", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<OrganizeClosureEntity> ancestorList;
 
     @OneToMany(mappedBy = "organize", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<UserBlackOrganizeEntity> userBlackOrganizeList;

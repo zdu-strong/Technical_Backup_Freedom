@@ -9,14 +9,19 @@ import org.junit.jupiter.api.Test;
 import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.test.common.BaseTest.BaseTest;
 
-public class OrganizeClosureServiceUpdateTest extends BaseTest {
+public class OrganizeClosureServiceRefreshTest extends BaseTest {
 
     private String parentOrganizeId;
     private String childOrganizeId;
 
     @Test
     public void test() {
-        this.organizeClosureService.update(this.childOrganizeId);
+        while (true) {
+            var hasNext = this.organizeClosureService.refresh(this.childOrganizeId);
+            if (!hasNext) {
+                break;
+            }
+        }
         var result = this.organizeService.searchByName(1L, 20L, "Gohan", this.parentOrganizeId);
         assertEquals(1, result.getTotalRecord());
         assertEquals(this.childOrganizeId, JinqStream.from(result.getList()).select(s -> s.getId()).getOnlyValue());

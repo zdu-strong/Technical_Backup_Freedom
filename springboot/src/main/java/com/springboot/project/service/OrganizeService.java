@@ -2,7 +2,6 @@ package com.springboot.project.service;
 
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,9 +15,6 @@ import com.springboot.project.entity.OrganizeEntity;
 @Service
 public class OrganizeService extends BaseService {
 
-    @Autowired
-    private OrganizeClosureService organizeClosureService;
-
     public OrganizeModel create(OrganizeModel organizeModel) {
         var parentOrganize = this.getParentOrganize(organizeModel);
         var organizeEntity = new OrganizeEntity();
@@ -31,8 +27,6 @@ public class OrganizeService extends BaseService {
         organizeEntity.setUpdateDate(new Date());
         organizeEntity.setParent(parentOrganize);
         this.persist(organizeEntity);
-
-        this.organizeClosureService.create(organizeEntity.getId());
 
         return this.organizeFormatter.format(organizeEntity);
     }
@@ -83,16 +77,11 @@ public class OrganizeService extends BaseService {
     }
 
     public PaginationModel<OrganizeModel> searchByName(Long pageNum, Long pageSize, String name, String organizeId) {
-        var trait = this.OrganizeEntity()
-                .where(s -> s.getId().equals(organizeId))
-                .where(s -> JPQLFunction.isNotDeletedOfOrganize(s.getId()))
-                .select(s -> s.getOrganizeClosure().getTrait())
-                .getOnlyValue();
         var stream = this.OrganizeClosureEntity()
-                .where(s -> s.getTrait().contains(trait))
+                .where(s -> s.getAncestor().getId().equals(organizeId))
                 .where(s -> !s.getIsDeleted())
-                .where(s -> s.getOrganize().getName().contains(name))
-                .select(s -> s.getOrganize());
+                .where(s -> s.getDescendant().getName().contains(name))
+                .select(s -> s.getDescendant());
         return new PaginationModel<>(pageNum, pageSize, stream, (s) -> this.organizeFormatter.format(s));
     }
 
