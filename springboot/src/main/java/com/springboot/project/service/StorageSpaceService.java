@@ -39,9 +39,13 @@ public class StorageSpaceService extends BaseService {
 
         var expireDate = DateUtils.addMilliseconds(new Date(),
                 Long.valueOf(0 - StorageSpaceEnum.TEMP_FILE_SURVIVAL_DURATION.toMillis()).intValue());
-        var isUsed = !this.StorageSpaceEntity().where(s -> s.getFolderName().equals(folderName))
-                .where((s, t) -> !t.stream(StorageSpaceEntity.class).where(m -> m.getFolderName().equals(folderName))
-                        .where(m -> expireDate.before(m.getUpdateDate())).exists())
+        var isUsed = !this.StorageSpaceEntity()
+                .where(s -> s.getFolderName().equals(folderName))
+                .where(s -> s.getUpdateDate().before(expireDate))
+                .leftOuterJoin((s, t) -> t.stream(StorageSpaceEntity.class),
+                        (s, t) -> s.getFolderName().equals(t.getFolderName())
+                                && !t.getUpdateDate().before(expireDate))
+                .where(s -> s.getTwo() == null)
                 .exists();
         return isUsed;
     }
