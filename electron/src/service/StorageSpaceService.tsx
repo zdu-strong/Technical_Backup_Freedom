@@ -36,7 +36,7 @@ export async function isUsed(folderName: string) {
   const isUsed = !linq.from(await db.StorageSpaceList.toArray())
     .where(s => s.folderName === folderNameOfRelative)
     .groupBy(s => s.folderName)
-    .any(s => !s.any(m => expiredDate.getTime() < m.updateDate.getTime()));
+    .any(s => s.all(m => m.updateDate.getTime() < expiredDate.getTime()));
   return isUsed;
 }
 
