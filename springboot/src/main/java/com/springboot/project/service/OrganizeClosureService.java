@@ -13,64 +13,57 @@ public class OrganizeClosureService extends BaseService {
     private OrganizeService organizeService;
 
     public boolean refresh(String organizeId) {
-        {
-
-            var isDeleted = this.OrganizeEntity()
-                    .where(s -> s.getId().equals(organizeId))
-                    .map(s -> this.organizeFormatter.format(s))
-                    .filter(s -> !s.getIsDeleted())
-                    .findFirst()
-                    .isEmpty();
-            if (isDeleted) {
-                var ancestorList = this.OrganizeClosureEntity().where(s -> s.getDescendant().getId().equals(organizeId))
-                        .toList();
-                for (var ancestor : ancestorList) {
-                    this.remove(ancestor);
+        var organizeEntity = this.OrganizeEntity()
+                .where(s -> s.getId().equals(organizeId))
+                .getOnlyValue();
+        var organizeModel = this.organizeFormatter.format(organizeEntity);
+        var ancestorCount = this.OrganizeClosureEntity()
+                .where(s -> s.getDescendant().getId().equals(organizeId))
+                .count();
+        if (ancestorCount <= organizeModel.getLevel()) {
+            var ancestor = organizeEntity;
+            while (true) {
+                if (ancestor == null) {
+                    break;
                 }
-                return false;
+                var ancestorId = ancestor.getId();
+                var exists = this.OrganizeClosureEntity()
+                        .where(s -> s.getAncestor().getId().equals(ancestorId))
+                        .where(s -> s.getDescendant().getId().equals(organizeId))
+                        .exists();
+                if (!exists) {
+                    this.create(ancestorId, organizeId);
+                    return true;
+                }
+                ancestor = ancestor.getParent();
             }
         }
 
         {
-            var level = this.OrganizeEntity()
-                    .where(s -> s.getId().equals(organizeId))
-                    .map(s -> this.organizeFormatter.format(s))
-                    .map(s -> s.getLevel())
-                    .findFirst()
-                    .get();
-            var ancestorCount = this.OrganizeClosureEntity().where(s -> s.getDescendant().getId().equals(organizeId))
-                    .count();
-            if (ancestorCount <= level) {
-                var ancestorOrganizetity = this.OrganizeEntity().where(s -> s.getId().equals(organizeId))
-                        .getOnlyValue();
-                while (true) {
-                    var ancestorOrganizeId = ancestorOrganizetity.getId();
-                    var descendantOrganizeId = organizeId;
-                    var exists = this.OrganizeClosureEntity()
-                            .where(s -> s.getAncestor().getId().equals(ancestorOrganizeId))
-                            .where(s -> s.getDescendant().getId().equals(descendantOrganizeId))
-                            .exists();
-                    if (!exists) {
-                        this.create(ancestorOrganizeId, descendantOrganizeId);
-                        return true;
-                    }
-                    ancestorOrganizetity = ancestorOrganizetity.getParent();
-                    if (ancestorOrganizetity == null) {
-                        break;
-                    }
-                }
-            }
-        }
-
-        {
-            var organizeClosureEntityOptional = this.OrganizeClosureEntity()
+            var ancestorList = this.OrganizeClosureEntity()
                     .where(s -> s.getDescendant().getId().equals(organizeId))
-                    .map(s -> s)
-                    .filter(s -> !this.organizeService.isChildOfOrganize(s.getDescendant().getId(),
-                            s.getAncestor().getId()))
-                    .findFirst();
-            if (organizeClosureEntityOptional.isPresent()) {
-                this.remove(organizeClosureEntityOptional.get());
+                    .toList();
+            for (var organizeClosureEntity : ancestorList) {
+                if (!this.organizeService.isChildOfOrganize(
+                        organizeId, organizeClosureEntity.getAncestor().getId())) {
+                    organizeClosureEntity.setAncestor(null);
+                    organizeClosureEntity.setDescendant(null);
+                    this.remove(organizeClosureEntity);
+                    return true;
+                }
+            }
+        }
+
+        {
+            var organizeClosureEntity = this.OrganizeClosureEntity()
+                    .where(s -> s.getDescendant().getId().equals(organizeId))
+                    .filter(s -> s.getIsDeleted() != organizeModel.getIsDeleted())
+                    .findFirst()
+                    .orElse(null);
+            if (organizeClosureEntity != null) {
+                organizeClosureEntity.setIsDeleted(organizeModel.getIsDeleted());
+                organizeClosureEntity.setUpdateDate(new Date());
+                this.merge(organizeClosureEntity);
                 return true;
             }
         }
