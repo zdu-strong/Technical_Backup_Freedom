@@ -146,7 +146,7 @@ public class EncryptDecryptService extends BaseService {
         try {
             var salt = DigestUtils.md5(password);
             var factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-            var spec = new PBEKeySpec(password.toCharArray(), salt, 1, 256);
+            var spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 256);
             var secret = new SecretKeySpec(factory.generateSecret(spec)
                     .getEncoded(), "AES");
             return Base64.getEncoder().encodeToString(secret.getEncoded());
