@@ -20,6 +20,6 @@ public class PermissionUtilCheckIsSignInFromAccessTokenNotSignInTest extends Bas
 
     @BeforeEach
     public void beforeEach() {
-        this.accessToken = this.tokenUtil.getAccessToken(request);
+        this.accessToken = this.tokenService.getAccessToken(request);
     }
 }

@@ -32,7 +32,7 @@ public class VerificationCodeEmailServiceCreateVerificationCodeEmailTest extends
 
     @BeforeEach
     public void beforeEach() {
-        this.email = Generators.timeBasedGenerator().generate().toString() + "zdu.strong@gmail.com";
+        this.email = Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com";
     }
 
 }

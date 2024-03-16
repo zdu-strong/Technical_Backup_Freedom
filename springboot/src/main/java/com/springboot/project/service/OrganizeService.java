@@ -46,7 +46,7 @@ public class OrganizeService extends BaseService {
                 .getOnlyValue();
         organizeEntity.setUpdateDate(new Date());
         organizeEntity.setIsDeleted(true);
-        organizeEntity.setDeletedKey(Generators.timeBasedGenerator().generate().toString());
+        organizeEntity.setDeletedKey(Generators.timeBasedReorderedGenerator().generate().toString());
         this.merge(organizeEntity);
     }
 

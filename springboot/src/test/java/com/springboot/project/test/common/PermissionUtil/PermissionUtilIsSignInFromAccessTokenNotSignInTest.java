@@ -17,6 +17,6 @@ public class PermissionUtilIsSignInFromAccessTokenNotSignInTest extends BaseTest
 
     @BeforeEach
     public void beforeEach() {
-        this.accessToken = this.tokenUtil.getAccessToken(this.request);
+        this.accessToken = this.tokenService.getAccessToken(this.request);
     }
 }

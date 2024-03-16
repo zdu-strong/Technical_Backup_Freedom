@@ -38,7 +38,7 @@ public class AuthorizationControllerSendVerificationCodeTest extends BaseTest {
                 return null;
             }
         }).when(this.authorizationEmailUtil).sendVerificationCode(Mockito.anyString(), Mockito.anyString());
-        this.email = Generators.timeBasedGenerator().generate().toString() + "zdu.strong@gmail.com";
+        this.email = Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com";
     }
 
 }

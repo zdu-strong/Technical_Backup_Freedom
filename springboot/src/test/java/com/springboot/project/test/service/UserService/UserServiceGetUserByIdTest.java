@@ -15,7 +15,7 @@ public class UserServiceGetUserByIdTest extends BaseTest {
 
     @Test
     public void test() throws URISyntaxException {
-        var result = this.userService.getUserById(user.getId());
+        var result = this.userService.getUser(user.getId());
         assertTrue(StringUtils.isNotBlank(result.getId()));
         assertTrue(StringUtils.isNotBlank(result.getPublicKeyOfRSA()));
         assertTrue(StringUtils.isNotBlank(result.getUsername()));
@@ -25,7 +25,7 @@ public class UserServiceGetUserByIdTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() {
-        var email = Generators.timeBasedGenerator().generate().toString() + "zdu.strong@gmail.com";
+        var email = Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com";
         this.user = this.createAccount(email);
     }
 

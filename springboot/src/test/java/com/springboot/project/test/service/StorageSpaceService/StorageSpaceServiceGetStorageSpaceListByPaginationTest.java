@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class StorageSpaceServiceGetStorageSpaceListByPaginationTest extends BaseTest {
-    private String folderName = Generators.timeBasedGenerator().generate().toString();
+    private String folderName = Generators.timeBasedReorderedGenerator().generate().toString();
 
     @Test
     public void test() throws URISyntaxException {

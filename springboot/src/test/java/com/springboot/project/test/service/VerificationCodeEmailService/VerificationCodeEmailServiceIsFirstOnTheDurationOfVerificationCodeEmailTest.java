@@ -25,7 +25,7 @@ public class VerificationCodeEmailServiceIsFirstOnTheDurationOfVerificationCodeE
 
     @BeforeEach
     public void beforeEach() {
-        var email = Generators.timeBasedGenerator().generate().toString() + "zdu.strong@gmail.com";
+        var email = Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com";
         var result = this.verificationCodeEmailService.createVerificationCodeEmail(email);
         assertTrue(StringUtils.isNotBlank(result.getId()));
         assertEquals(email, result.getEmail());

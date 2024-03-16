@@ -77,7 +77,7 @@ public class EncryptDecryptService extends BaseService {
 
     public String encryptByAES(String text, String secretKeyOfAES) {
         var salt = Base64.getEncoder()
-                .encodeToString(DigestUtils.md5((Generators.timeBasedGenerator().generate().toString()
+                .encodeToString(DigestUtils.md5((Generators.timeBasedReorderedGenerator().generate().toString()
                         + Generators.randomBasedGenerator().generate().toString()).getBytes(StandardCharsets.UTF_8)));
         var aes = new AES(Mode.CBC, Padding.PKCS5Padding, new SecretKeySpec(
                 Base64.getDecoder().decode(secretKeyOfAES), "AES"),

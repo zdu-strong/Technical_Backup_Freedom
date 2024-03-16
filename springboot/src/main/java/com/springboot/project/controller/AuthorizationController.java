@@ -28,7 +28,6 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.model.UserModel;
 import com.springboot.project.model.VerificationCodeEmailModel;
-import cn.hutool.crypto.CryptoException;
 
 @RestController
 public class AuthorizationController extends BaseController {
@@ -83,32 +82,29 @@ public class AuthorizationController extends BaseController {
         var user = this.userService.signUp(userModel);
         user = this.userService.getUserWithMoreInformation(user.getId());
         user.setPassword(null);
-        var accessToken = this.tokenUtil.generateAccessToken(user.getId());
+        var accessToken = this.tokenService.generateAccessToken(user.getId());
         user.setAccessToken(accessToken);
         return ResponseEntity.ok(user);
     }
 
+    /**
+     * username: email, userId
+     * 
+     * @param username
+     * @param password
+     * @return
+     * @throws InvalidKeySpecException
+     * @throws NoSuchAlgorithmException
+     * @throws JsonMappingException
+     * @throws JsonProcessingException
+     */
     @PostMapping("/sign_in")
-    public ResponseEntity<?> signIn(@RequestParam String userId, @RequestParam String password)
+    public ResponseEntity<?> signIn(@RequestParam String username, @RequestParam String password)
             throws InvalidKeySpecException, NoSuchAlgorithmException, JsonMappingException, JsonProcessingException {
-        this.userService.checkExistAccount(userId);
-
+        this.userService.checkExistAccount(username);
+        var userId = this.userService.getUserId(username);
+        var accessToken = this.tokenService.generateAccessToken(userId, password);
         var user = this.userService.getUserWithMoreInformation(userId);
-
-        String passwordParam;
-        try {
-            passwordParam = this.encryptDecryptService.decryptByAES(user.getPassword(), password);
-        } catch (CryptoException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Incorrect username or password");
-        }
-
-        if (!passwordParam.equals(password)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Incorrect username or password");
-        }
-
-        var accessToken = this.tokenUtil.generateAccessToken(user.getId());
         user.setAccessToken(accessToken);
         user.setPassword(null);
         return ResponseEntity.ok(user);
@@ -117,9 +113,9 @@ public class AuthorizationController extends BaseController {
     @PostMapping("/sign_out")
     public ResponseEntity<?> signOut() {
         if (this.permissionUtil.isSignIn(request)) {
-            var jwtId = this.tokenUtil.getDecodedJWTOfAccessToken(this.tokenUtil.getAccessToken(request)).getId();
-            if (this.tokenService.isExistTokenEntity(jwtId)) {
-                this.tokenService.deleteTokenEntity(jwtId);
+            var id = this.tokenService.getDecodedJWTOfAccessToken(this.tokenService.getAccessToken(request)).getId();
+            if (this.tokenService.hasExistTokenEntity(id)) {
+                this.tokenService.deleteTokenEntity(id);
             }
         }
         return ResponseEntity.ok().build();
@@ -152,7 +148,8 @@ public class AuthorizationController extends BaseController {
         for (var i = 10; i > 0; i--) {
             var verificationCodeEmailModelTwo = this.verificationCodeEmailService.createVerificationCodeEmail(email);
 
-            var fastDateFormat = FastDateFormat.getInstance(dateFormatProperties.getYearMonthDayHourMinuteSecond(), TimeZone.getTimeZone("UTC"));
+            var fastDateFormat = FastDateFormat.getInstance(dateFormatProperties.getYearMonthDayHourMinuteSecond(),
+                    TimeZone.getTimeZone("UTC"));
             var createDate = fastDateFormat.parse(
                     fastDateFormat.format(DateUtils.addSeconds(verificationCodeEmailModelTwo.getCreateDate(), 1)));
             Thread.sleep(createDate.getTime() - verificationCodeEmailModelTwo.getCreateDate().getTime());

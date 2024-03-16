@@ -19,6 +19,7 @@ import com.springboot.project.format.LoggerFormatter;
 import com.springboot.project.format.LongTermTaskFormatter;
 import com.springboot.project.format.OrganizeFormatter;
 import com.springboot.project.format.StorageSpaceFormatter;
+import com.springboot.project.format.TokenFormatter;
 import com.springboot.project.format.UserBlackOrganizeFormatter;
 import com.springboot.project.format.UserEmailFormatter;
 import com.springboot.project.format.UserFormatter;
@@ -77,6 +78,9 @@ public abstract class BaseService {
 
     @Autowired
     protected UserBlackOrganizeFormatter userBlackOrganizeFormatter;
+
+    @Autowired
+    protected TokenFormatter tokenFormatter;
 
     protected void persist(Object entity) {
         this.entityManager.persist(entity);

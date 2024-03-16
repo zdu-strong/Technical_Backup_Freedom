@@ -25,7 +25,7 @@ public class UserMessageServiceSendMessageRandomEmailTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() {
-        var userId = this.createAccount(Generators.timeBasedGenerator().generate().toString() + "zdu.strong@gmail.com")
+        var userId = this.createAccount(Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com")
                 .getId();
         this.userMessage = new UserMessageModel().setUser(new UserModel().setId(userId)).setContent("Hello, World!");
     }

@@ -29,8 +29,8 @@ public class FriendshipServiceGetBlacklistTest extends BaseTest {
 
     @BeforeEach
     public void beforeEach() throws NoSuchAlgorithmException, InvalidKeySpecException {
-        var userEmail = Generators.timeBasedGenerator().generate().toString() + "zdu.strong@gmail.com";
-        var friendEmail = Generators.timeBasedGenerator().generate().toString() + "zdu.strong@gmail.com";
+        var userEmail = Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com";
+        var friendEmail = Generators.timeBasedReorderedGenerator().generate().toString() + "zdu.strong@gmail.com";
         this.user = this.createAccount(userEmail);
         this.friend = this.createAccount(friendEmail);
         var keyOfAES = this.encryptDecryptService.generateSecretKeyOfAES();

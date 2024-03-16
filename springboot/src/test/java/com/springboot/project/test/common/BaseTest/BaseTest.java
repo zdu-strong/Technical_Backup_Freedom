@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
 import org.apache.commons.io.IOUtils;
@@ -37,13 +38,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.uuid.Generators;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.ResourceHttpHeadersUtil.ResourceHttpHeadersUtil;
 import com.springboot.project.common.TimeZoneUtil.TimeZoneUtil;
 import com.springboot.project.common.longtermtask.LongTermTaskUtil;
 import com.springboot.project.common.permission.AuthorizationEmailUtil;
 import com.springboot.project.common.permission.PermissionUtil;
-import com.springboot.project.common.permission.TokenUtil;
 import com.springboot.project.common.storage.Storage;
 import com.springboot.project.model.LongTermTaskModel;
 import com.springboot.project.model.UserEmailModel;
@@ -153,9 +154,6 @@ public class BaseTest {
     protected PermissionUtil permissionUtil;
 
     @Autowired
-    protected TokenUtil tokenUtil;
-
-    @Autowired
     protected AuthorizationEmailProperties authorizationEmailProperties;
 
     @SpyBean
@@ -242,7 +240,7 @@ public class BaseTest {
         userModelOfSignUp
                 .setPrivateKeyOfRSA(this.encryptDecryptService.encryptByAES(
                         keyPairOfRSA.getPrivateKeyOfRSA(),
-                        this.encryptDecryptService.generateSecretKeyOfAES(password)));
+                        this.encryptDecryptService.generateSecretKeyOfAES(password + password)));
         var secretKeyOfAES = this.encryptDecryptService
                 .generateSecretKeyOfAES(password);
         userModelOfSignUp.setPassword(this.encryptDecryptService.encryptByAES(secretKeyOfAES, secretKeyOfAES));
@@ -264,9 +262,13 @@ public class BaseTest {
     private UserModel signIn(String email, String password)
             throws URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException, JsonMappingException,
             JsonProcessingException {
-        var passwordParameter = this.encryptDecryptService
+        var secretKeyOfAES = this.encryptDecryptService
                 .generateSecretKeyOfAES(password);
-        var url = new URIBuilder("/sign_in").setParameter("userId", email)
+        var passwordPartList = List.of(new Date(), Generators.timeBasedReorderedGenerator().generate().toString(),
+                secretKeyOfAES);
+        var passwordPartJsonString = this.objectMapper.writeValueAsString(passwordPartList);
+        var passwordParameter = this.encryptDecryptService.encryptByPublicKeyOfRSA(passwordPartJsonString);
+        var url = new URIBuilder("/sign_in").setParameter("username", email)
                 .setParameter("password", passwordParameter)
                 .build();
         var response = this.testRestTemplate.postForEntity(url, null, UserModel.class);
@@ -277,7 +279,7 @@ public class BaseTest {
                         "Bearer " + user.getAccessToken())));
         user.setPrivateKeyOfRSA(
                 this.encryptDecryptService.decryptByAES(user.getPrivateKeyOfRSA(),
-                        this.encryptDecryptService.generateSecretKeyOfAES(password)));
+                        this.encryptDecryptService.generateSecretKeyOfAES(password + password)));
         return user;
     }
 

@@ -5,12 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
+import com.springboot.project.service.TokenService;
 
 @Component
 public class PermissionUtil {
 
     @Autowired
-    private TokenUtil tokenUtil;
+    private TokenService tokenService;
 
     public void checkIsSignIn(HttpServletRequest request) {
         if(!this.isSignIn(request)){
@@ -25,13 +26,13 @@ public class PermissionUtil {
     }
 
     public boolean isSignIn(HttpServletRequest request) {
-        String accessToken = this.tokenUtil.getAccessToken(request);
+        String accessToken = this.tokenService.getAccessToken(request);
         return this.isSignIn(accessToken);
     }
 
     public boolean isSignIn(String accessToken) {
         try {
-            this.tokenUtil.getDecodedJWTOfAccessToken(accessToken);
+            this.tokenService.getDecodedJWTOfAccessToken(accessToken);
             return true;
         } catch (Throwable e) {
             return false;
@@ -39,11 +40,11 @@ public class PermissionUtil {
     }
 
     public String getUserId(HttpServletRequest request) {
-        String accessToken = this.tokenUtil.getAccessToken(request);
+        String accessToken = this.tokenService.getAccessToken(request);
         return this.getUserId(accessToken);
     }
 
     public String getUserId(String accessToken) {
-        return this.tokenUtil.getDecodedJWTOfAccessToken(accessToken).getSubject();
+        return this.tokenService.getDecodedJWTOfAccessToken(accessToken).getSubject();
     }
 }

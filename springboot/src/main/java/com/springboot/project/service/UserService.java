@@ -34,39 +34,42 @@ public class UserService extends BaseService {
         return this.userFormatter.format(userEntity);
     }
 
-    public UserModel getUserWithMoreInformation(String userIdOrEmail) {
-        var userOptional = this.UserEntity().where(s -> s.getId().equals(userIdOrEmail))
-                .where(s -> !s.getIsDeleted())
-                .findOne();
-        if (userOptional.isPresent()) {
-            return this.userFormatter.formatWithMoreInformation(userOptional.get());
-        }
-
-        var user = this.UserEmailEntity()
-                .where(s -> s.getEmail().equals(userIdOrEmail))
-                .where(s -> !s.getIsDeleted())
-                .where(s -> !s.getUser().getIsDeleted())
-                .select(s -> s.getUser())
+    public UserModel getUserWithMoreInformation(String id) {
+        var user = this.UserEntity().where(s -> s.getId().equals(id)).where(s -> !s.getIsDeleted())
                 .getOnlyValue();
-
         return this.userFormatter.formatWithMoreInformation(user);
     }
 
-    public UserModel getUserById(String id) {
+    public UserModel getUser(String id) {
         var user = this.UserEntity().where(s -> s.getId().equals(id)).where(s -> !s.getIsDeleted())
                 .getOnlyValue();
         return this.userFormatter.format(user);
     }
 
-    public void checkExistAccount(String userIdOrEmail) {
+    public void checkExistAccount(String account) {
+        var userId = account;
+        var email = account;
         var stream = this.UserEntity().leftOuterJoinList(s -> s.getUserEmailList())
-                .where(s -> s.getOne().getId().equals(userIdOrEmail)
-                        || (s.getTwo().getEmail().equals(userIdOrEmail) && !s.getTwo().getIsDeleted()))
+                .where(s -> s.getOne().getId().equals(userId)
+                        || (s.getTwo().getEmail().equals(email) && !s.getTwo().getIsDeleted()))
                 .where(s -> !s.getOne().getIsDeleted())
                 .group(s -> s.getOne().getId(), (s, t) -> t.count());
         if (!stream.exists()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account does not exist");
         }
+    }
+
+    public String getUserId(String account) {
+        var userId = account;
+        var email = account;
+        var id = this.UserEntity().leftOuterJoinList(s -> s.getUserEmailList())
+                .where(s -> s.getOne().getId().equals(userId)
+                        || (s.getTwo().getEmail().equals(email) && !s.getTwo().getIsDeleted()))
+                .where(s -> !s.getOne().getIsDeleted())
+                .group(s -> s.getOne().getId(), (s, t) -> t.count())
+                .select(s -> s.getOne())
+                .getOnlyValue();
+        return id;
     }
 
 }

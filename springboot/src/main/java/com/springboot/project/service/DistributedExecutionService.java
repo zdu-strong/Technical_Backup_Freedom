@@ -77,7 +77,7 @@ public class DistributedExecutionService extends BaseService {
             distributedExecutionEntity.setVersion(
                     FastDateFormat.getInstance(dateFormatProperties.getYearMonthDayHourMinuteSecond(), TimeZone.getTimeZone("UTC")).format(new Date())
                             + " "
-                            + Generators.timeBasedGenerator().generate().toString());
+                            + Generators.timeBasedReorderedGenerator().generate().toString());
         } else {
             distributedExecutionEntity.setVersion(version);
         }

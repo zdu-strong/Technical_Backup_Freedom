@@ -26,6 +26,6 @@ public class OrganizeControllerDeleteOrganizeNotExistOrganizeTest extends BaseTe
 
     @BeforeEach
     public void beforeEach() {
-        this.organizeId = Generators.timeBasedGenerator().generate().toString();
+        this.organizeId = Generators.timeBasedReorderedGenerator().generate().toString();
     }
 }

@@ -106,7 +106,7 @@ public class BaseStorageCreateTempFile extends BaseStorageIsDirectory {
     }
 
     public File createTempFolder() {
-        File tempFolder = new File(this.getRootPath(), Generators.timeBasedGenerator().generate().toString());
+        File tempFolder = new File(this.getRootPath(), Generators.timeBasedReorderedGenerator().generate().toString());
         tempFolder.mkdirs();
         return tempFolder;
     }

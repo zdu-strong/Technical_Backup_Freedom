@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import io.reactivex.rxjava3.core.Flowable;
 
 public class StorageSpaceServiceDeleteStorageSpaceEntityTest extends BaseTest {
-    private String folderName = Generators.timeBasedGenerator().generate().toString();
+    private String folderName = Generators.timeBasedReorderedGenerator().generate().toString();
 
     @Test
     public void test() {

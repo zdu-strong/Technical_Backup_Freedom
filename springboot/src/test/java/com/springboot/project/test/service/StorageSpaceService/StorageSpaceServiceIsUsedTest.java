@@ -7,7 +7,7 @@ import com.springboot.project.test.common.BaseTest.BaseTest;
 import org.junit.jupiter.api.Test;
 
 public class StorageSpaceServiceIsUsedTest extends BaseTest {
-    private String folderName = Generators.timeBasedGenerator().generate().toString();
+    private String folderName = Generators.timeBasedReorderedGenerator().generate().toString();
 
     @Test
     public void test() {

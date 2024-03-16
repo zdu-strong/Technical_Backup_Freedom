@@ -12,7 +12,6 @@ import com.springboot.project.common.TimeZoneUtil.TimeZoneUtil;
 import com.springboot.project.common.longtermtask.LongTermTaskUtil;
 import com.springboot.project.common.permission.AuthorizationEmailUtil;
 import com.springboot.project.common.permission.PermissionUtil;
-import com.springboot.project.common.permission.TokenUtil;
 import com.springboot.project.common.storage.Storage;
 import com.springboot.project.properties.AuthorizationEmailProperties;
 import com.springboot.project.properties.DateFormatProperties;
@@ -88,9 +87,6 @@ public class BaseController {
 
     @Autowired
     protected PermissionUtil permissionUtil;
-
-    @Autowired
-    protected TokenUtil tokenUtil;
 
     @Autowired
     protected LongTermTaskUtil longTermTaskUtil;

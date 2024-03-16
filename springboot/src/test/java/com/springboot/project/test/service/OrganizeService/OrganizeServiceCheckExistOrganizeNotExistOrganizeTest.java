@@ -11,7 +11,7 @@ public class OrganizeServiceCheckExistOrganizeNotExistOrganizeTest extends BaseT
     @Test
     public void test() {
         assertThrows(ResponseStatusException.class, () -> {
-            this.organizeService.checkExistOrganize(Generators.timeBasedGenerator().generate().toString());
+            this.organizeService.checkExistOrganize(Generators.timeBasedReorderedGenerator().generate().toString());
         });
     }
 

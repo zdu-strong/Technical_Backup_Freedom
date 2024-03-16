@@ -12,7 +12,7 @@ public class UserController extends BaseController {
 
     @GetMapping("/user")
     public ResponseEntity<?> getUserById(@RequestParam String id) throws IOException {
-        var userModel = this.userService.getUserById(id);
+        var userModel = this.userService.getUser(id);
         return ResponseEntity.ok(userModel);
     }
 

@@ -1,29 +1,24 @@
 import { UserModel } from "@/model/UserModel";
 import axios from "axios";
 import { UserEmailModel } from "@/model/UserEmailModel";
-import { generateKeyPairOfRSA } from "@/common/RSAUtils";
+import { encryptByPublicKeyOfRSA, generateKeyPairOfRSA } from "@/common/RSAUtils";
 import { decryptByAES, encryptByAES, generateSecretKeyOfAES } from '@/common/AESUtils';
 import { VerificationCodeEmailModel } from "@/model/VerificationCodeEmailModel";
 import { getAccessToken, removeGlobalUserInfo, setGlobalUserInfo } from "@/common/Server";
 import { TypedJSON } from "typedjson";
+import { getKeyOfRSAPublicKey } from '@/api/EncryptDecrypt';
+import { v1 } from "uuid";
 
 export async function signUp(password: string, nickname: string, userEmailList: UserEmailModel[]): Promise<void> {
-  const secretKeyOfAESPromise = generateSecretKeyOfAES(password);
-  const keyPairPromise = generateKeyPairOfRSA();
-  const secretKeyOfAESOfPasswordPromise = generateSecretKeyOfAES(password);
-  await Promise.all([secretKeyOfAESPromise, keyPairPromise, secretKeyOfAESOfPasswordPromise]);
-  const { privateKey, publicKey } = await keyPairPromise;
-  const secretKeyOfAES = await secretKeyOfAESPromise;
-  const secretKeyOfAESOfPassword = await secretKeyOfAESOfPasswordPromise;
-  const privateKeyOfRSAPromise = encryptByAES(privateKey, secretKeyOfAES);
-  const passwordParamPromise = encryptByAES(secretKeyOfAESOfPassword, secretKeyOfAESOfPassword);
-  await Promise.all([privateKeyOfRSAPromise, passwordParamPromise]);
+  const secretKeyOfAESForRSA = await generateSecretKeyOfAES(password + password);
+  const { privateKey, publicKey } = await generateKeyPairOfRSA();
+  const secretKeyOfAES = await generateSecretKeyOfAES(password);
   let { data: user } = await axios.post<UserModel>(`/sign_up`, {
     username: nickname,
     userEmailList: userEmailList,
     publicKeyOfRSA: publicKey,
-    privateKeyOfRSA: await privateKeyOfRSAPromise,
-    password: await passwordParamPromise,
+    privateKeyOfRSA: await encryptByAES(privateKey, secretKeyOfAESForRSA),
+    password: await encryptByAES(secretKeyOfAES, secretKeyOfAES),
   });
   user = new TypedJSON(UserModel).parse(user)!;
   user.privateKeyOfRSA = privateKey;
@@ -35,19 +30,20 @@ export async function sendVerificationCode(email: string) {
   return await axios.post<VerificationCodeEmailModel>("/email/send_verification_code", null, { params: { email } });
 }
 
-export async function signIn(userIdOrEmail: string, password: string): Promise<void> {
+export async function signIn(username: string, password: string): Promise<void> {
   await signOut();
-  const secretKeyOfAESPromise = generateSecretKeyOfAES(password);
-  const secretKeyOfAESOfPasswordPromise = generateSecretKeyOfAES(password);
-  await Promise.all([secretKeyOfAESPromise, secretKeyOfAESOfPasswordPromise]);
+  const passwordPartList = [new Date(), v1(), await generateSecretKeyOfAES(password)];
+  const passwordJsonString = JSON.stringify(passwordPartList);
+  const { data: publicKey } = await getKeyOfRSAPublicKey();
+  const passwordParameter = await encryptByPublicKeyOfRSA(passwordJsonString, publicKey);
   let { data: user } = await axios.post<UserModel>(`/sign_in`, null, {
     params: {
-      userId: userIdOrEmail,
-      password: await secretKeyOfAESOfPasswordPromise,
+      username: username,
+      password: passwordParameter,
     }
   });
   user = new TypedJSON(UserModel).parse(user)!;
-  user.privateKeyOfRSA = await decryptByAES(user.privateKeyOfRSA, await secretKeyOfAESPromise);
+  user.privateKeyOfRSA = await decryptByAES(user.privateKeyOfRSA, await generateSecretKeyOfAES(password + password));
   await setGlobalUserInfo(user);
 }
 
