@@ -3,7 +3,6 @@ package com.springboot.project.format;
 import org.springframework.stereotype.Service;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.entity.OrganizeEntity;
 import com.springboot.project.model.OrganizeModel;
 
@@ -22,20 +21,14 @@ public class OrganizeFormatter extends BaseService {
 
         var id = organizeEntity.getId();
 
-        var level = this.OrganizeEntity()
-                .where(s -> s.getId().equals(id))
-                .select(s -> JPQLFunction.getAncestorCountOfOrganize(s.getId()))
-                .getOnlyValue();
+        var level = this.getLevel(organizeEntity);
         organizeModel.setLevel(level);
 
         if (organizeEntity.getParent() != null) {
             organizeModel.setParent(new OrganizeModel().setId(organizeEntity.getParent().getId()));
         }
 
-        var isDeleted = !this.OrganizeEntity()
-                .where(s -> s.getId().equals(id))
-                .select(s -> JPQLFunction.isNotDeletedOfOrganize(s.getId()))
-                .getOnlyValue();
+        var isDeleted = this.isDeleted(organizeEntity);
         organizeModel.setIsDeleted(isDeleted);
         if (!isDeleted) {
             var childOrganizeCount = this.OrganizeEntity()
@@ -44,13 +37,41 @@ public class OrganizeFormatter extends BaseService {
                     .count();
             organizeModel.setChildCount(childOrganizeCount);
 
-            var descendantCount = this.OrganizeEntity()
-                    .where(s -> s.getId().equals(id))
-                    .select(s -> JPQLFunction.getDescendantCountOfOrganize(s.getId()))
-                    .getOnlyValue();
+            var descendantCount = this.OrganizeClosureEntity().where(s -> s.getAncestor().getId().equals(id))
+                    .where(s -> !s.getIsDeleted())
+                    .where(s -> !s.getDescendant().getId().equals(id))
+                    .count();
             organizeModel.setDescendantCount(descendantCount);
         }
         return organizeModel;
+    }
+
+    private boolean isDeleted(OrganizeEntity organizeEntity) {
+        var isDeleted = false;
+        while (true) {
+            if (organizeEntity == null) {
+                break;
+            }
+            if (organizeEntity.getIsDeleted()) {
+                isDeleted = true;
+                break;
+            }
+            organizeEntity = organizeEntity.getParent();
+        }
+        return isDeleted;
+    }
+
+    private long getLevel(OrganizeEntity organizeEntity) {
+        var level = 0L;
+        var parent = organizeEntity.getParent();
+        while (true) {
+            if (parent == null) {
+                break;
+            }
+            level++;
+            parent = parent.getParent();
+        }
+        return level;
     }
 
 }

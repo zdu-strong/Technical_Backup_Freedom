@@ -208,47 +208,6 @@ public class JPQLFunction {
         throw new RuntimeException();
     }
 
-    /**
-     * Determine whether two departments have descendant relationship.
-     * The department is descended from itself.
-     *
-     * @param childOrganizeId
-     * @param parentOrganizeId
-     * @return
-     */
-    public static Boolean isChildOfOrganize(String childOrganizeId, String parentOrganizeId) {
-        throw new RuntimeException();
-    }
-
-    /**
-     * Whether neither the department nor its ancestors have been deleted
-     *
-     * @param childOrganizeId
-     * @param parentOrganizeId
-     * @return
-     */
-    public static Boolean isNotDeletedOfOrganize(String oganizeId) {
-        throw new RuntimeException();
-    }
-
-    /**
-     * Get the number of undeleted descendants, excluding self
-     * @param organizeId
-     * @return
-     */
-    public static Long getDescendantCountOfOrganize(String organizeId){
-        throw new RuntimeException();
-    }
-
-    /**
-     * Get the number of undeleted ancestors, excluding self
-     * @param organizeId
-     * @return
-     */
-    public static Long getAncestorCountOfOrganize(String organizeId){
-        throw new RuntimeException();
-    }
-
     public static void registerCustomSqlFunction(JinqJPAStreamProvider jinqJPAStreamProvider) {
         for (var method : Arrays.asList(JPQLFunction.class.getMethods()).stream()
                 .filter(s -> s.getName().equals("ifnull")).toList()) {
@@ -315,28 +274,6 @@ public class JPQLFunction {
                 .toList()) {
             jinqJPAStreamProvider.registerCustomSqlFunction(method,
                     "CONVERT_TO_STRING");
-        }
-        for (var method : Arrays.asList(JPQLFunction.class.getMethods()).stream()
-                .filter(s -> s.getName().equals("isChildOfOrganize")).toList()) {
-            jinqJPAStreamProvider.registerCustomSqlFunction(method, "IS_CHILD_OF_ORGANIZE");
-        }
-        for (var method : Arrays.asList(JPQLFunction.class.getMethods()).stream()
-                .filter(s -> s.getName().equals("isNotDeletedOfOrganize"))
-                .toList()) {
-            jinqJPAStreamProvider.registerCustomSqlFunction(method,
-                    "IS_NOT_DELETED_OF_ORGANIZE");
-        }
-        for (var method : Arrays.asList(JPQLFunction.class.getMethods()).stream()
-                .filter(s -> s.getName().equals("getDescendantCountOfOrganize"))
-                .toList()) {
-            jinqJPAStreamProvider.registerCustomSqlFunction(method,
-                    "GET_DESCENDANT_COUNT_OF_ORGANIZE");
-        }
-        for (var method : Arrays.asList(JPQLFunction.class.getMethods()).stream()
-                .filter(s -> s.getName().equals("getAncestorCountOfOrganize"))
-                .toList()) {
-            jinqJPAStreamProvider.registerCustomSqlFunction(method,
-                    "GET_ANCESTOR_COUNT_OF_ORGANIZE");
         }
     }
 

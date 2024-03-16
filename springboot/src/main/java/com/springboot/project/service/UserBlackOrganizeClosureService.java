@@ -3,7 +3,6 @@ package com.springboot.project.service;
 import java.util.Date;
 import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.entity.*;
 
 @Service
@@ -16,7 +15,6 @@ public class UserBlackOrganizeClosureService extends BaseService {
                 .getOnlyValue();
         var organize = this.OrganizeEntity()
                 .where(s -> s.getId().equals(organizeId))
-                .where(s -> JPQLFunction.isNotDeletedOfOrganize(s.getId()))
                 .getOnlyValue();
         var userBlackOrganizeClosureEntity = new UserBlackOrganizeClosureEntity();
         userBlackOrganizeClosureEntity.setId(newId());

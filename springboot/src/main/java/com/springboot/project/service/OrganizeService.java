@@ -9,7 +9,6 @@ import com.springboot.project.model.OrganizeModel;
 import com.springboot.project.model.PaginationModel;
 import com.fasterxml.uuid.Generators;
 import com.springboot.project.common.baseService.BaseService;
-import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.entity.OrganizeEntity;
 
 @Service
@@ -34,7 +33,7 @@ public class OrganizeService extends BaseService {
     public void update(OrganizeModel organizeModel) {
         var id = organizeModel.getId();
         var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
-                .where(s -> JPQLFunction.isNotDeletedOfOrganize(id)).getOnlyValue();
+                .getOnlyValue();
 
         organizeEntity.setName(organizeModel.getName());
         organizeEntity.setUpdateDate(new Date());
@@ -43,7 +42,7 @@ public class OrganizeService extends BaseService {
 
     public void delete(String id) {
         var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
-                .where(s -> JPQLFunction.isNotDeletedOfOrganize(id)).getOnlyValue();
+                .getOnlyValue();
         organizeEntity.setUpdateDate(new Date());
         organizeEntity.setIsDeleted(true);
         organizeEntity.setDeletedKey(Generators.timeBasedGenerator().generate().toString());
@@ -52,14 +51,18 @@ public class OrganizeService extends BaseService {
 
     public OrganizeModel getById(String id) {
         var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
-                .where(s -> JPQLFunction.isNotDeletedOfOrganize(id)).getOnlyValue();
+                .getOnlyValue();
 
         return this.organizeFormatter.format(organizeEntity);
     }
 
     public void checkExistOrganize(String id) {
-        var exists = this.OrganizeEntity().where(s -> s.getId().equals(id))
-                .where(s -> JPQLFunction.isNotDeletedOfOrganize(id)).exists();
+        var exists = this.OrganizeEntity()
+                .where(s -> s.getId().equals(id))
+                .map(s -> this.organizeFormatter.format(s))
+                .filter(s -> !s.getIsDeleted())
+                .findFirst()
+                .isPresent();
         if (!exists) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Organize does not exist");
         }
@@ -69,11 +72,7 @@ public class OrganizeService extends BaseService {
         if (StringUtils.isBlank(id)) {
             return;
         }
-        var exists = this.OrganizeEntity().where(s -> s.getId().equals(id))
-                .where(s -> JPQLFunction.isNotDeletedOfOrganize(id)).exists();
-        if (!exists) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Organize does not exist");
-        }
+        this.checkExistOrganize(id);
     }
 
     public PaginationModel<OrganizeModel> searchByName(Long pageNum, Long pageSize, String name, String organizeId) {
@@ -88,8 +87,9 @@ public class OrganizeService extends BaseService {
     public void move(String id, String parentId) {
         var parentOrganizeEntity = this
                 .getParentOrganize(new OrganizeModel().setParent(new OrganizeModel().setId(parentId)));
-        var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id))
-                .where(s -> JPQLFunction.isNotDeletedOfOrganize(id)).getOnlyValue();
+        var organizeEntity = this.OrganizeEntity()
+                .where(s -> s.getId().equals(id))
+                .getOnlyValue();
         organizeEntity.setParent(parentOrganizeEntity);
         organizeEntity.setUpdateDate(new Date());
         this.merge(organizeEntity);
@@ -115,8 +115,9 @@ public class OrganizeService extends BaseService {
             return null;
         }
 
-        var parentOrganizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(parentOrganizeId))
-                .where(s -> JPQLFunction.isNotDeletedOfOrganize(s.getId())).getOnlyValue();
+        var parentOrganizeEntity = this.OrganizeEntity()
+                .where(s -> s.getId().equals(parentOrganizeId))
+                .getOnlyValue();
         return parentOrganizeEntity;
     }
 
