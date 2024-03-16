@@ -6,10 +6,8 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Base64;
 import java.util.List;
 import java.util.function.Supplier;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.tika.Tika;
@@ -246,7 +244,7 @@ public class BaseTest {
                         keyPairOfRSA.getPrivateKeyOfRSA(),
                         this.encryptDecryptService.generateSecretKeyOfAES(password)));
         var secretKeyOfAES = this.encryptDecryptService
-                .generateSecretKeyOfAES(Base64.getEncoder().encodeToString(DigestUtils.sha3_512(password)));
+                .generateSecretKeyOfAES(password);
         userModelOfSignUp.setPassword(this.encryptDecryptService.encryptByAES(secretKeyOfAES, secretKeyOfAES));
         var url = new URIBuilder("/sign_up").build();
         var response = this.testRestTemplate.postForEntity(url, new HttpEntity<>(userModelOfSignUp),
@@ -267,7 +265,7 @@ public class BaseTest {
             throws URISyntaxException, InvalidKeySpecException, NoSuchAlgorithmException, JsonMappingException,
             JsonProcessingException {
         var passwordParameter = this.encryptDecryptService
-                .generateSecretKeyOfAES(Base64.getEncoder().encodeToString(DigestUtils.sha3_512(password)));
+                .generateSecretKeyOfAES(password);
         var url = new URIBuilder("/sign_in").setParameter("userId", email)
                 .setParameter("password", passwordParameter)
                 .build();

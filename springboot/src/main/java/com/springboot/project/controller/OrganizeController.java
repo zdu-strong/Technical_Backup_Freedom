@@ -47,12 +47,15 @@ public class OrganizeController extends BaseController {
     }
 
     @PutMapping("/organize/move")
-    public ResponseEntity<?> move(@RequestParam String organizeId, @RequestParam(required = false) String parentId) {
-        this.organizeService.checkExistOrganize(organizeId);
-        this.organizeService.checkExistOrganizeAllowEmpty(parentId);
+    public ResponseEntity<?> move(@RequestParam String id, @RequestParam(required = false) String parentId) {
+        this.organizeService.checkExistOrganize(id);
+        if(StringUtils.isNotBlank(parentId)){
+            this.organizeService.checkExistOrganize(parentId);
+        }
+        this.organizeService.checkOrganizeCanBeMove(id, parentId);
 
-        this.organizeService.move(organizeId, parentId);
-        this.organizeUtil.refresh(organizeId);
+        this.organizeService.move(id, parentId);
+        this.organizeUtil.refresh(id);
         return ResponseEntity.ok().build();
     }
 

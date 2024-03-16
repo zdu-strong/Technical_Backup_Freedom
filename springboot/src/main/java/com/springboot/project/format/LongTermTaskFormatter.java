@@ -18,7 +18,6 @@ import com.google.common.collect.Lists;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.LongTermTaskEntity;
 import com.springboot.project.model.LongTermTaskModel;
-
 import ch.qos.logback.classic.spi.ThrowableProxy;
 
 @Service
@@ -44,7 +43,6 @@ public class LongTermTaskFormatter extends BaseService {
             traceList.add(stackTraceElement.getClassName() + ": " + map.get("message"));
             traceList.addAll(JinqStream.from(Lists.newArrayList(new ThrowableProxy(e).getStackTraceElementProxyArray()))
                     .select(s -> "\t" + s.getSTEAsString()).toList());
-            map.put("stackTrace", String.join("\n", traceList.toArray(new String[] {})));
             var text = this.objectMapper.writeValueAsString(map);
             return text;
         } catch (JsonProcessingException e1) {

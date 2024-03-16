@@ -1,5 +1,6 @@
 package com.springboot.project.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -68,13 +69,6 @@ public class OrganizeService extends BaseService {
         }
     }
 
-    public void checkExistOrganizeAllowEmpty(String id) {
-        if (StringUtils.isBlank(id)) {
-            return;
-        }
-        this.checkExistOrganize(id);
-    }
-
     public PaginationModel<OrganizeModel> searchByName(Long pageNum, Long pageSize, String name, String organizeId) {
         var stream = this.OrganizeClosureEntity()
                 .where(s -> s.getAncestor().getId().equals(organizeId))
@@ -93,6 +87,36 @@ public class OrganizeService extends BaseService {
         organizeEntity.setParent(parentOrganizeEntity);
         organizeEntity.setUpdateDate(new Date());
         this.merge(organizeEntity);
+    }
+
+    public boolean isChildOfOrganize(String id, String parentId) {
+        if (StringUtils.isBlank(parentId)) {
+            return false;
+        }
+        var isChild = false;
+        var organizeIdList = new ArrayList<String>();
+        var organizeEntity = this.OrganizeEntity().where(s -> s.getId().equals(id)).getOnlyValue();
+        while (true) {
+            if (organizeEntity == null) {
+                break;
+            }
+            if (organizeIdList.contains(organizeEntity.getId())) {
+                break;
+            }
+            if (organizeEntity.getId().equals(parentId)) {
+                isChild = true;
+                break;
+            }
+            organizeIdList.add(organizeEntity.getId());
+            organizeEntity = organizeEntity.getParent();
+        }
+        return isChild;
+    }
+
+    public void checkOrganizeCanBeMove(String id, String parentId) {
+        if (this.isChildOfOrganize(id, parentId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Organize cannot be moved");
+        }
     }
 
     public PaginationModel<OrganizeModel> getOrganizeListThatContainsDeleted(Long pageNum, Long pageSize) {

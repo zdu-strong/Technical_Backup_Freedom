@@ -2,8 +2,8 @@ package com.springboot.project.format;
 
 import java.nio.file.Paths;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.common.database.JPQLFunction;
 import com.springboot.project.entity.UserMessageEntity;
@@ -13,21 +13,19 @@ import com.springboot.project.model.UserMessageModel;
 public class UserMessageFormatter extends BaseService {
 
     public UserMessageModel format(UserMessageEntity userMessageEntity) {
-        var userMessage = new UserMessageModel().setId(userMessageEntity.getId())
-                .setContent(userMessageEntity.getContent())
-                .setCreateDate(userMessageEntity.getCreateDate()).setUpdateDate(userMessageEntity.getUpdateDate())
-                .setIsDeleted(false)
-                .setIsRecall(userMessageEntity.getIsRecall())
-                .setUser(this.userFormatter.format(userMessageEntity.getUser()));
-        if (!userMessage.getIsRecall() && StringUtils.isNotBlank(userMessageEntity.getFolderName())) {
-            userMessage
+        var userMessageModel = new UserMessageModel();
+        BeanUtils.copyProperties(userMessageEntity, userMessageModel);
+        userMessageModel.setIsDeleted(false);
+        userMessageModel.setUser(this.userFormatter.format(userMessageEntity.getUser()));
+        if (!userMessageModel.getIsRecall() && StringUtils.isNotBlank(userMessageEntity.getFolderName())) {
+            userMessageModel
                     .setUrl(this.storage.getResoureUrlFromResourcePath(
                             Paths.get(userMessageEntity.getFolderName(), userMessageEntity.getFileName()).toString()));
         }
-        if (userMessage.getIsRecall() || StringUtils.isNotBlank(userMessageEntity.getFolderName())) {
-            userMessage.setContent("");
+        if (userMessageModel.getIsRecall() || StringUtils.isNotBlank(userMessageEntity.getFolderName())) {
+            userMessageModel.setContent("");
         }
-        return userMessage;
+        return userMessageModel;
     }
 
     public UserMessageModel formatForUserId(UserMessageEntity userMessageEntity, String userId) {

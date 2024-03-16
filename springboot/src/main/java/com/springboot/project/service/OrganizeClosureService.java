@@ -1,12 +1,16 @@
 package com.springboot.project.service;
 
 import java.util.Date;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.springboot.project.common.baseService.BaseService;
 import com.springboot.project.entity.*;
 
 @Service
 public class OrganizeClosureService extends BaseService {
+
+    @Autowired
+    private OrganizeService organizeService;
 
     public boolean refresh(String organizeId) {
         {
@@ -62,7 +66,8 @@ public class OrganizeClosureService extends BaseService {
             var organizeClosureEntityOptional = this.OrganizeClosureEntity()
                     .where(s -> s.getDescendant().getId().equals(organizeId))
                     .map(s -> s)
-                    .filter(s -> !this.isChildOfOrganize(s.getDescendant(), s.getAncestor()))
+                    .filter(s -> !this.organizeService.isChildOfOrganize(s.getDescendant().getId(),
+                            s.getAncestor().getId()))
                     .findFirst();
             if (organizeClosureEntityOptional.isPresent()) {
                 this.remove(organizeClosureEntityOptional.get());
@@ -84,21 +89,6 @@ public class OrganizeClosureService extends BaseService {
         organizeClosureEntity.setAncestor(ancestor);
         organizeClosureEntity.setDescendant(descendant);
         this.persist(organizeClosureEntity);
-    }
-
-    private boolean isChildOfOrganize(OrganizeEntity descendant, OrganizeEntity ancestor) {
-        var isChild = false;
-        while (true) {
-            if (descendant == null) {
-                break;
-            }
-            if (descendant.getId().equals(ancestor.getId())) {
-                isChild = true;
-            }
-            descendant = descendant.getParent();
-        }
-        return isChild;
-
     }
 
 }

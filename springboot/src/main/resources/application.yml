@@ -59,6 +59,7 @@ logging:
 server:
   error:
     include-message: always
+    include-stacktrace: never
   tomcat:
     max-http-form-post-size: -1
   max-http-header-size: 40KB
