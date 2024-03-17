@@ -1,6 +1,10 @@
 package com.springboot.project.test.controller.UserMessageWebSocketController;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
@@ -69,14 +73,19 @@ public class UserMessageWebSocketControllerTest extends BaseTest {
             }
         };
         this.webSocketClient.connectBlocking();
-        var result = subject.take(1).toList().toFuture().get(10, TimeUnit.SECONDS);
-        assertEquals(1, result.size());
-        assertEquals(1, JinqStream.from(result).selectAllList(s -> s.getList()).count());
-        assertEquals(1, JinqStream.from(result).select(s -> s.getTotalPage()).findFirst().get());
-        assertEquals("Hello, World!", JinqStream.from(result).selectAllList(s -> s.getList())
-                .where(s -> s.getUser().getId().equals(this.user.getId())).select(s -> s.getContent())
-                .limit(1)
-                .getOnlyValue());
+        var result = JinqStream.from(subject.take(1).toList().toFuture().get(10, TimeUnit.SECONDS)).getOnlyValue();
+        var userMessage = JinqStream.from(result.getList()).getOnlyValue();
+        assertEquals(1, result.getList().size());
+        assertEquals(1, result.getTotalPage());
+        assertEquals("Hello, World!", userMessage.getContent());
+        assertFalse(userMessage.getIsRecall());
+        assertFalse(userMessage.getIsDeleted());
+        assertNull(userMessage.getUrl());
+        assertEquals(this.user.getId(), userMessage.getUser().getId());
+        assertNotNull(userMessage.getCreateDate());
+        assertNotNull(userMessage.getCreateDate());
+        assertEquals(1, userMessage.getTotalPage());
+        assertEquals(1, userMessage.getPageNum());
     }
 
     @BeforeEach
