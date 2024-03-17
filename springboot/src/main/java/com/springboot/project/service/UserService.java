@@ -60,16 +60,26 @@ public class UserService extends BaseService {
     }
 
     public String getUserId(String account) {
-        var userId = account;
-        var email = account;
-        var id = this.UserEntity().leftOuterJoinList(s -> s.getUserEmailList())
-                .where(s -> s.getOne().getId().equals(userId)
-                        || (s.getTwo().getEmail().equals(email) && !s.getTwo().getIsDeleted()))
-                .where(s -> !s.getOne().getIsDeleted())
-                .group(s -> s.getOne().getId(), (s, t) -> t.count())
-                .select(s -> s.getOne())
-                .getOnlyValue();
-        return id;
+        {
+            var userId = account;
+            var userEntity = this.UserEntity()
+                    .where(s -> s.getId().equals(userId))
+                    .where(s -> !s.getIsDeleted())
+                    .findOne()
+                    .orElse(null);
+            if (userEntity != null) {
+                return userEntity.getId();
+            }
+        }
+        {
+            var email = account;
+            var userEntity = this.UserEmailEntity().where(s -> s.getEmail().equals(email))
+                    .where(s -> !s.getIsDeleted())
+                    .where(s -> !s.getUser().getIsDeleted())
+                    .select(s -> s.getUser())
+                    .getOnlyValue();
+            return userEntity.getId();
+        }
     }
 
 }
