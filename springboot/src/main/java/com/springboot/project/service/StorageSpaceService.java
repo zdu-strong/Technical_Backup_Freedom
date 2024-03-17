@@ -1,5 +1,6 @@
 package com.springboot.project.service;
 
+import java.io.File;
 import java.nio.file.Paths;
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
@@ -21,66 +22,47 @@ public class StorageSpaceService extends BaseService {
         return storageSpacePaginationModel;
     }
 
-    @SuppressWarnings("resource")
-    public boolean isUsed(String folderName) {
+    public void refresh(String folderName) {
         this.checkIsValidFolderName(folderName);
-
-        if (this.isUsedByProgramData(folderName)) {
-            var list = this.StorageSpaceEntity().where(s -> s.getFolderName().equals(folderName)).toList();
-            for (var storageSpaceEntity : list) {
-                this.remove(storageSpaceEntity);
-            }
-            return true;
-        }
-
-        if (!this.StorageSpaceEntity().where(s -> s.getFolderName().equals(folderName)).exists()) {
-            this.createStorageSpaceEntity(folderName);
-        }
+        this.refreshStorageSpaceEntity(folderName);
 
         var expireDate = DateUtils.addMilliseconds(new Date(),
                 Long.valueOf(0 - StorageSpaceEnum.TEMP_FILE_SURVIVAL_DURATION.toMillis()).intValue());
         var isUsed = !this.StorageSpaceEntity()
                 .where(s -> s.getFolderName().equals(folderName))
                 .where(s -> s.getUpdateDate().before(expireDate))
-                .leftOuterJoin((s, t) -> t.stream(StorageSpaceEntity.class),
-                        (s, t) -> s.getFolderName().equals(t.getFolderName())
-                                && !t.getUpdateDate().before(expireDate))
-                .where(s -> s.getTwo() == null)
                 .exists();
-        return isUsed;
-    }
 
-    public void deleteStorageSpaceEntity(String folderName) {
-        this.checkIsValidFolderName(folderName);
-        if (this.isUsed(folderName)) {
+        if (isUsed) {
             return;
+        }
+        this.storage.delete(folderName);
+        if (new File(this.storage.getRootPath(), folderName).exists()) {
+            throw new RuntimeException("Folder deletion failed. FolderName:" + folderName);
         }
         for (var storageSpaceEntity : this.StorageSpaceEntity().where(s -> s.getFolderName().equals(folderName))
                 .toList()) {
             this.remove(storageSpaceEntity);
         }
-        this.storage.delete(folderName);
     }
 
-    private StorageSpaceModel createStorageSpaceEntity(String folderName) {
-        this.checkIsValidFolderName(folderName);
+    private void refreshStorageSpaceEntity(String folderName) {
         if (this.StorageSpaceEntity().where(s -> s.getFolderName().equals(folderName)).exists()) {
-            StorageSpaceEntity storageSpaceEntity = this.StorageSpaceEntity()
-                    .where(s -> s.getFolderName().equals(folderName)).findFirst().get();
-            storageSpaceEntity.setUpdateDate(new Date());
-            this.merge(storageSpaceEntity);
-
-            return this.storageSpaceFormatter.format(storageSpaceEntity);
-        } else {
-            StorageSpaceEntity storageSpaceEntity = new StorageSpaceEntity();
-            storageSpaceEntity.setId(newId());
-            storageSpaceEntity.setFolderName(folderName);
-            storageSpaceEntity.setCreateDate(new Date());
-            storageSpaceEntity.setUpdateDate(new Date());
-            this.persist(storageSpaceEntity);
-
-            return this.storageSpaceFormatter.format(storageSpaceEntity);
+            if (this.isUsedByProgramData(folderName)) {
+                var storageSpaceEntity = this.StorageSpaceEntity().where(s -> s.getFolderName().equals(folderName))
+                        .getOnlyValue();
+                storageSpaceEntity.setUpdateDate(new Date());
+                this.merge(storageSpaceEntity);
+            }
+            return;
         }
+
+        var storageSpaceEntity = new StorageSpaceEntity();
+        storageSpaceEntity.setId(newId());
+        storageSpaceEntity.setFolderName(folderName);
+        storageSpaceEntity.setCreateDate(new Date());
+        storageSpaceEntity.setUpdateDate(new Date());
+        this.persist(storageSpaceEntity);
     }
 
     private boolean isUsedByProgramData(String folderName) {

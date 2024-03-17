@@ -7,7 +7,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import com.google.common.collect.Lists;
 import com.springboot.project.common.StorageResource.SequenceResource;
-import io.reactivex.rxjava3.core.Flowable;
 
 @Component
 public class CloudStorageImplement implements CloudStorageInterface {
@@ -43,11 +42,6 @@ public class CloudStorageImplement implements CloudStorageInterface {
     @Override
     public Resource getResource(String key, long startIndex, long rangeContentLength) {
         return this.getCloud().getResource(key, startIndex, rangeContentLength);
-    }
-
-    @Override
-    public Flowable<String> getRootList() {
-        return this.getCloud().getRootList();
     }
 
     private CloudStorageInterface[] getCloudList() {

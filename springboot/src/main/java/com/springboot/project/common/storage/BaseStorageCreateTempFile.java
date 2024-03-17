@@ -42,7 +42,19 @@ public class BaseStorageCreateTempFile extends BaseStorageIsDirectory {
                 return this.createTempFile(resource);
             }
         } else {
-            return new File(this.getRootPath(), relativePath);
+            try {
+                var tempFolder = this.createTempFolder();
+                var file = new File(this.getRootPath(), relativePath);
+                if (file.isDirectory()) {
+                    FileUtils.copyDirectory(file, tempFolder);
+                    return tempFolder;
+                } else {
+                    FileUtils.copyFile(file, new File(tempFolder, file.getName()));
+                    return new File(tempFolder, file.getName());
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e.getMessage(), e);
+            }
         }
     }
 
@@ -106,7 +118,9 @@ public class BaseStorageCreateTempFile extends BaseStorageIsDirectory {
     }
 
     public File createTempFolder() {
-        File tempFolder = new File(this.getRootPath(), Generators.timeBasedReorderedGenerator().generate().toString());
+        var folderName = Generators.timeBasedReorderedGenerator().generate().toString();
+        this.storageSpaceService.refresh(folderName);
+        File tempFolder = new File(this.getRootPath(), folderName);
         tempFolder.mkdirs();
         return tempFolder;
     }

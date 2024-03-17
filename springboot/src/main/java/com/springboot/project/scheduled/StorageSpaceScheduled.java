@@ -1,13 +1,9 @@
 package com.springboot.project.scheduled;
 
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import com.springboot.project.common.storage.Storage;
 import com.springboot.project.properties.IsTestOrDevModeProperties;
 import com.springboot.project.service.DistributedExecutionService;
 import com.springboot.project.service.StorageSpaceService;
@@ -23,9 +19,6 @@ public class StorageSpaceScheduled {
     private DistributedExecutionService distributedExecutionService;
 
     @Autowired
-    private Storage storage;
-
-    @Autowired
     private IsTestOrDevModeProperties isTestOrDevModeProperties;
 
     private Long pageSize = 1L;
@@ -35,29 +28,8 @@ public class StorageSpaceScheduled {
         if (this.isTestOrDevModeProperties.getIsTestOrDevMode()) {
             return;
         }
-        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            var futureList = new ArrayList<Future<?>>();
-            futureList.add(executor.submit(() -> {
-                this.cleanDatabaseStorage();
-            }));
-            futureList.add(executor.submit(() -> {
-                this.cleanDiskStorage();
-            }));
-            for (var future : futureList) {
-                future.get();
-            }
-        }
-    }
 
-    public void cleanDiskStorage() {
-        this.storage.listRoots().concatMap(folderName -> {
-            return Flowable.just("").concatMap((s) -> {
-                if (!this.storageSpaceService.isUsed(folderName)) {
-                    this.storageSpaceService.deleteStorageSpaceEntity(folderName);
-                }
-                return Flowable.empty();
-            }).retry(10);
-        }).blockingSubscribe();
+        this.cleanDatabaseStorage();
     }
 
     public void cleanDatabaseStorage() {
@@ -71,9 +43,7 @@ public class StorageSpaceScheduled {
                                 .getStorageSpaceListByPagination(pageNum, pageSize)
                                 .getList();
                         for (var storageSpaceModel : list) {
-                            if (!this.storageSpaceService.isUsed(storageSpaceModel.getFolderName())) {
-                                this.storageSpaceService.deleteStorageSpaceEntity(storageSpaceModel.getFolderName());
-                            }
+                            this.storageSpaceService.refresh(storageSpaceModel.getFolderName());
                         }
                         return Flowable.just(pageNum);
                     })

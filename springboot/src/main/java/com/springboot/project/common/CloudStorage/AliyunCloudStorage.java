@@ -167,11 +167,6 @@ public class AliyunCloudStorage extends BaseStorage implements CloudStorageInter
         }
     }
 
-    @Override
-    public Flowable<String> getRootList() {
-        return getList("").map(s -> this.getFileNameFromResource(new FileSystemResource(s)));
-    }
-
     private Flowable<String> getList(String prefix) {
         return Flowable.<String>create((emitter) -> {
             try {

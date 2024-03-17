@@ -27,6 +27,7 @@ public class BaseStorageSave extends BaseStorageCreateTempFile {
         try {
             var storageFileModel = new StorageFileModel()
                     .setFolderName(Generators.timeBasedReorderedGenerator().generate().toString());
+            this.storageSpaceService.refresh(storageFileModel.getFolderName());
 
             /* Set file name */
             storageFileModel.setFileName(this.getFileNameFromResource(resource));

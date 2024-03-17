@@ -1,6 +1,8 @@
 package com.springboot.project.test.common.BaseTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -9,6 +11,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.tika.Tika;
@@ -176,10 +179,8 @@ public class BaseTest {
 
     @BeforeEach
     public void beforeEachOfBaseTest() {
-        this.storage.listRoots().map((folderName) -> {
-            this.storage.delete(folderName);
-            return "";
-        }).blockingSubscribe();
+        FileUtils.deleteQuietly(new File(this.storage.getRootPath()));
+        new File(this.storage.getRootPath()).mkdirs();
         Mockito.doNothing().when(this.authorizationEmailUtil).sendVerificationCode(Mockito.anyString(),
                 Mockito.anyString());
         Mockito.doNothing().when(this.organizeClosureRefreshScheduled).scheduled();

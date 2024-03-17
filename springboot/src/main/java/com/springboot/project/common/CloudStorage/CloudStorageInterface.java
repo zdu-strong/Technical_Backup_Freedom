@@ -4,7 +4,6 @@ import java.io.File;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import com.springboot.project.common.StorageResource.SequenceResource;
-import io.reactivex.rxjava3.core.Flowable;
 
 @Component
 public interface CloudStorageInterface {
@@ -34,6 +33,4 @@ public interface CloudStorageInterface {
      * @return
      */
     Resource getResource(String key, long startIndex, long rangeContentLength);
-
-    Flowable<String> getRootList();
 }
