@@ -123,7 +123,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>33.0.0-jre</version>
+            <version>33.1.0-jre</version>
         </dependency>
         <dependency>
             <groupId>com.google.zxing</groupId>
@@ -148,7 +148,7 @@
         <dependency>
             <groupId>com.fasterxml.uuid</groupId>
             <artifactId>java-uuid-generator</artifactId>
-            <version>4.3.0</version>
+            <version>5.0.0</version>
         </dependency>
         <dependency>
             <groupId>java3d</groupId>

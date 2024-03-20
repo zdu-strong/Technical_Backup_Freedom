@@ -291,7 +291,7 @@ public class SpringbootProjectApplication {
 
     public static String getANewDatabaseName() {
         var newDatabaseName = "database_"
-                + Generators.timeBasedGenerator().generate().toString().replaceAll(Pattern.quote("-"), "_");
+                + Generators.timeBasedReorderedGenerator().generate().toString().replaceAll(Pattern.quote("-"), "_");
         return newDatabaseName;
     }
 
