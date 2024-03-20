@@ -18,6 +18,7 @@ import com.springboot.project.properties.DateFormatProperties;
 import com.springboot.project.service.EncryptDecryptService;
 import com.springboot.project.service.FriendshipService;
 import com.springboot.project.service.LongTermTaskService;
+import com.springboot.project.service.OrganizeMoveTopService;
 import com.springboot.project.service.OrganizeService;
 import com.springboot.project.service.TokenService;
 import com.springboot.project.service.UserEmailService;
@@ -81,6 +82,9 @@ public class BaseController {
 
     @Autowired
     protected VerificationCodeEmailService verificationCodeEmailService;
+
+    @Autowired
+    protected OrganizeMoveTopService organizeMoveTopService;
 
     @Autowired
     protected AuthorizationEmailProperties authorizationEmailProperties;

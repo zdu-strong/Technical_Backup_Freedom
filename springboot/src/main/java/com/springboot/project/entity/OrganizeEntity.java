@@ -60,4 +60,7 @@ public class OrganizeEntity {
     @OneToMany(mappedBy = "organize", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<UserBlackOrganizeClosureEntity> userBlackOrganizeClosureList;
 
+    @OneToMany(mappedBy = "organize", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<OrganizeMoveTopEntity> organizeMoveTopList;
+
 }

@@ -46,8 +46,6 @@ public class OrganizeClosureService extends BaseService {
             for (var organizeClosureEntity : ancestorList) {
                 if (!this.organizeService.isChildOfOrganize(
                         organizeId, organizeClosureEntity.getAncestor().getId())) {
-                    organizeClosureEntity.setAncestor(null);
-                    organizeClosureEntity.setDescendant(null);
                     this.remove(organizeClosureEntity);
                     return true;
                 }

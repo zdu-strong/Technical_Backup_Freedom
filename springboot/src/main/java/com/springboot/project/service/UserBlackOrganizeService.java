@@ -32,8 +32,6 @@ public class UserBlackOrganizeService extends BaseService {
         var userBlackOrganizeEntity = this.UserBlackOrganizeEntity()
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
-        userBlackOrganizeEntity.setUser(null);
-        userBlackOrganizeEntity.setOrganize(null);
         this.remove(userBlackOrganizeEntity);
     }
 

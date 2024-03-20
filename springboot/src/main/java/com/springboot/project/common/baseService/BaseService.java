@@ -18,6 +18,7 @@ import com.springboot.project.format.FriendshipFormatter;
 import com.springboot.project.format.LoggerFormatter;
 import com.springboot.project.format.LongTermTaskFormatter;
 import com.springboot.project.format.OrganizeFormatter;
+import com.springboot.project.format.OrganizeMoveTopFormatter;
 import com.springboot.project.format.StorageSpaceFormatter;
 import com.springboot.project.format.TokenFormatter;
 import com.springboot.project.format.UserBlackOrganizeFormatter;
@@ -78,6 +79,9 @@ public abstract class BaseService {
 
     @Autowired
     protected UserBlackOrganizeFormatter userBlackOrganizeFormatter;
+
+    @Autowired
+    protected OrganizeMoveTopFormatter organizeMoveTopFormatter;
 
     @Autowired
     protected TokenFormatter tokenFormatter;
@@ -152,6 +156,10 @@ public abstract class BaseService {
 
     protected JPAJinqStream<UserBlackOrganizeClosureEntity> UserBlackOrganizeClosureEntity() {
         return this.streamAll(UserBlackOrganizeClosureEntity.class);
+    }
+
+    protected JPAJinqStream<OrganizeMoveTopEntity> OrganizeMoveTopEntity() {
+        return this.streamAll(OrganizeMoveTopEntity.class);
     }
 
     private <U> JPAJinqStream<U> streamAll(Class<U> entity) {

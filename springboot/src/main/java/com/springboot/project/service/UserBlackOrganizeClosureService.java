@@ -29,8 +29,6 @@ public class UserBlackOrganizeClosureService extends BaseService {
         var userBlackOrganizeClosureEntity = this.UserBlackOrganizeClosureEntity()
                 .where(s -> s.getId().equals(id))
                 .getOnlyValue();
-        userBlackOrganizeClosureEntity.setUser(null);
-        userBlackOrganizeClosureEntity.setOrganize(null);
         this.remove(userBlackOrganizeClosureEntity);
     }
 }
