@@ -1,10 +1,6 @@
 package com.springboot.project.controller;
 
-import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +9,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import com.springboot.project.common.baseController.BaseController;
 import com.springboot.project.model.OrganizeModel;
-import com.springboot.project.model.OrganizeMoveTopModel;
 
 @RestController
 public class OrganizeController extends BaseController {
@@ -61,28 +55,8 @@ public class OrganizeController extends BaseController {
         }
         this.organizeService.checkOrganizeCanBeMove(id, parentId);
 
-        OrganizeMoveTopModel[] organizeMoveTopList;
-        var initStartDate = new Date();
-        while (true) {
-            try {
-                organizeMoveTopList = this.organizeMoveTopService.createOrganizeMoveTop(id, parentId);
-                break;
-            } catch (DataIntegrityViolationException e) {
-                if (!initStartDate.before(DateUtils.addSeconds(new Date(), -5))) {
-                    Thread.sleep(1);
-                    continue;
-                }
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "Too many requests to move the organize, please wait a minute and try again");
-            }
-        }
-        try {
-            this.organizeService.move(id, parentId);
-        } finally {
-            this.organizeMoveTopService.deleteOrganizeMoveTop(organizeMoveTopList);
-        }
+        this.organizeUtil.move(id, parentId);
 
-        this.organizeUtil.refresh(id);
         return ResponseEntity.ok().build();
     }
 
