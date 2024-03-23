@@ -207,7 +207,7 @@
                     <referenceUrl>
                         jdbc:mysql://${database.jdbc.url}/${env.LIQUIBASE_REFERENCE_DATABASE_NAME}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true
                     </referenceUrl>
-                    <referenceDriver>${database.driver}</referenceDriver>
+                    <referenceDriver>com.mysql.cj.jdbc.Driver</referenceDriver>
                     <referenceUsername>${database.username}</referenceUsername>
                     <referencePassword>${database.password}</referencePassword>
                 </configuration>
