@@ -1,7 +1,6 @@
 package com.springboot.project.test.common.BaseTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -171,19 +171,20 @@ public class BaseTest {
     @Autowired
     protected MessageScheduled messageScheduled;
 
-    @Autowired
+    @SpyBean
     protected StorageSpaceScheduled storageSpaceScheduled;
 
     @SpyBean
     protected OrganizeClosureRefreshScheduled organizeClosureRefreshScheduled;
 
     @BeforeEach
-    public void beforeEachOfBaseTest() {
+    public void beforeEachOfBaseTest() throws InterruptedException, ExecutionException {
         FileUtils.deleteQuietly(new File(this.storage.getRootPath()));
         new File(this.storage.getRootPath()).mkdirs();
         Mockito.doNothing().when(this.authorizationEmailUtil).sendVerificationCode(Mockito.anyString(),
                 Mockito.anyString());
         Mockito.doNothing().when(this.organizeClosureRefreshScheduled).scheduled();
+        Mockito.doNothing().when(this.storageSpaceScheduled).scheduled();
     }
 
     protected UserModel createAccount(String email) {

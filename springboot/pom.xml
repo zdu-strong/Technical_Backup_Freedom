@@ -31,13 +31,6 @@
         <storage.cloud.aliyun.accessKeySecret></storage.cloud.aliyun.accessKeySecret>
     </properties>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.3</version>
-        <relativePath /> <!-- lookup parent from repository -->
-    </parent>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -169,7 +162,24 @@
             <artifactId>aliyun-sdk-oss</artifactId>
             <version>3.17.4</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-spanner-hibernate-dialect</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-spanner-jdbc</artifactId>
+            <version>2.16.0</version>
+        </dependency>
     </dependencies>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.4</version>
+        <relativePath />
+    </parent>
 
     <build>
         <plugins>
@@ -220,6 +230,11 @@
                         <artifactId>postgresql</artifactId>
                         <version>${postgresql.version}</version>
                     </dependency>
+                    <dependency>
+                        <groupId>com.google.cloud</groupId>
+                        <artifactId>google-cloud-spanner-jdbc</artifactId>
+                        <version>2.16.0</version>
+                    </dependency>
                 </dependencies>
             </plugin>
             <plugin>
@@ -240,6 +255,11 @@
                         <groupId>org.postgresql</groupId>
                         <artifactId>postgresql</artifactId>
                         <version>${postgresql.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.google.cloud</groupId>
+                        <artifactId>google-cloud-spanner-jdbc</artifactId>
+                        <version>2.16.0</version>
                     </dependency>
                 </dependencies>
                 <configuration>

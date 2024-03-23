@@ -5,7 +5,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
-
 import org.jinq.orm.stream.JinqStream;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
