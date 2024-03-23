@@ -23,6 +23,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.uuid.Generators;
 
@@ -337,22 +338,26 @@ public class SpringbootProjectApplication {
     }
 
     private static String getDatabaseDriver() throws JsonMappingException, JsonProcessingException, IOException {
-        var file = new File("src/main/resources/application.yml");
+        var file = new File("pom.xml");
         try (var input = new FileInputStream(file)) {
-            var driver = new YAMLMapper()
-                    .readTree(IOUtils.toString(input, StandardCharsets.UTF_8)).get("spring")
-                    .get("datasource").get("driver-class-name").asText();
+            var driver = new XmlMapper()
+                    .readTree(IOUtils.toString(input, StandardCharsets.UTF_8))
+                    .get("properties")
+                    .get("database.driver")
+                    .asText();
             return driver;
         }
     }
 
     private static String getDatabasePlatform() throws JsonMappingException, JsonProcessingException, IOException {
-        var file = new File("src/main/resources/application.yml");
+        var file = new File("pom.xml");
         try (var input = new FileInputStream(file)) {
-            var databasePlatform = new YAMLMapper()
-                    .readTree(IOUtils.toString(input, StandardCharsets.UTF_8)).get("spring")
-                    .get("jpa").get("database-platform").asText();
-            return databasePlatform;
+            var platform = new XmlMapper()
+                    .readTree(IOUtils.toString(input, StandardCharsets.UTF_8))
+                    .get("properties")
+                    .get("database.platform")
+                    .asText();
+            return platform;
         }
     }
 

@@ -5,8 +5,8 @@
             "name": "Spring Boot-SpringbootProjectApplication<project>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
-            "mainClass": "com.springboot.project.SpringbootProjectApplication",
-            "projectName": "project",
+            "mainClass": "com.springboot.diff.SpringbootProjectApplication",
+            "projectName": "diff",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
         }
