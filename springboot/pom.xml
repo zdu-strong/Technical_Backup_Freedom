@@ -11,15 +11,8 @@
 
     <properties>
         <java.version>21</java.version>
-        <!--
-            storage.root.path can be an absolute path, or a relative path relative to
-        the jar package.
-            The default storage path will be in the same directory as the
-        jar package.
-        -->
-        <storage.root.path>default</storage.root.path>
-        <is.test.or.dev.mode>true</is.test.or.dev.mode>
         <resource.delimiter>${}</resource.delimiter>
+        <is.test.or.dev.mode>true</is.test.or.dev.mode>
         <database.jdbc.url>localhost:3306</database.jdbc.url>
         <database.name>springboot_dev</database.name>
         <database.username>root</database.username>
