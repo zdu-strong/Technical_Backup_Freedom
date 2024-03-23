@@ -17,6 +17,8 @@
         <database.name>springboot_dev</database.name>
         <database.username>root</database.username>
         <database.password>123456</database.password>
+        <database.driver>com.mysql.cj.jdbc.Driver</database.driver>
+        <database.platform>com.springboot.project.common.database.CustomMySQLDialect</database.platform>
         <storage.cloud.aliyun.enabled>false</storage.cloud.aliyun.enabled>
         <storage.cloud.aliyun.endpoint></storage.cloud.aliyun.endpoint>
         <storage.cloud.aliyun.bucketName></storage.cloud.aliyun.bucketName>
@@ -195,19 +197,15 @@
                     <url>
                         jdbc:mysql://${database.jdbc.url}/${database.name}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true
                     </url>
-                    <driver>
-                        com.mysql.cj.jdbc.Driver
-                    </driver>
                     <username>${database.username}</username>
                     <password>${database.password}</password>
+                    <driver>${database.driver}</driver>
                     <referenceUrl>
                         jdbc:mysql://${database.jdbc.url}/${env.LIQUIBASE_REFERENCE_DATABASE_NAME}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true
                     </referenceUrl>
-                    <referenceDriver>
-                        com.mysql.cj.jdbc.Driver
-                    </referenceDriver>
                     <referenceUsername>${database.username}</referenceUsername>
                     <referencePassword>${database.password}</referencePassword>
+                    <referenceDriver>${database.driver}</referenceDriver>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -243,14 +241,12 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-                    <driver>
-                        com.mysql.cj.jdbc.Driver
-                    </driver>
                     <url>
                         jdbc:mysql://${database.jdbc.url}/${database.name}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true
                     </url>
                     <username>${database.username}</username>
                     <password>${database.password}</password>
+                    <driver>${database.driver}</driver>
                 </configuration>
                 <executions>
                     <execution>

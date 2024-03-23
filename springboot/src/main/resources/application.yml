@@ -3,11 +3,11 @@ spring:
     url: jdbc:mysql://${database.jdbc.url}/${database.name}?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&createDatabaseIfNotExist=true
     username: ${database.username}
     password: ${database.password}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: ${database.driver}
   jpa:
     hibernate:
       ddl-auto: validate
-    database-platform: com.springboot.project.common.database.CustomMySQLDialect
+    database-platform: ${database.platform}
     open-in-view: false
     properties:
       hibernate:
