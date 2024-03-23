@@ -1,10 +1,14 @@
 package com.springboot.project.common.baseService;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceContext;
+import org.hibernate.exception.GenericJDBCException;
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.jpa.JinqJPAStreamProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,6 +34,8 @@ import com.springboot.project.properties.DateFormatProperties;
 
 @Service
 @Transactional(rollbackFor = Throwable.class)
+@Retryable(retryFor = { CannotAcquireLockException.class, GenericJDBCException.class,
+        OptimisticLockException.class }, maxAttempts = 1000)
 public abstract class BaseService {
 
     @PersistenceContext
@@ -171,7 +177,7 @@ public abstract class BaseService {
     }
 
     protected String newId() {
-        return Generators.timeBasedReorderedGenerator().generate().toString();
+        return new StringBuilder(Generators.timeBasedReorderedGenerator().generate().toString()).reverse().toString();
     }
 
 }

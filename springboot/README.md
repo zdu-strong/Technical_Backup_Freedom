@@ -5,7 +5,12 @@ Projects created by start.spring.io contain Spring Boot, a framework that makes 
 ## Development environment setup
 1. From https://adoptium.net install java v21, and choose Entire feature.<br/>
 2. From https://code.visualstudio.com install Visual Studio Code. Next, install extension "Extension Pack for Java" and "XML".<br/>
-3. From https://dev.mysql.com/downloads/installer install MySQL, the password of the root user is set to 123456.
+3. From https://www.cockroachlabs.com/docs/stable/install-cockroachdb-windows install CockroachDB. Next, run command:
+
+    cockroach start-single-node --insecure --http-addr :26256 --store=.mvn/cockroachdb
+
+4. Optional.
+From https://dbeaver.io install DBeaver.
 
 ## Available Scripts
 
