@@ -19,19 +19,6 @@
         -->
         <storage.root.path>default</storage.root.path>
         <resource.delimiter>${}</resource.delimiter>
-        <database.mysql.jdbc.url>localhost:3306</database.mysql.jdbc.url>
-        <database.mysql.name>springboot_dev</database.mysql.name>
-        <database.mysql.username>root</database.mysql.username>
-        <database.mysql.password>123456</database.mysql.password>
-        <database.mysql.driver>com.mysql.cj.jdbc.Driver
-        </database.mysql.driver>
-        <database.mysql.platform>com.springboot.project.common.database.CustomMySQLDialect
-        </database.mysql.platform>
-        <storage.cloud.aliyun.enabled>false</storage.cloud.aliyun.enabled>
-        <storage.cloud.aliyun.endpoint></storage.cloud.aliyun.endpoint>
-        <storage.cloud.aliyun.bucketName></storage.cloud.aliyun.bucketName>
-        <storage.cloud.aliyun.accessKeyId></storage.cloud.aliyun.accessKeyId>
-        <storage.cloud.aliyun.accessKeySecret></storage.cloud.aliyun.accessKeySecret>
     </properties>
 
     <parent>
@@ -55,8 +42,16 @@
             <artifactId>httpclient5</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -67,6 +62,11 @@
             <groupId>com.fasterxml.uuid</groupId>
             <artifactId>java-uuid-generator</artifactId>
             <version>5.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jinq</groupId>
+            <artifactId>jinq-jpa</artifactId>
+            <version>2.0.2</version>
         </dependency>
     </dependencies>
 

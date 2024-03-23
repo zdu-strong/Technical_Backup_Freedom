@@ -32,7 +32,7 @@ Generate database version upgrade sql.<br/>
 
 Its source code is in the ".mvn/diff" folder.<br/>
 
-### `./mvn clean compile sql:execute clean compile`
+### `./mvn clean compile sql:execute@create clean compile`
 
 Delete all tables in the development database<br/>
 

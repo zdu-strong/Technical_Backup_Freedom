@@ -7,17 +7,22 @@ import java.net.ServerSocket;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.hc.core5.net.URIBuilder;
+import org.jinq.orm.stream.JinqStream;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.uuid.Generators;
 
@@ -33,6 +38,8 @@ public class SpringbootProjectApplication {
         if (isTestEnviroment()) {
             return;
         }
+
+        checkSupportDatabase();
 
         var isCreateChangeLogFile = false;
 
@@ -72,7 +79,7 @@ public class SpringbootProjectApplication {
             command.add("/bin/bash");
             command.add("-c");
         }
-        command.add("mvn clean compile spring-boot:run --define database." + getDatabaseType() + ".name="
+        command.add("mvn clean compile spring-boot:run --define database.name="
                 + newDatabaseName);
         var processBuilder = new ProcessBuilder(command)
                 .inheritIO()
@@ -111,13 +118,12 @@ public class SpringbootProjectApplication {
 
     public static boolean diffDatabase(String newDatabaseName, String oldDatabaseName)
             throws IOException, InterruptedException {
-        var today = new Date();
-        var simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        var today = FastDateFormat.getInstance("yyyy.MM.dd.HH.mm.ss", TimeZone.getTimeZone("UTC"))
+                .format(new Date());
         var filePathOfDiffChangeLogFile = Paths
                 .get(getBaseFolderPath(), "src/main/resources", "liquibase/changelog",
-                        simpleDateFormat.format(today).substring(0, 10),
-                        simpleDateFormat.format(today) + "_changelog." + getDatabaseType() + ".sql")
+                        today.substring(0, 10),
+                        today + "_changelog." + getDatabaseType().getName() + ".sql")
                 .normalize().toString().replaceAll(Pattern.quote("\\"), "/");
         var isCreateFolder = !existFolder(Paths.get(filePathOfDiffChangeLogFile, "..").normalize().toString());
 
@@ -134,7 +140,7 @@ public class SpringbootProjectApplication {
             command.add("-c");
         }
         command.add(
-                "mvn clean compile liquibase:update liquibase:diff --define database." + getDatabaseType() + ".name="
+                "mvn clean compile liquibase:update liquibase:diff --define database.name="
                         + oldDatabaseName);
         var processBuilder = new ProcessBuilder(command)
                 .inheritIO()
@@ -208,9 +214,6 @@ public class SpringbootProjectApplication {
     }
 
     public static void deleteDatabase(String databaseName) throws IOException, InterruptedException {
-        if (!isMysqlDatabase()) {
-            return;
-        }
         var command = new ArrayList<String>();
         if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
             command.add("cmd");
@@ -219,7 +222,7 @@ public class SpringbootProjectApplication {
             command.add("/bin/bash");
             command.add("-c");
         }
-        command.add("mvn clean compile sql:execute --define database." + getDatabaseType() + ".name=" + databaseName);
+        command.add("mvn clean compile sql:execute@delete --define database.name=" + databaseName);
         var processBuilder = new ProcessBuilder(command)
                 .inheritIO()
                 .directory(new File(getBaseFolderPath()));
@@ -237,9 +240,6 @@ public class SpringbootProjectApplication {
     }
 
     public static void createDatabase(String databaseName) throws IOException, InterruptedException {
-        if (!isCockroachdbDatabase()) {
-            return;
-        }
         var command = new ArrayList<String>();
         if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
             command.add("cmd");
@@ -248,7 +248,7 @@ public class SpringbootProjectApplication {
             command.add("/bin/bash");
             command.add("-c");
         }
-        command.add("mvn clean compile sql:execute --define database." + getDatabaseType() + ".name=" + databaseName);
+        command.add("mvn clean compile sql:execute@create --define database.name=" + databaseName);
         var processBuilder = new ProcessBuilder(command)
                 .inheritIO()
                 .directory(new File(getBaseFolderPath()));
@@ -295,20 +295,18 @@ public class SpringbootProjectApplication {
         return newDatabaseName;
     }
 
-    public static boolean isTestEnviroment() {
+    public static boolean isTestEnviroment() throws IOException {
         try (var input = new ClassPathResource("application.yml").getInputStream()) {
             var isTestEnviromentString = new YAMLMapper()
                     .readTree(IOUtils.toString(input, StandardCharsets.UTF_8)).get("properties")
                     .get("storage").get("root").get("path").asText();
             var isTestEnviroment = "defaultTest-a56b075f-102e-edf3-8599-ffc526ec948a".equals(isTestEnviromentString);
             return isTestEnviroment;
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
         }
     }
 
     private static void replaceDatetimeColumnType(File file) throws IOException {
-        if (!isMysqlDatabase()) {
+        if (getDatabaseType() != SupportDatabaseTypeEnum.MYSQL) {
             return;
         }
         var textList = FileUtils.readLines(file, StandardCharsets.UTF_8);
@@ -316,28 +314,46 @@ public class SpringbootProjectApplication {
         FileUtils.writeLines(file, StandardCharsets.UTF_8.name(), textList);
     }
 
-    private static String getDatabaseType() throws IOException {
-        if (isMysqlDatabase()) {
-            return "mysql";
-        }
-        if (isCockroachdbDatabase()) {
-            return "cockroachdb";
-        }
-        throw new RuntimeException("Not Implemented");
+    private static SupportDatabaseTypeEnum getDatabaseType()
+            throws JsonMappingException, JsonProcessingException, IOException {
+        var driver = getDatabaseDriver();
+        var databasePlatform = getDatabasePlatform();
+        var supportDatabase = JinqStream.from(Arrays.asList(SupportDatabaseTypeEnum.values()))
+                .where(s -> s.getDriver().equals(driver) && databasePlatform.contains(s.getPlatform()))
+                .getOnlyValue();
+        return supportDatabase;
     }
 
-    private static boolean isMysqlDatabase() throws IOException {
-        var pomXmlFile = new File(getBaseFolderPath(), "pom.xml");
-        var isMysqlDatabase = FileUtils.readFileToString(pomXmlFile, StandardCharsets.UTF_8)
-                .contains("database.mysql.jdbc.url");
-        return isMysqlDatabase;
+    private static void checkSupportDatabase() throws IOException {
+        var driver = getDatabaseDriver();
+        var databasePlatform = getDatabasePlatform();
+        var hasMatch = Arrays.stream(SupportDatabaseTypeEnum.values())
+                .anyMatch(s -> s.getDriver().equals(driver) && databasePlatform.contains(s.getPlatform()));
+        if (!hasMatch) {
+            throw new RuntimeException(
+                    "Only support database " + "[" + String.join(", ", Arrays.stream(SupportDatabaseTypeEnum.values())
+                            .map(s -> s.getName()).toList().toArray(ArrayUtils.EMPTY_STRING_ARRAY)) + "]");
+        }
     }
 
-    private static boolean isCockroachdbDatabase() throws IOException {
-        var pomXmlFile = new File(getBaseFolderPath(), "pom.xml");
-        var isMysqlDatabase = FileUtils.readFileToString(pomXmlFile, StandardCharsets.UTF_8)
-                .contains("database.cockroachdb.jdbc.url");
-        return isMysqlDatabase;
+    private static String getDatabaseDriver() throws JsonMappingException, JsonProcessingException, IOException {
+        var file = new File("src/main/resources/application.yml");
+        try (var input = new FileInputStream(file)) {
+            var driver = new YAMLMapper()
+                    .readTree(IOUtils.toString(input, StandardCharsets.UTF_8)).get("spring")
+                    .get("datasource").get("driver-class-name").asText();
+            return driver;
+        }
+    }
+
+    private static String getDatabasePlatform() throws JsonMappingException, JsonProcessingException, IOException {
+        var file = new File("src/main/resources/application.yml");
+        try (var input = new FileInputStream(file)) {
+            var databasePlatform = new YAMLMapper()
+                    .readTree(IOUtils.toString(input, StandardCharsets.UTF_8)).get("spring")
+                    .get("jpa").get("database-platform").asText();
+            return databasePlatform;
+        }
     }
 
 }

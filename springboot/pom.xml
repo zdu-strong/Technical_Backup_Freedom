@@ -20,14 +20,10 @@
         <storage.root.path>default</storage.root.path>
         <is.test.or.dev.mode>true</is.test.or.dev.mode>
         <resource.delimiter>${}</resource.delimiter>
-        <database.mysql.jdbc.url>localhost:3306</database.mysql.jdbc.url>
-        <database.mysql.name>springboot_dev</database.mysql.name>
-        <database.mysql.username>root</database.mysql.username>
-        <database.mysql.password>123456</database.mysql.password>
-        <database.mysql.driver>com.mysql.cj.jdbc.Driver
-        </database.mysql.driver>
-        <database.mysql.platform>com.springboot.project.common.database.CustomMySQLDialect
-        </database.mysql.platform>
+        <database.jdbc.url>localhost:3306</database.jdbc.url>
+        <database.name>springboot_dev</database.name>
+        <database.username>root</database.username>
+        <database.password>123456</database.password>
         <storage.cloud.aliyun.enabled>false</storage.cloud.aliyun.enabled>
         <storage.cloud.aliyun.endpoint></storage.cloud.aliyun.endpoint>
         <storage.cloud.aliyun.bucketName></storage.cloud.aliyun.bucketName>
@@ -191,20 +187,19 @@
                         liquibase/index.xml
                     </changeLogFile>
                     <url>
-                        jdbc:mysql://${database.mysql.jdbc.url}/${database.mysql.name}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true
+                        jdbc:mysql://${database.jdbc.url}/${database.name}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true
                     </url>
-                    <driver>
-                        ${database.mysql.driver}</driver>
-                    <username>${database.mysql.username}</username>
+                    <driver>com.mysql.cj.jdbc.Driver</driver>
+                    <username>${database.username}</username>
                     <password>
-                        ${database.mysql.password}</password>
+                        ${database.password}</password>
                     <referenceUrl>
-                        jdbc:mysql://${database.mysql.jdbc.url}/${env.LIQUIBASE_REFERENCE_DATABASE_NAME}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true</referenceUrl>
+                        jdbc:mysql://${database.jdbc.url}/${env.LIQUIBASE_REFERENCE_DATABASE_NAME}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true</referenceUrl>
                     <referenceDriver>
-                        ${database.mysql.driver}</referenceDriver>
-                    <referenceUsername>${database.mysql.username}</referenceUsername>
+                        ${database.driver}</referenceDriver>
+                    <referenceUsername>${database.username}</referenceUsername>
                     <referencePassword>
-                        ${database.mysql.password}</referencePassword>
+                        ${database.password}</referencePassword>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -221,7 +216,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>sql-maven-plugin</artifactId>
-                <version>1.5</version>
+                <version>3.0.0</version>
                 <dependencies>
                     <dependency>
                         <groupId>com.mysql</groupId>
@@ -230,16 +225,31 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-                    <driver>
-                        ${database.mysql.driver}</driver>
+                    <driver>com.mysql.cj.jdbc.Driver</driver>
                     <url>
-                        jdbc:mysql://${database.mysql.jdbc.url}/${database.mysql.name}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true</url>
+                        jdbc:mysql://${database.jdbc.url}/${database.name}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true</url>
                     <username>
-                        ${database.mysql.username}</username>
-                    <password>${database.mysql.password}</password>
-                    <sqlCommand>DROP
-                        DATABASE ${database.mysql.name};</sqlCommand>
+                        ${database.username}</username>
+                    <password>${database.password}</password>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>delete</id>
+                        <configuration>
+                            <sqlCommand>DROP
+                                DATABASE IF EXISTS ${database.name};</sqlCommand>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>create</id>
+                        <configuration>
+                            <sqlCommand>DROP
+                                DATABASE IF EXISTS ${database.name};
+                                CREATE
+                                DATABASE ${database.name};</sqlCommand>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
