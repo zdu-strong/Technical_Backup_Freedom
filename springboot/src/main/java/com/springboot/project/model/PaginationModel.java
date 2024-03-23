@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.function.Function;
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.orm.stream.JinqStream;
-import com.springboot.project.common.SpannerUtil.SpannerUtil;
 import com.springboot.project.common.database.JPQLFunction;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +33,7 @@ public class PaginationModel<T> {
 
         this.pageNum = pageNum;
         this.pageSize = pageSize;
-        if (stream instanceof JPAJinqStream && !SpannerUtil.getIsSpannerEmulator()) {
+        if (stream instanceof JPAJinqStream) {
             this.totalRecord = stream.select(s -> JPQLFunction.foundTotalRowsForGroupBy()).findFirst()
                     .orElse(0L);
             this.setList(
@@ -59,7 +58,7 @@ public class PaginationModel<T> {
 
         this.pageNum = pageNum;
         this.pageSize = pageSize;
-        if (stream instanceof JPAJinqStream && !SpannerUtil.getIsSpannerEmulator()) {
+        if (stream instanceof JPAJinqStream) {
             this.totalRecord = stream.select(s -> JPQLFunction.foundTotalRowsForGroupBy()).findFirst()
                     .orElse(0L);
             this.setList(

@@ -159,21 +159,6 @@
             <artifactId>aliyun-sdk-oss</artifactId>
             <version>3.17.4</version>
         </dependency>
-        <dependency>
-            <groupId>com.google.cloud</groupId>
-            <artifactId>google-cloud-spanner-hibernate-dialect</artifactId>
-            <version>3.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.cloudspannerecosystem</groupId>
-            <artifactId>liquibase-spanner</artifactId>
-            <version>4.25.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.cloud</groupId>
-            <artifactId>google-cloud-spanner-jdbc</artifactId>
-            <version>2.16.1</version>
-        </dependency>
     </dependencies>
 
     <parent>
@@ -235,11 +220,6 @@
                         <artifactId>postgresql</artifactId>
                         <version>${postgresql.version}</version>
                     </dependency>
-                    <dependency>
-                        <groupId>com.google.cloud</groupId>
-                        <artifactId>google-cloud-spanner-jdbc</artifactId>
-                        <version>2.16.1</version>
-                    </dependency>
                 </dependencies>
             </plugin>
             <plugin>
@@ -260,11 +240,6 @@
                         <groupId>org.postgresql</groupId>
                         <artifactId>postgresql</artifactId>
                         <version>${postgresql.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.google.cloud</groupId>
-                        <artifactId>google-cloud-spanner-jdbc</artifactId>
-                        <version>2.16.1</version>
                     </dependency>
                 </dependencies>
                 <configuration>
