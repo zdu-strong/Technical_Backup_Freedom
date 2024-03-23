@@ -201,13 +201,17 @@
                     <url>
                         jdbc:mysql://${database.jdbc.url}/${database.name}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true
                     </url>
-                    <driver>com.mysql.cj.jdbc.Driver</driver>
+                    <driver>
+                        com.mysql.cj.jdbc.Driver
+                    </driver>
                     <username>${database.username}</username>
                     <password>${database.password}</password>
                     <referenceUrl>
                         jdbc:mysql://${database.jdbc.url}/${env.LIQUIBASE_REFERENCE_DATABASE_NAME}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true
                     </referenceUrl>
-                    <referenceDriver>com.mysql.cj.jdbc.Driver</referenceDriver>
+                    <referenceDriver>
+                        com.mysql.cj.jdbc.Driver
+                    </referenceDriver>
                     <referenceUsername>${database.username}</referenceUsername>
                     <referencePassword>${database.password}</referencePassword>
                 </configuration>
@@ -255,7 +259,9 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-                    <driver>com.mysql.cj.jdbc.Driver</driver>
+                    <driver>
+                        com.mysql.cj.jdbc.Driver
+                    </driver>
                     <url>
                         jdbc:mysql://${database.jdbc.url}/${database.name}?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true
                     </url>
