@@ -55,7 +55,7 @@ public class UserService extends BaseService {
                 .where(s -> !s.getOne().getIsDeleted())
                 .group(s -> s.getOne().getId(), (s, t) -> t.count());
         if (!stream.exists()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account does not exist");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect username or password");
         }
     }
 
