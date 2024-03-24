@@ -270,7 +270,8 @@ public class BaseTest {
         var passwordPartList = List.of(new Date(), Generators.timeBasedReorderedGenerator().generate().toString(),
                 secretKeyOfAES);
         var passwordPartJsonString = this.objectMapper.writeValueAsString(passwordPartList);
-        URI urlForGetPublicKeyOfRSA = new URIBuilder("/encrypt_decrypt/rsa/public_key").build();
+        URI urlForGetPublicKeyOfRSA = new URIBuilder(
+                this.testRestTemplate.getRootUri() + "/encrypt_decrypt/rsa/public_key").build();
         var publicKeyOfRSA = new RestTemplate().getForObject(urlForGetPublicKeyOfRSA, String.class);
         var passwordParameter = this.encryptDecryptService.encryptByPublicKeyOfRSA(passwordPartJsonString,
                 publicKeyOfRSA);
