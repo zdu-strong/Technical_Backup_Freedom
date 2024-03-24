@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -269,7 +270,10 @@ public class BaseTest {
         var passwordPartList = List.of(new Date(), Generators.timeBasedReorderedGenerator().generate().toString(),
                 secretKeyOfAES);
         var passwordPartJsonString = this.objectMapper.writeValueAsString(passwordPartList);
-        var passwordParameter = this.encryptDecryptService.encryptByPublicKeyOfRSA(passwordPartJsonString);
+        URI urlForGetPublicKeyOfRSA = new URIBuilder("/encrypt_decrypt/rsa/public_key").build();
+        var publicKeyOfRSA = new RestTemplate().getForObject(urlForGetPublicKeyOfRSA, String.class);
+        var passwordParameter = this.encryptDecryptService.encryptByPublicKeyOfRSA(passwordPartJsonString,
+                publicKeyOfRSA);
         var url = new URIBuilder("/sign_in").setParameter("username", email)
                 .setParameter("password", passwordParameter)
                 .build();

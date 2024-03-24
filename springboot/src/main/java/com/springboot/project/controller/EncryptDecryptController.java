@@ -10,7 +10,7 @@ import com.springboot.project.common.baseController.BaseController;
 public class EncryptDecryptController extends BaseController {
 
     @GetMapping("/encrypt_decrypt/rsa/public_key")
-    public ResponseEntity<?> signUp() {
+    public ResponseEntity<?> getPublicKeyOfRSA() {
         var keyOfRSAPublicKey = this.encryptDecryptService.getKeyOfRSAPublicKey();
         var publicKey = Base64.getEncoder().encodeToString(keyOfRSAPublicKey.getEncoded());
         return ResponseEntity.ok(publicKey);
